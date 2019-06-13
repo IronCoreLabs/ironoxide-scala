@@ -24,7 +24,7 @@ lazy val root = (project in file(".")).settings(
     "Typesafe repository" at "http://repo.typesafe.com/typesafe/release/"
   ),
   libraryDependencies ++= Seq(
-    "org.scodec" %% "scodec-bits" % "1.1.10",
+    "org.scodec" %% "scodec-bits" % "1.1.12",
     "com.ironcorelabs" % "ironoxide-java" % "0.2.2",
     "org.typelevel" %% "cats-effect" % "1.3.1",
     "com.ironcorelabs" %% "cats-scalatest" % "2.4.0" % Test,
@@ -41,3 +41,61 @@ scalacOptions in (Compile, console) ~= {
 scalacOptions in (Test, console) := (scalacOptions in (Compile, console)).value
 
 fork in Test := true
+
+licenses := Seq("AGPL-3.0" -> url("https://www.gnu.org/licenses/agpl-3.0.txt"))
+// Add the default sonatype repository setting
+publishTo := sonatypePublishTo.value
+
+homepage := Some(url("http://github.com/ironcorelabs/ironoxide-scala"))
+
+publishMavenStyle := true
+
+publishArtifact in Test := false
+
+pomIncludeRepository := { _ => false }
+
+useGpg := true
+
+usePgpKeyHex("E84BBF42")
+
+pomExtra := (
+    <scm>
+      <url>git@github.com:IronCoreLabs/ironoxide-java.git</url>
+      <connection>scm:git@github.com:IronCoreLabs/ironoxide-java.git</connection>
+    </scm>
+    <developers>
+      {
+      Seq(
+        ("coltfred", "Colt Frederickson"),
+        ("clintfred", "Clint Frederickson"),
+        ("skeet70", "Murph Murphy"),
+        ("ernieturner", "Ernie Turner"),
+        ("bobwall23", "Bob Wall")
+      ).map {
+        case (id, name) =>
+          <developer>
+            <id>{id}</id>
+            <name>{name}</name>
+            <url>http://github.com/{id}</url>
+          </developer>
+      }
+    }
+    </developers>
+  )
+
+import ReleaseTransformations._
+
+releaseProcess := Seq[ReleaseStep](
+  checkSnapshotDependencies,
+  inquireVersions,
+  runClean,
+  runTest,
+  setReleaseVersion,
+  commitReleaseVersion,
+  tagRelease,
+  ReleaseStep(action = Command.process("publishSigned", _), enableCrossBuild = true),
+  setNextVersion,
+  commitNextVersion,
+  ReleaseStep(action = Command.process("sonatypeReleaseAll", _), enableCrossBuild = true),
+  pushChanges
+)
