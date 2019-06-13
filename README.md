@@ -1,7 +1,7 @@
 # IronCore Labs IronOxide Scala SDK
 
 SDK for using IronCore Labs from Scala server side applications. This library wraps [ironoxide-java](https://github.com/IronCoreLabs/ironoxide-java)
-with more Scala friendly interfaces and types. It presests two top level APIs:
+with more Scala friendly interfaces and types. It presents two top level APIs:
 
 - [`IO`](https://typelevel.org/cats-effect/) based
 - [`Future`](https://docs.scala-lang.org/overviews/core/futures.html) based
