@@ -17,10 +17,7 @@ case class GroupMetaResult(
 
 object GroupMetaResult {
   def apply(gmr: jsdk.GroupMetaResult): GroupMetaResult = {
-    val optName: Option[GroupName] = gmr.getName match {
-      case null => None
-      case name => Some(GroupName(name.get.getName))
-    }
+    val optName: Option[GroupName] = gmr.getName.toScala.map(n => GroupName(n.getName))
 
     GroupMetaResult(GroupId(gmr.getId.getId), optName, gmr.isAdmin, gmr.isMember, gmr.getCreated, gmr.getLastUpdated)
   }
