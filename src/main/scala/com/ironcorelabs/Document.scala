@@ -21,8 +21,6 @@ case class DocumentName(name: String) {
 
 object DocumentName {
   private[sdk] def fromJava(name: ju.Optional[jsdk.DocumentName]): Option[DocumentName] =
-    if (name.isPresent)
-      Some(DocumentName(name.get.getName))
-    else
-      None
+    name.toScala.map(d => DocumentName(d.getName))
+
 }
