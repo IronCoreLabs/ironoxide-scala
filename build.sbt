@@ -25,7 +25,7 @@ lazy val root = (project in file(".")).settings(
   ),
   libraryDependencies ++= Seq(
     "org.scodec" %% "scodec-bits" % "1.1.12",
-    "com.ironcorelabs" % "ironoxide-java" % "0.2.2",
+    "com.ironcorelabs" % "ironoxide-java" % "0.3.0",
     "org.typelevel" %% "cats-effect" % "1.3.1",
     "com.ironcorelabs" %% "cats-scalatest" % "2.4.0" % Test,
     "org.scalatest" %% "scalatest" % "3.0.5" % Test
@@ -52,36 +52,38 @@ publishMavenStyle := true
 
 publishArtifact in Test := false
 
-pomIncludeRepository := { _ => false }
+pomIncludeRepository := { _ =>
+  false
+}
 
 useGpg := true
 
 usePgpKeyHex("E84BBF42")
 
 pomExtra := (
-    <scm>
+  <scm>
       <url>git@github.com:IronCoreLabs/ironoxide-java.git</url>
       <connection>scm:git@github.com:IronCoreLabs/ironoxide-java.git</connection>
     </scm>
     <developers>
       {
-      Seq(
-        ("coltfred", "Colt Frederickson"),
-        ("clintfred", "Clint Frederickson"),
-        ("skeet70", "Murph Murphy"),
-        ("ernieturner", "Ernie Turner"),
-        ("bobwall23", "Bob Wall")
-      ).map {
-        case (id, name) =>
-          <developer>
+    Seq(
+      ("coltfred", "Colt Frederickson"),
+      ("clintfred", "Clint Frederickson"),
+      ("skeet70", "Murph Murphy"),
+      ("ernieturner", "Ernie Turner"),
+      ("bobwall23", "Bob Wall")
+    ).map {
+      case (id, name) =>
+        <developer>
             <id>{id}</id>
             <name>{name}</name>
             <url>http://github.com/{id}</url>
           </developer>
-      }
     }
+  }
     </developers>
-  )
+)
 
 import ReleaseTransformations._
 
