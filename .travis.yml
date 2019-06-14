@@ -1,0 +1,11 @@
+language: scala
+scala:
+- 2.12.8
+
+cache:
+  directories:
+  - "$HOME/.ivy2/cache"
+  - "$HOME/.sbt/boot/"
+
+script:
+- sbt scalafmtCheckAll scalastyle test:compile
