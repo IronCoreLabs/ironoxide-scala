@@ -5,7 +5,9 @@ import com.ironcorelabs.{sdk => jsdk}
 import cats.implicits._
 
 /**
- * ID of a group. Unique within a segment. Must match the regex `^[a-zA-Z0-9_.$#|@/:;=+'-]+$`
+ * Policy grant
+ *
+ * TODO
  */
 case class PolicyGrant(
   category: Option[Category],
@@ -23,7 +25,7 @@ case class PolicyGrant(
 }
 
 /**
- * ID of a group. Unique within a segment. Must match the regex `^[a-zA-Z0-9_.$#|@/:;=+'-]+$`
+ * TODO
  */
 case class Sensitivity(id: String) {
   private[sdk] def toJava[F[_]](implicit syncF: Sync[F]): F[jsdk.Sensitivity] =
@@ -35,7 +37,7 @@ object Sensitivity {
 }
 
 /**
- * ID of a group. Unique within a segment. Must match the regex `^[a-zA-Z0-9_.$#|@/:;=+'-]+$`
+ * TODO
  */
 case class Category(inner: String) {
   private[sdk] def toJava[F[_]](implicit syncF: Sync[F]): F[jsdk.Category] =
@@ -47,7 +49,7 @@ object Category {
 }
 
 /**
- * ID of a group. Unique within a segment. Must match the regex `^[a-zA-Z0-9_.$#|@/:;=+'-]+$`
+ * TODO
  */
 case class DataSubject(inner: String) {
   private[sdk] def toJava[F[_]](implicit syncF: Sync[F]): F[jsdk.DataSubject] =
