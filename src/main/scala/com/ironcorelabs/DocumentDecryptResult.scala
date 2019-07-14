@@ -4,14 +4,14 @@ import scodec.bits.ByteVector
 import java.{util => ju}
 
 /**
-  * Result of decrypting a document. Includes minimal metadata as well as the decrypted bytes.
-  */
+ * Result of decrypting a document. Includes minimal metadata as well as the decrypted bytes.
+ */
 case class DocumentDecryptResult(
-    id: DocumentId,
-    name: Option[DocumentName],
-    decryptedData: ByteVector,
-    created: ju.Date,
-    lastUpdated: ju.Date
+  id: DocumentId,
+  name: Option[DocumentName],
+  decryptedData: ByteVector,
+  created: ju.Date,
+  lastUpdated: ju.Date
 )(val underlyingBytes: Array[Byte])
 
 object DocumentDecryptResult {
