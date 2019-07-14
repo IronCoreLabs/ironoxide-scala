@@ -135,5 +135,27 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       result.errors.getGroups.head.getId.getId shouldBe notAGroup.id
       result.errors.getGroups.head.getErr shouldBe "Group could not be found"
     }
+
+    "return expected success/failures for policy grant" in {
+      val sdk = IronSdkSync[IO](createDeviceContext)
+      val data = ByteVector(List(1, 2, 3).map(_.toByte))
+      val result =
+        sdk
+          .documentEncrypt(data, DocumentEncryptOpts.policyOnly(true, PolicyGrant(None, None, None, None)))
+          .attempt
+          .unsafeRunSync
+          .value
+
+      // what was valid should go through
+      (result.changed.getUsers should have).length(1)
+      result.changed.getUsers.head.getId shouldBe primaryTestUserId.id
+      (result.changed.getGroups should have).length(0)
+
+      // the invalid stuff should have errored
+      (result.errors.getUsers should have).length(0)
+      (result.errors.getGroups should have).length(1)
+      result.errors.getGroups.head.getId.getId shouldBe s"data_recovery_${primaryTestUserId.id}"
+      result.errors.getGroups.head.getErr should include("Policy refers to unknown user or group")
+    }
   }
 }

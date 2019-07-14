@@ -15,11 +15,11 @@ case class PolicyGrant(
 ) {
   private[sdk] def toJava[F[_]](implicit syncF: Sync[F]): F[jsdk.PolicyGrant] =
     for {
-      javaCat          <- category.traverse(_.toJava).map(_.orNull)
-      javaSens         <- sensitivity.traverse(_.toJava).map(_.orNull)
-      javaDataSub      <- dataSubject.traverse(_.toJava).map(_.orNull)
-      javaSubstituteId <- substituteId.traverse(_.toJava).map(_.orNull)
-    } yield new jsdk.PolicyGrant(javaCat, javaSens, javaDataSub, javaSubstituteId)
+      javaCat          <- category.traverse(_.toJava)
+      javaSens         <- sensitivity.traverse(_.toJava)
+      javaDataSub      <- dataSubject.traverse(_.toJava)
+      javaSubstituteId <- substituteId.traverse(_.toJava)
+    } yield new jsdk.PolicyGrant(javaCat.orNull, javaSens.orNull, javaDataSub.orNull, javaSubstituteId.orNull)
 }
 
 /**

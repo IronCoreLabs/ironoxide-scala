@@ -34,4 +34,7 @@ object DocumentEncryptOpts {
   def apply(): DocumentEncryptOpts = DocumentEncryptOpts(None, None, true, Nil, Nil, None)
   def apply(userGrants: List[UserId], groupGrants: List[GroupId]): DocumentEncryptOpts =
     DocumentEncryptOpts(None, None, true, userGrants, groupGrants, None)
+
+  def policyOnly(grantToAuthor: Boolean, policyGrant: PolicyGrant): DocumentEncryptOpts =
+    DocumentEncryptOpts(None, None, grantToAuthor, Nil, Nil, Some(policyGrant))
 }
