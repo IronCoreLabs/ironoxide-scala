@@ -4,15 +4,15 @@ import com.ironcorelabs.{sdk => jsdk}
 import java.{util => ju}
 
 /**
-  * Abbreviated group meta information.
-  */
+ * Abbreviated group meta information.
+ */
 case class GroupMetaResult(
-    id: GroupId,
-    name: Option[GroupName],
-    isAdmin: Boolean,
-    isMember: Boolean,
-    created: ju.Date,
-    lastUpdated: ju.Date
+  id: GroupId,
+  name: Option[GroupName],
+  isAdmin: Boolean,
+  isMember: Boolean,
+  created: ju.Date,
+  lastUpdated: ju.Date
 )
 
 object GroupMetaResult {

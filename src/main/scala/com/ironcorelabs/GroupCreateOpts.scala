@@ -5,19 +5,19 @@ import cats.implicits._
 import com.ironcorelabs.{sdk => jsdk}
 
 /**
-  * Options for group creation.
-  * @param id - unique id of a group within a segment. If None, the server will assign an id.
-  * @param name - human readable name of the group. Does not need to be unique.
-  * @param addAsMember - creating user will (default, true) or will not (false) be added to the group's membership (in addition to being a group admin)
-  */
+ * Options for group creation.
+ * @param id - unique id of a group within a segment. If None, the server will assign an id.
+ * @param name - human readable name of the group. Does not need to be unique.
+ * @param addAsMember - creating user will (default, true) or will not (false) be added to the group's membership (in addition to being a group admin)
+ */
 case class GroupCreateOpts(
-    id: Option[GroupId],
-    name: Option[GroupName],
-    addAsMember: Boolean
+  id: Option[GroupId],
+  name: Option[GroupName],
+  addAsMember: Boolean
 ) {
   private[sdk] def toJava[F[_]](implicit syncF: Sync[F]): F[jsdk.GroupCreateOpts] =
     for {
-      javaId <- id.traverse(_.toJava).map(_.orNull)
+      javaId   <- id.traverse(_.toJava).map(_.orNull)
       javaName <- name.traverse(_.toJava).map(_.orNull)
     } yield jsdk.GroupCreateOpts.create(javaId, javaName, addAsMember)
 }
