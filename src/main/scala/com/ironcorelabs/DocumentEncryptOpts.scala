@@ -22,12 +22,19 @@ case class DocumentEncryptOpts(
 ) {
   private[sdk] def toJava[F[_]](implicit syncF: Sync[F]): F[jsdk.DocumentEncryptOpts] =
     for {
-      javaId     <- id.traverse(_.toJava).map(_.orNull)
-      javaName   <- name.traverse(_.toJava).map(_.orNull)
+      javaId     <- id.traverse(_.toJava)
+      javaName   <- name.traverse(_.toJava)
       javaUsers  <- userGrants.traverse(_.toJava).map(_.toArray)
       javaGroups <- groupGrants.traverse(_.toJava).map(_.toArray)
-      javaPolicy <- policy.traverse(_.toJava).map(_.orNull)
-    } yield jsdk.DocumentEncryptOpts.create(javaId, javaName, grantToAuthor, javaUsers, javaGroups, javaPolicy)
+      javaPolicy <- policy.traverse(_.toJava)
+    } yield jsdk.DocumentEncryptOpts.create(
+      javaId.orNull,
+      javaName.orNull,
+      grantToAuthor,
+      javaUsers,
+      javaGroups,
+      javaPolicy.orNull
+    )
 }
 
 object DocumentEncryptOpts {
@@ -35,6 +42,13 @@ object DocumentEncryptOpts {
   def apply(userGrants: List[UserId], groupGrants: List[GroupId]): DocumentEncryptOpts =
     DocumentEncryptOpts(None, None, true, userGrants, groupGrants, None)
 
-  def policyOnly(grantToAuthor: Boolean, policyGrant: PolicyGrant): DocumentEncryptOpts =
+  def withPolicyGrants(grantToAuthor: Boolean, policyGrant: PolicyGrant): DocumentEncryptOpts =
     DocumentEncryptOpts(None, None, grantToAuthor, Nil, Nil, Some(policyGrant))
+
+  def withExplicitGrants(
+    grantToAuthor: Boolean,
+    userGrants: List[UserId],
+    groupGrants: List[GroupId]
+  ): DocumentEncryptOpts =
+    DocumentEncryptOpts(None, None, grantToAuthor, userGrants, groupGrants, None)
 }

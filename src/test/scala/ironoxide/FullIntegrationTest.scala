@@ -141,7 +141,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
       val result =
         sdk
-          .documentEncrypt(data, DocumentEncryptOpts.policyOnly(true, PolicyGrant(None, None, None, None)))
+          .documentEncrypt(data, DocumentEncryptOpts.withPolicyGrants(true, PolicyGrant(None, None, None, None)))
           .attempt
           .unsafeRunSync
           .value

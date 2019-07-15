@@ -28,9 +28,9 @@ case class PolicyGrant(
     } yield new jsdk.PolicyGrant(javaCat.orNull, javaSens.orNull, javaDataSub.orNull, javaSubstituteId.orNull)
 }
 
-case class Sensitivity(id: String) {
+case class Sensitivity(inner: String) {
   private[sdk] def toJava[F[_]](implicit syncF: Sync[F]): F[jsdk.Sensitivity] =
-    syncF.delay(jsdk.Sensitivity.validate(id))
+    syncF.delay(jsdk.Sensitivity.validate(inner))
 }
 
 object Sensitivity {
