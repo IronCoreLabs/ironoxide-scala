@@ -15,8 +15,8 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       println(
         s"""The value was not found in java.library.path. Path was '${System
              .getProperty("java.library.path")}'.
-                        |Note that the path should be to the directory where ironoxide_java is, not the actual path. If you build ironoxide_java with
-                        |`cargo build` then there should be libironoxide_java.* in ../target/debug.""".stripMargin
+           |Note that the path should be to the directory where ironoxide_java is, not the actual path. If you build ironoxide_java with
+           |`cargo build` then there should be libironoxide_java.* in ../target/debug.""".stripMargin
       );
       //There is no way we can actually continue, so I'm going to do the dirty thing to prevent misleading errors from spewing.
       System.exit(1)
@@ -35,18 +35,17 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
   )
 
   /**
-    * Convenience function to create a new DeviceContext instance from the stored off components we need. Takes the
-    * users account ID, segment ID, private device key bytes, and signing key bytes and returns a new DeviceContext
-    * instance. This helps us prove that we can create this class instance from scratch.
-    */
-  def createDeviceContext = {
+   * Convenience function to create a new DeviceContext instance from the stored off components we need. Takes the
+   * users account ID, segment ID, private device key bytes, and signing key bytes and returns a new DeviceContext
+   * instance. This helps us prove that we can create this class instance from scratch.
+   */
+  def createDeviceContext =
     DeviceContext(
       primaryTestUserId,
       primaryTestUserSegmentId,
       primaryTestUserPrivateDeviceKeyBytes,
       primaryTestUserSigningKeysBytes
     )
-  }
 
   "Group Create" should {
     "Create valid group" in {
@@ -109,9 +108,9 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
         .unsafeRunSync
         .value
 
-      result.changed.getUsers should have length 1
+      (result.changed.getUsers should have).length(1)
       result.changed.getUsers.head.getId shouldEqual primaryTestUserId.id
-      result.changed.getGroups should have length 1
+      (result.changed.getGroups should have).length(1)
       result.changed.getGroups.head.getId shouldEqual validGroupUUID
     }
 
@@ -124,17 +123,39 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
         sdk.documentEncrypt(data, DocumentEncryptOpts(List(notAUser), List(notAGroup))).attempt.unsafeRunSync.value
 
       // what was valid should go through
-      result.changed.getUsers should have length 1
+      (result.changed.getUsers should have).length(1)
       result.changed.getUsers.head.getId shouldBe primaryTestUserId.id
-      result.changed.getGroups should have length 0
+      (result.changed.getGroups should have).length(0)
 
       // the invalid stuff should have errored
-      result.errors.getUsers should have length 1
+      (result.errors.getUsers should have).length(1)
       result.errors.getUsers.head.getId.getId shouldBe notAUser.id
       result.errors.getUsers.head.getErr shouldBe "User could not be found"
-      result.errors.getGroups should have length 1
+      (result.errors.getGroups should have).length(1)
       result.errors.getGroups.head.getId.getId shouldBe notAGroup.id
       result.errors.getGroups.head.getErr shouldBe "Group could not be found"
+    }
+
+    "return expected success/failures for policy grant" in {
+      val sdk = IronSdkSync[IO](createDeviceContext)
+      val data = ByteVector(List(1, 2, 3).map(_.toByte))
+      val result =
+        sdk
+          .documentEncrypt(data, DocumentEncryptOpts.withPolicyGrants(true, PolicyGrant(None, None, None, None)))
+          .attempt
+          .unsafeRunSync
+          .value
+
+      // what was valid should go through
+      (result.changed.getUsers should have).length(1)
+      result.changed.getUsers.head.getId shouldBe primaryTestUserId.id
+      (result.changed.getGroups should have).length(0)
+
+      // the invalid stuff should have errored
+      (result.errors.getUsers should have).length(0)
+      (result.errors.getGroups should have).length(1)
+      result.errors.getGroups.head.getId.getId shouldBe s"data_recovery_${primaryTestUserId.id}"
+      result.errors.getGroups.head.getErr should include("Policy refers to unknown user or group")
     }
   }
 }

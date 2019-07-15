@@ -6,13 +6,13 @@ import com.ironcorelabs.sdk.{FailedResult, SucceededResult}
 
 // unsure about delete/finalize
 case class DocumentEncryptResult(
-    id: DocumentId,
-    name: Option[DocumentName],
-    encryptedData: ByteVector,
-    created: ju.Date,
-    lastUpdated: ju.Date,
-    changed: SucceededResult,
-    errors: FailedResult
+  id: DocumentId,
+  name: Option[DocumentName],
+  encryptedData: ByteVector,
+  created: ju.Date,
+  lastUpdated: ju.Date,
+  changed: SucceededResult,
+  errors: FailedResult
 )(val underlyingBytes: Array[Byte])
 
 object DocumentEncryptResult {
