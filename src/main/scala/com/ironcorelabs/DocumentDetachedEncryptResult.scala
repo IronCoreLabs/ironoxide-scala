@@ -13,16 +13,16 @@ case class DocumentDetachedEncryptResult(
 )(val underlyingDataBytes: Array[Byte], underlyingDekBytes: Array[Byte])
 
 object DocumentDetachedEncryptResult {
-  def apply(eer: com.ironcorelabs.sdk.DocumentDetachedEncryptResult): DocumentDetachedEncryptResult = {
-    val underlyingDataBytes = eer.getEncryptedData
-    val underlyingDekBytes = eer.getEncryptedDeks
+  def apply(dder: com.ironcorelabs.sdk.DocumentDetachedEncryptResult): DocumentDetachedEncryptResult = {
+    val underlyingDataBytes = dder.getEncryptedData
+    val underlyingDekBytes = dder.getEncryptedDeks
 
     DocumentDetachedEncryptResult(
-      DocumentId(eer.getId.getId),
-      ByteVector.view(eer.getEncryptedData),
-      ByteVector.view(eer.getEncryptedDeks),
-      eer.getChanged,
-      eer.getErrors
+      DocumentId(dder.getId.getId),
+      ByteVector.view(dder.getEncryptedData),
+      ByteVector.view(dder.getEncryptedDeks),
+      dder.getChanged,
+      dder.getErrors
     )(underlyingDataBytes, underlyingDekBytes)
   }
 }
