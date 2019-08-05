@@ -8,6 +8,11 @@ trait IronSdk[F[_]] {
   def documentEncrypt(data: Array[Byte], options: DocumentEncryptOpts): F[DocumentEncryptResult] =
     documentEncrypt(ByteVector.view(data), options)
 
+  def documentEdekEncrypt(data: ByteVector, options: DocumentEncryptOpts): F[DocumentDetachedEncryptResult]
+
+  def documentEdekEncrypt(data: Array[Byte], options: DocumentEncryptOpts): F[DocumentDetachedEncryptResult] =
+    documentEdekEncrypt(ByteVector.view(data), options)
+
   def documentDecrypt(encryptedBytes: ByteVector): F[DocumentDecryptResult]
 
   def documentDecrypt(encryptedBytes: Array[Byte]): F[DocumentDecryptResult] =

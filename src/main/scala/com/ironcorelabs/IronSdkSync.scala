@@ -24,6 +24,17 @@ case class IronSdkSync[F[_]](deviceContext: DeviceContext)(implicit syncF: Sync[
       )
     } yield DocumentEncryptResult(result)
 
+  def documentEdekEncrypt(data: ByteVector, options: DocumentEncryptOpts): F[DocumentDetachedEncryptResult] =
+    for {
+      javaOpts <- options.toJava
+      result <- underlying.map(
+        _.documentEdekEncrypt(
+          data.toArray,
+          javaOpts
+        )
+      )
+    } yield DocumentDetachedEncryptResult(result)
+
   def documentDecrypt(encryptedBytes: ByteVector): F[DocumentDecryptResult] =
     underlying.map(_.documentDecrypt(encryptedBytes.toArray)).map(DocumentDecryptResult.apply)
 }
