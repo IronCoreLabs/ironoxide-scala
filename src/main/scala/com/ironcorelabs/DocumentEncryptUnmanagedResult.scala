@@ -4,7 +4,7 @@ import scodec.bits.ByteVector
 import com.ironcorelabs.sdk.{FailedResult, SucceededResult}
 
 // unsure about delete/finalize
-case class DocumentDetachedEncryptResult(
+case class DocumentEncryptUnmanagedResult(
   id: DocumentId,
   encryptedData: ByteVector,
   encryptedDeks: ByteVector,
@@ -12,12 +12,12 @@ case class DocumentDetachedEncryptResult(
   errors: FailedResult
 )(val underlyingDataBytes: Array[Byte], underlyingDekBytes: Array[Byte])
 
-object DocumentDetachedEncryptResult {
-  def apply(dder: com.ironcorelabs.sdk.DocumentDetachedEncryptResult): DocumentDetachedEncryptResult = {
+object DocumentEncryptUnmanagedResult {
+  def apply(dder: com.ironcorelabs.sdk.DocumentEncryptUnmanagedResult): DocumentEncryptUnmanagedResult = {
     val underlyingDataBytes = dder.getEncryptedData
     val underlyingDekBytes = dder.getEncryptedDeks
 
-    DocumentDetachedEncryptResult(
+    DocumentEncryptUnmanagedResult(
       DocumentId(dder.getId.getId),
       ByteVector.view(dder.getEncryptedData),
       ByteVector.view(dder.getEncryptedDeks),

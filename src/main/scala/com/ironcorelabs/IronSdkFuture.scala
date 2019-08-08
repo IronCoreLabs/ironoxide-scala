@@ -13,9 +13,6 @@ case class IronSdkFuture(deviceContext: DeviceContext) extends IronSdk[Future] {
   def documentEncrypt(data: ByteVector, options: DocumentEncryptOpts): Future[DocumentEncryptResult] =
     underlying.documentEncrypt(data, options).unsafeToFuture
 
-  def documentEdekEncrypt(data: ByteVector, options: DocumentEncryptOpts): Future[DocumentDetachedEncryptResult] =
-    underlying.documentEdekEncrypt(data, options).unsafeToFuture
-
   def documentDecrypt(encryptedBytes: ByteVector): Future[DocumentDecryptResult] =
     underlying.documentDecrypt(encryptedBytes).unsafeToFuture
 }
