@@ -158,4 +158,93 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       result.errors.getGroups.head.getErr should include("Policy refers to unknown user or group")
     }
   }
+
+  "Document detached encrypt" should {
+    "succeed for good name and data" in {
+      val sdk = IronSdkSync[IO](createDeviceContext)
+      val data = ByteVector(List(1, 2, 3).map(_.toByte))
+      val result = sdk.advanced.documentEncryptUnmanaged(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
+
+      result.id.id.length shouldBe 32
+      result.encryptedDeks.isEmpty shouldBe false
+    }
+
+    "grant to specified groups" in {
+      val sdk = IronSdkSync[IO](createDeviceContext)
+      val data = ByteVector(List(1, 2, 3).map(_.toByte))
+
+      val name = GroupName("a name")
+      val validGroupUUID = java.util.UUID.randomUUID.toString
+      val id = GroupId(validGroupUUID)
+
+      // create a valid group then immediately encrypt to it
+      val result = sdk
+        .groupCreate(GroupCreateOpts(id, name))
+        .flatMap(
+          groupResult => sdk.advanced.documentEncryptUnmanaged(data, DocumentEncryptOpts(Nil, List(groupResult.id)))
+        )
+        .attempt
+        .unsafeRunSync
+        .value
+
+      (result.changed.getUsers should have).length(1)
+      result.changed.getUsers.head.getId shouldEqual primaryTestUserId.id
+      (result.changed.getGroups should have).length(1)
+      result.changed.getGroups.head.getId shouldEqual validGroupUUID
+      result.encryptedDeks.isEmpty shouldBe false
+    }
+
+    "return failures for bad groups" in {
+      val sdk = IronSdkSync[IO](createDeviceContext)
+      val data = ByteVector(List(1, 2, 3).map(_.toByte))
+      val notAUser = UserId("also-definitely-not-a-user")
+      val notAGroup = GroupId("definitely-not-generated")
+      val result =
+        sdk.advanced
+          .documentEncryptUnmanaged(data, DocumentEncryptOpts(List(notAUser), List(notAGroup)))
+          .attempt
+          .unsafeRunSync
+          .value
+
+      // what was valid should go through
+      (result.changed.getUsers should have).length(1)
+      result.changed.getUsers.head.getId shouldBe primaryTestUserId.id
+      (result.changed.getGroups should have).length(0)
+      result.encryptedDeks.isEmpty shouldBe false
+
+      // the invalid stuff should have errored
+      (result.errors.getUsers should have).length(1)
+      result.errors.getUsers.head.getId.getId shouldBe notAUser.id
+      result.errors.getUsers.head.getErr shouldBe "User could not be found"
+      (result.errors.getGroups should have).length(1)
+      result.errors.getGroups.head.getId.getId shouldBe notAGroup.id
+      result.errors.getGroups.head.getErr shouldBe "Group could not be found"
+    }
+
+    "return expected success/failures for policy grant" in {
+      val sdk = IronSdkSync[IO](createDeviceContext)
+      val data = ByteVector(List(1, 2, 3).map(_.toByte))
+      val result =
+        sdk.advanced
+          .documentEncryptUnmanaged(
+            data,
+            DocumentEncryptOpts.withPolicyGrants(true, PolicyGrant(None, None, None, None))
+          )
+          .attempt
+          .unsafeRunSync
+          .value
+
+      // what was valid should go through
+      (result.changed.getUsers should have).length(1)
+      result.changed.getUsers.head.getId shouldBe primaryTestUserId.id
+      (result.changed.getGroups should have).length(0)
+      result.encryptedDeks.isEmpty shouldBe false
+
+      // the invalid stuff should have errored
+      (result.errors.getUsers should have).length(0)
+      (result.errors.getGroups should have).length(1)
+      result.errors.getGroups.head.getId.getId shouldBe s"data_recovery_${primaryTestUserId.id}"
+      result.errors.getGroups.head.getErr should include("Policy refers to unknown user or group")
+    }
+  }
 }
