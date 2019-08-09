@@ -14,4 +14,6 @@ trait IronSdk[F[_]] {
     documentDecrypt(ByteVector.view(encryptedBytes))
 
   def groupCreate(options: GroupCreateOpts): F[GroupMetaResult]
+
+  def advanced: IronSdkAdvanced[F]
 }

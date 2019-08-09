@@ -161,9 +161,9 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "Document detached encrypt" should {
     "succeed for good name and data" in {
-      val sdkAdvanced = IronSdkAdvancedSync[IO](createDeviceContext)
+      val sdk = IronSdkSync[IO](createDeviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
-      val result = sdkAdvanced.documentEncryptUnmanaged(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
+      val result = sdk.advanced.documentEncryptUnmanaged(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
 
       result.id.id.length shouldBe 32
       result.encryptedDeks.isEmpty shouldBe false
@@ -171,7 +171,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
     "grant to specified groups" in {
       val sdk = IronSdkSync[IO](createDeviceContext)
-      val sdkAdvanced = IronSdkAdvancedSync[IO](createDeviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
 
       val name = GroupName("a name")
@@ -182,7 +181,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       val result = sdk
         .groupCreate(GroupCreateOpts(id, name))
         .flatMap(
-          groupResult => sdkAdvanced.documentEncryptUnmanaged(data, DocumentEncryptOpts(Nil, List(groupResult.id)))
+          groupResult => sdk.advanced.documentEncryptUnmanaged(data, DocumentEncryptOpts(Nil, List(groupResult.id)))
         )
         .attempt
         .unsafeRunSync
@@ -196,12 +195,12 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
 
     "return failures for bad groups" in {
-      val sdkAdvanced = IronSdkAdvancedSync[IO](createDeviceContext)
+      val sdk = IronSdkSync[IO](createDeviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
       val notAUser = UserId("also-definitely-not-a-user")
       val notAGroup = GroupId("definitely-not-generated")
       val result =
-        sdkAdvanced
+        sdk.advanced
           .documentEncryptUnmanaged(data, DocumentEncryptOpts(List(notAUser), List(notAGroup)))
           .attempt
           .unsafeRunSync
@@ -223,10 +222,10 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
 
     "return expected success/failures for policy grant" in {
-      val sdkAdvanced = IronSdkAdvancedSync[IO](createDeviceContext)
+      val sdk = IronSdkSync[IO](createDeviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
       val result =
-        sdkAdvanced
+        sdk.advanced
           .documentEncryptUnmanaged(
             data,
             DocumentEncryptOpts.withPolicyGrants(true, PolicyGrant(None, None, None, None))
