@@ -25,7 +25,7 @@ lazy val root = (project in file(".")).settings(
   ),
   libraryDependencies ++= Seq(
     "org.scodec"       %% "scodec-bits"    % "1.1.12",
-    "com.ironcorelabs" % "ironoxide-java"  % "0.4.5-SNAPSHOT",
+    "com.ironcorelabs" % "ironoxide-java"  % "0.4.5-SNAPSHOT", // TODO: Remember to depend on released version
     "org.typelevel"    %% "cats-effect"    % "1.3.1",
     "com.ironcorelabs" %% "cats-scalatest" % "2.4.0" % Test,
     "org.scalatest"    %% "scalatest"      % "3.0.5" % Test
