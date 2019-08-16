@@ -159,7 +159,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
   }
 
-  "Document detached encrypt" should {
+  "Document detached encrypt/decrypt" should {
     "succeed for good name and data" in {
       val sdk = IronSdkSync[IO](createDeviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
@@ -167,6 +167,21 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
       result.id.id.length shouldBe 32
       result.encryptedDeks.isEmpty shouldBe false
+    }
+
+    "roundtrip for single level transform for good data" in {
+      val sdk = IronSdkSync[IO](createDeviceContext)
+      val data = ByteVector(List(10, 2, 3).map(_.toByte))
+      val result = sdk.advanced.documentEncryptUnmanaged(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
+
+      result.id.id.length shouldBe 32
+
+      //Now try to decrypt
+      val decrypt =
+        sdk.advanced.documentDecryptUnmanaged(result.encryptedData, result.encryptedDeks).attempt.unsafeRunSync.value
+
+      decrypt.id.id.length shouldBe 32
+      decrypt.decryptedData shouldBe data
     }
 
     "grant to specified groups" in {
