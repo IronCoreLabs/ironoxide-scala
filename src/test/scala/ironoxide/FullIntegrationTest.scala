@@ -160,31 +160,24 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
   }
 
   "Document detached encrypt/decrypt" should {
-    "succeed for good name and data" in {
-      val sdk = IronSdkSync[IO](createDeviceContext)
-      val data = ByteVector(List(1, 2, 3).map(_.toByte))
-      val result = sdk.advanced.documentEncryptUnmanaged(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
-
-      result.id.id.length shouldBe 32
-      result.encryptedDeks.isEmpty shouldBe false
-    }
-
-    "roundtrip for single level transform for good data" in {
+    "roundtrip through a user" in {
       val sdk = IronSdkSync[IO](createDeviceContext)
       val data = ByteVector(List(10, 2, 3).map(_.toByte))
       val result = sdk.advanced.documentEncryptUnmanaged(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
 
       result.id.id.length shouldBe 32
+      result.encryptedDeks.isEmpty shouldBe false
 
-      //Now try to decrypt
       val decrypt =
         sdk.advanced.documentDecryptUnmanaged(result.encryptedData, result.encryptedDeks).attempt.unsafeRunSync.value
 
-      decrypt.id.id.length shouldBe 32
+      decrypt.id.id shouldBe result.id.id
       decrypt.decryptedData shouldBe data
+      decrypt.accessVia.id shouldBe primaryTestUserId.id
+      decrypt.accessVia shouldBe a[UserId]
     }
 
-    "grant to specified groups" in {
+    "roundtrip through a group" in {
       val sdk = IronSdkSync[IO](createDeviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
 
@@ -196,17 +189,25 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       val result = sdk
         .groupCreate(GroupCreateOpts(id, name))
         .flatMap(
-          groupResult => sdk.advanced.documentEncryptUnmanaged(data, DocumentEncryptOpts(Nil, List(groupResult.id)))
+          groupResult =>
+            sdk.advanced
+              .documentEncryptUnmanaged(data, DocumentEncryptOpts.withExplicitGrants(false, Nil, List(groupResult.id)))
         )
         .attempt
         .unsafeRunSync
         .value
 
-      (result.changed.getUsers should have).length(1)
-      result.changed.getUsers.head.getId shouldEqual primaryTestUserId.id
       (result.changed.getGroups should have).length(1)
       result.changed.getGroups.head.getId shouldEqual validGroupUUID
       result.encryptedDeks.isEmpty shouldBe false
+
+      val decrypt =
+        sdk.advanced.documentDecryptUnmanaged(result.encryptedData, result.encryptedDeks).attempt.unsafeRunSync.value
+
+      decrypt.id.id shouldBe result.id.id
+      decrypt.decryptedData shouldBe data
+      decrypt.accessVia.id shouldBe id.id
+      decrypt.accessVia shouldBe a[GroupId]
     }
 
     "return failures for bad groups" in {

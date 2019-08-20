@@ -4,6 +4,7 @@ import scodec.bits.ByteVector
 
 case class DocumentDecryptUnmanagedResult(
   id: DocumentId,
+  accessVia: UserOrGroupId,
   decryptedData: ByteVector
 )(val underlyingBytes: Array[Byte])
 
@@ -13,6 +14,7 @@ object DocumentDecryptUnmanagedResult {
 
     DocumentDecryptUnmanagedResult(
       DocumentId(ddr.getId.getId),
+      UserOrGroupId(ddr.getAccessViaUserOrGroup()),
       ByteVector.view(underlyingBytes)
     )(underlyingBytes)
   }
