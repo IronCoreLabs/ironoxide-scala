@@ -159,10 +159,10 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
   }
 
-  "Document detached encrypt/decrypt" should {
+  "Document unmanaged encrypt/decrypt" should {
     "roundtrip through a user" in {
       val sdk = IronSdkSync[IO](createDeviceContext)
-      val data = ByteVector(List(10, 2, 3).map(_.toByte))
+      val data = ByteVector(List(1, 2, 3).map(_.toByte))
       val result = sdk.advanced.documentEncryptUnmanaged(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
 
       result.id.id.length shouldBe 32
