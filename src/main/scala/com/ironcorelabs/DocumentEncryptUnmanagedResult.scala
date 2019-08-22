@@ -6,11 +6,11 @@ import com.ironcorelabs.sdk.{FailedResult, SucceededResult}
 // unsure about delete/finalize
 case class DocumentEncryptUnmanagedResult(
   id: DocumentId,
-  encryptedData: ByteVector,
-  encryptedDeks: ByteVector,
+  encryptedData: EncryptedData,
+  encryptedDeks: EncryptedDeks,
   changed: SucceededResult,
   errors: FailedResult
-)(val underlyingDataBytes: Array[Byte], underlyingDekBytes: Array[Byte])
+)
 
 object DocumentEncryptUnmanagedResult {
   def apply(dder: com.ironcorelabs.sdk.DocumentEncryptUnmanagedResult): DocumentEncryptUnmanagedResult = {
@@ -19,10 +19,14 @@ object DocumentEncryptUnmanagedResult {
 
     DocumentEncryptUnmanagedResult(
       DocumentId(dder.getId.getId),
-      ByteVector.view(dder.getEncryptedData),
-      ByteVector.view(dder.getEncryptedDeks),
+      EncryptedData(ByteVector.view(dder.getEncryptedData))(underlyingDataBytes),
+      EncryptedDeks(ByteVector.view(dder.getEncryptedDeks))(underlyingDekBytes),
       dder.getChanged,
       dder.getErrors
-    )(underlyingDataBytes, underlyingDekBytes)
+    )
   }
 }
+
+case class EncryptedData(bytes: ByteVector)(val underlyingBytes: Array[Byte])
+
+case class EncryptedDeks(bytes: ByteVector)(val underlyingBytes: Array[Byte])

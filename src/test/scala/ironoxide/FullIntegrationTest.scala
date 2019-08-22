@@ -166,7 +166,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       val result = sdk.advanced.documentEncryptUnmanaged(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
 
       result.id.id.length shouldBe 32
-      result.encryptedDeks.isEmpty shouldBe false
+      result.encryptedDeks.bytes.isEmpty shouldBe false
 
       val decrypt =
         sdk.advanced.documentDecryptUnmanaged(result.encryptedData, result.encryptedDeks).attempt.unsafeRunSync.value
@@ -199,7 +199,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
       (result.changed.getGroups should have).length(1)
       result.changed.getGroups.head.getId shouldEqual validGroupUUID
-      result.encryptedDeks.isEmpty shouldBe false
+      result.encryptedDeks.bytes.isEmpty shouldBe false
 
       val decrypt =
         sdk.advanced.documentDecryptUnmanaged(result.encryptedData, result.encryptedDeks).attempt.unsafeRunSync.value
@@ -226,7 +226,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       (result.changed.getUsers should have).length(1)
       result.changed.getUsers.head.getId shouldBe primaryTestUserId.id
       (result.changed.getGroups should have).length(0)
-      result.encryptedDeks.isEmpty shouldBe false
+      result.encryptedDeks.bytes.isEmpty shouldBe false
 
       // the invalid stuff should have errored
       (result.errors.getUsers should have).length(1)
@@ -254,7 +254,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       (result.changed.getUsers should have).length(1)
       result.changed.getUsers.head.getId shouldBe primaryTestUserId.id
       (result.changed.getGroups should have).length(0)
-      result.encryptedDeks.isEmpty shouldBe false
+      result.encryptedDeks.bytes.isEmpty shouldBe false
 
       // the invalid stuff should have errored
       (result.errors.getUsers should have).length(0)

@@ -11,8 +11,8 @@ case class IronSdkAdvancedFuture(deviceContext: DeviceContext) extends IronSdkAd
     underlying.documentEncryptUnmanaged(data, options).unsafeToFuture
 
   def documentDecryptUnmanaged(
-    encryptedData: ByteVector,
-    encryptedDeks: ByteVector
+    encryptedData: EncryptedData,
+    encryptedDeks: EncryptedDeks
   ): Future[DocumentDecryptUnmanagedResult] =
     underlying.documentDecryptUnmanaged(encryptedData, encryptedDeks).unsafeToFuture
 
