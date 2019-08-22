@@ -17,4 +17,12 @@ case class IronSdkAdvancedSync[F[_]](deviceContext: DeviceContext)(implicit sync
         )
       )
     } yield DocumentEncryptUnmanagedResult(result)
+
+  def documentDecryptUnmanaged(
+    encryptedData: EncryptedData,
+    encryptedDeks: EncryptedDeks
+  ): F[DocumentDecryptUnmanagedResult] =
+    underlying
+      .map(_.documentDecryptUnmanaged(encryptedData.underlyingBytes, encryptedDeks.underlyingBytes))
+      .map(DocumentDecryptUnmanagedResult.apply)
 }

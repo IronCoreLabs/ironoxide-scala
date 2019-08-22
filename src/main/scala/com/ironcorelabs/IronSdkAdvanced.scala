@@ -7,4 +7,19 @@ trait IronSdkAdvanced[F[_]] {
 
   def documentEncryptUnmanaged(data: Array[Byte], options: DocumentEncryptOpts): F[DocumentEncryptUnmanagedResult] =
     documentEncryptUnmanaged(ByteVector.view(data), options)
+
+  def documentDecryptUnmanaged(
+    encryptedData: EncryptedData,
+    encryptedDeks: EncryptedDeks
+  ): F[DocumentDecryptUnmanagedResult]
+
+  def documentDecryptUnmanaged(
+    encryptedData: Array[Byte],
+    encryptedDeks: Array[Byte]
+  ): F[DocumentDecryptUnmanagedResult] =
+    documentDecryptUnmanaged(
+      EncryptedData(ByteVector.view(encryptedData))(encryptedData),
+      EncryptedDeks(ByteVector.view(encryptedDeks))(encryptedDeks)
+    )
+
 }
