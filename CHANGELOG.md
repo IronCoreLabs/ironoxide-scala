@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.3.3
+
+Allow advanced encrypt/decrypt with unmanaged edeks.
+
 ## 0.3.1
 
 Consume latest ironoxide which allows safe concurrent access for all APIs.
