@@ -12,7 +12,7 @@ case class DocumentId(id: String) {
 }
 
 /**
- * Document name type. Validates that the provided document name isn't an empty string
+ * Name of a document. Validates that the provided document name isn't an empty string.
  */
 case class DocumentName(name: String) {
   private[sdk] def toJava[F[_]](implicit syncF: Sync[F]): F[jsdk.DocumentName] =

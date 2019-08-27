@@ -5,13 +5,15 @@ import java.{util => ju}
 import com.ironcorelabs.sdk.{FailedResult, SucceededResult}
 
 // unsure about delete/finalize
-/** Result for encrypt operations.
- * @param id Unique (within the segment) id of the document
+/**
+ * Result for encrypt operations.
+ *
+ * @param id Unique (within the segment) ID of the document
  * @param name Non-unique document name
  * @param encryptedData Bytes of encrypted document content
  * @param created When the document was created
  * @param lastUpdated When the document was last updated
- * @param changed The users and groups whose access was successfully changed
+ * @param changed The users and groups whose access was successfully modified
  * @param errors The users and groups whose access failed to be modified
  */
 case class DocumentEncryptResult(

@@ -6,6 +6,11 @@ import com.ironcorelabs.{sdk => jsdk}
 
 /**
  * Account's device context. Needed to initialize the SDK with a set of device keys.
+ *
+ * @param id ID of a user
+ * @param segmentId ID of a segment
+ * @param privateKey Asymmetric private key
+ * @param deviceSigningKeyPair Signing keypair specific to a device
  */
 case class DeviceContext(
   id: UserId,
