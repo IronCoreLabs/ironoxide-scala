@@ -4,7 +4,7 @@ import cats.effect.Sync
 import com.ironcorelabs.{sdk => jsdk}
 
 /**
- * ID of a User or a Group.
+ * ID of a user or a group.
  */
 sealed trait UserOrGroupId {
   def id: String
