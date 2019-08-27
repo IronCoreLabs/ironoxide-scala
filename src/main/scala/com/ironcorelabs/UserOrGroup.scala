@@ -3,6 +3,8 @@ package com.ironcorelabs.scala.sdk
 import cats.effect.Sync
 import com.ironcorelabs.{sdk => jsdk}
 
+/** ID of a user or a group
+ */
 sealed trait UserOrGroupId {
   def id: String
 }
@@ -38,7 +40,7 @@ object GroupId {
 }
 
 /**
- * Group's user-assigned name. (non-unique)
+ * Group's user-assigned name (non-unique)
  */
 case class GroupName(name: String) {
   private[sdk] def toJava[F[_]](implicit syncF: Sync[F]): F[jsdk.GroupName] =

@@ -5,6 +5,12 @@ import java.{util => ju}
 
 /**
  * Result of decrypting a document. Includes minimal metadata as well as the decrypted bytes.
+ *
+ * @param id Unique (within the segment) id of the document
+ * @param name Non-unique document name
+ * @param decryptedData The bytes of the decrypted document
+ * @param created When the document was created
+ * @param lastUpdated When the document was last updated
  */
 case class DocumentDecryptResult(
   id: DocumentId,

@@ -6,11 +6,12 @@ import com.ironcorelabs.{sdk => jsdk}
 
 /**
  * Options for encrypting a document.
- * @param id            - unique id of a document. If none, the server will assign an id
- * @param name          - human readable name of the document. Does not need to be unique
- * @param grantToAuthor - Flag determining whether to encrypt to the calling user or not. If set to false at least one value must be present in the `grant` lists.
- * @param userGrants    - list of user ids that will be granted access to the document
- * @param groupGrants   - list of group ids that will be granted access to the document
+ * @param id Unique id of a document. If none, the server will assign an id
+ * @param name Human readable name of the document. Does not need to be unique
+ * @param grantToAuthor Flag determining whether to encrypt to the calling user or not. If set to false, at least one value must be present in the `userGrants` or `groupGrants`.
+ * @param userGrants List of user ids that will be granted access to the document
+ * @param groupGrants List of group ids that will be granted access to the document
+ * @param policy The policy labels which will be evaluated to determine grants
  */
 case class DocumentEncryptOpts(
   id: Option[DocumentId],
