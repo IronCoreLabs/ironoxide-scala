@@ -9,10 +9,10 @@ import cats.implicits._
  * The triple (`category`, `sensitivity`, `dataSubject`) maps to a single policy rule.
  * Each policy rule may generate any number of users/groups.
  *
- * @param category Optional description of the type of data
- * @param sensitivity Optional description of how restricted access to the data should be
- * @param dataSubject Optional description of with whom the data is associated
- * @param substituteId Optional UserId that will replace `%USER%` in a matched policy rule
+ * @param category optional description of the type of data
+ * @param sensitivity optional description of how restricted access to the data should be
+ * @param dataSubject optional description of with whom the data is associated
+ * @param substituteId optional UserId that will replace `%USER%` in a matched policy rule
  */
 case class PolicyGrant(
   category: Option[Category],

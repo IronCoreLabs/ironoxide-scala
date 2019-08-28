@@ -5,9 +5,9 @@ import scodec.bits.ByteVector
 /**
  * Result of decrypting an unmanaged document. Includes the document's ID and the decrypted bytes.
  *
- * @param id Unique (within the segment) ID of the document
- * @param accessVia User/Group that granted access to the encrypted data. More specifically, this is the user/group associated with the EDEK that was chosen and transformed by the webservice.
- * @param decryptedData The bytes of the decrypted document
+ * @param id unique (within the segment) ID of the document
+ * @param accessVia user/group that granted access to the encrypted data. More specifically, this is the user/group associated with the EDEK that was chosen and transformed by the webservice.
+ * @param decryptedData bytes of the decrypted document
  */
 case class DocumentDecryptUnmanagedResult(
   id: DocumentId,

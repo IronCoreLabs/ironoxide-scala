@@ -7,11 +7,11 @@ import com.ironcorelabs.sdk.{FailedResult, SucceededResult}
 /**
  * Result for unmanaged encrypt operations.
  *
- * @param id Unique (within the segment) ID of the document
- * @param encryptedData Bytes of encrypted document content
- * @param encryptedDeks Bytes of encrypted document encryption keys (EDEKs)
- * @param changed The users and groups whose access was successfully modified
- * @param errors The users and groups whose access failed to be modified
+ * @param id unique (within the segment) ID of the document
+ * @param encryptedData bytes of encrypted document content
+ * @param encryptedDeks bytes of encrypted document encryption keys (EDEKs)
+ * @param changed the users and groups whose access was successfully modified
+ * @param errors the users and groups whose access failed to be modified
  */
 case class DocumentEncryptUnmanagedResult(
   id: DocumentId,

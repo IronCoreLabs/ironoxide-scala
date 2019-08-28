@@ -8,13 +8,13 @@ import com.ironcorelabs.sdk.{FailedResult, SucceededResult}
 /**
  * Result for encrypt operations.
  *
- * @param id Unique (within the segment) ID of the document
- * @param name Non-unique document name
- * @param encryptedData Bytes of encrypted document content
- * @param created When the document was created
- * @param lastUpdated When the document was last updated
- * @param changed The users and groups whose access was successfully modified
- * @param errors The users and groups whose access failed to be modified
+ * @param id unique (within the segment) ID of the document
+ * @param name non-unique document name
+ * @param encryptedData bytes of encrypted document content
+ * @param created timestamp for document creation
+ * @param lastUpdated timestamp for latest document update
+ * @param changed the users and groups whose access was successfully modified
+ * @param errors the users and groups whose access failed to be modified
  */
 case class DocumentEncryptResult(
   id: DocumentId,

@@ -7,9 +7,9 @@ import com.ironcorelabs.{sdk => jsdk}
 /**
  * Options for group creation.
  *
- * @param id Unique ID of a group within a segment. If None, the server will assign an ID.
- * @param name Human readable name of the group. Does not need to be unique.
- * @param addAsMember Whether the creating user should be added to the group's membership (in addition to being a group admin)
+ * @param id unique ID of a group within a segment. If None, the server will assign an ID.
+ * @param name human readable name of the group. Does not need to be unique.
+ * @param addAsMember whether the creating user should be added to the group's membership (in addition to being a group admin)
  */
 case class GroupCreateOpts(
   id: Option[GroupId],
