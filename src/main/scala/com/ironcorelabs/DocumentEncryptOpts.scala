@@ -6,7 +6,7 @@ import com.ironcorelabs.{sdk => jsdk}
 
 /**
  * Options for encrypting a document.
- * If `grantToAuthor` is set to false, at least one value must be present in the `userGrants` or `groupGrants`.
+ * If `grantToAuthor` is set to false, at least one value must be present in the `userGrants` or `groupGrants` lists.
  *
  * @param id unique ID of a document. If none, the server will assign an ID
  * @param name unencrypted, human readable name of the document. Does not need to be unique
