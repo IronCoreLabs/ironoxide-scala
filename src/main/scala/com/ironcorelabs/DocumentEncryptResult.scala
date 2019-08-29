@@ -33,7 +33,7 @@ object DocumentEncryptResult {
     DocumentEncryptResult(
       DocumentId(der.getId.getId),
       DocumentName.fromJava(der.getName),
-      ByteVector.view(der.getEncryptedData),
+      ByteVector.view(underlyingBytes),
       der.getCreated,
       der.getLastUpdated,
       der.getChanged,

@@ -28,8 +28,8 @@ object DocumentEncryptUnmanagedResult {
 
     DocumentEncryptUnmanagedResult(
       DocumentId(dder.getId.getId),
-      EncryptedData(ByteVector.view(dder.getEncryptedData))(underlyingDataBytes),
-      EncryptedDeks(ByteVector.view(dder.getEncryptedDeks))(underlyingDekBytes),
+      EncryptedData(ByteVector.view(underlyingDataBytes))(underlyingDataBytes),
+      EncryptedDeks(ByteVector.view(underlyingDekBytes))(underlyingDekBytes),
       dder.getChanged,
       dder.getErrors
     )
