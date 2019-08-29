@@ -34,6 +34,11 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       .decode("1crhZ4PELDOkzEqX9QbcMQzEDH6dOAr6zybHWryp2pwFhmxRx2EcYD6nUtgVm3OwfaJvGhmIViuj88wV/+duEg==")
   )
 
+  def clearBytes(a: Array[Byte]) =
+    for (i <- 0.until(a.length)) {
+      a(i) = 0.toByte
+    }
+
   /**
    * Convenience function to create a new DeviceContext instance from the stored off components we need. Takes the
    * users account ID, segment ID, private device key bytes, and signing key bytes and returns a new DeviceContext
@@ -163,18 +168,32 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     "roundtrip through a user" in {
       val sdk = IronSdkSync[IO](createDeviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
-      val result = sdk.advanced.documentEncryptUnmanaged(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
+      val encryptResult = sdk.advanced.documentEncryptUnmanaged(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
 
-      result.id.id.length shouldBe 32
-      result.encryptedDeks.bytes.isEmpty shouldBe false
+      encryptResult.id.id.length shouldBe 32
+      encryptResult.encryptedDeks.bytes.isEmpty shouldBe false
 
       val decrypt =
-        sdk.advanced.documentDecryptUnmanaged(result.encryptedData, result.encryptedDeks).attempt.unsafeRunSync.value
+        sdk.advanced
+          .documentDecryptUnmanaged(encryptResult.encryptedData, encryptResult.encryptedDeks)
+          .attempt
+          .unsafeRunSync
+          .value
 
-      decrypt.id.id shouldBe result.id.id
+      decrypt.id.id shouldBe encryptResult.id.id
       decrypt.decryptedData shouldBe data
       decrypt.accessVia.id shouldBe primaryTestUserId.id
       decrypt.accessVia shouldBe a[UserId]
+
+      //Now let's clear byte arrays and verify that they clear in the ByteVector
+      clearBytes(decrypt.underlyingBytes)
+      decrypt.decryptedData.dropWhile(_ == 0.toByte) shouldBe ByteVector.empty
+
+      clearBytes(encryptResult.encryptedData.underlyingBytes)
+      clearBytes(encryptResult.encryptedDeks.underlyingBytes)
+      encryptResult.encryptedData.bytes.dropWhile(_ == 0.toByte) shouldBe ByteVector.empty
+      encryptResult.encryptedDeks.bytes.dropWhile(_ == 0.toByte) shouldBe ByteVector.empty
+
     }
 
     "roundtrip through a group" in {
