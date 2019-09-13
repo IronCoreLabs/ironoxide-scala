@@ -2,7 +2,6 @@ package com.ironcorelabs.scala.sdk
 
 import scodec.bits.ByteVector
 import java.{util => ju}
-import com.ironcorelabs.sdk.{FailedResult, SucceededResult}
 
 // unsure about delete/finalize
 /**
@@ -22,8 +21,8 @@ case class DocumentEncryptResult(
   encryptedData: ByteVector,
   created: ju.Date,
   lastUpdated: ju.Date,
-  changed: SucceededResult,
-  errors: FailedResult
+  changed: List[UserOrGroupId],
+  errors: List[GroupOrUserAccessError]
 )(val underlyingBytes: Array[Byte])
 
 object DocumentEncryptResult {
@@ -33,11 +32,25 @@ object DocumentEncryptResult {
     DocumentEncryptResult(
       DocumentId(der.getId.getId),
       DocumentName.fromJava(der.getName),
-      ByteVector.view(underlyingBytes),
+      underlyingBytes,
       der.getCreated,
       der.getLastUpdated,
-      der.getChanged,
-      der.getErrors
-    )(underlyingBytes)
+      succeededResultToScala(der.getChanged),
+      failedResultToScala(der.getErrors)
+    )
   }
+
+  def apply(
+    id: DocumentId,
+    name: Option[DocumentName],
+    encryptedData: Array[Byte],
+    created: ju.Date,
+    lastUpdated: ju.Date,
+    changed: List[UserOrGroupId],
+    errors: List[GroupOrUserAccessError]
+  ): DocumentEncryptResult =
+    DocumentEncryptResult(id, name, ByteVector.view(encryptedData), created, lastUpdated, changed, errors)(
+      encryptedData
+    )
+
 }
