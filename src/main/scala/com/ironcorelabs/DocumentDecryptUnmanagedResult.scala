@@ -22,8 +22,8 @@ object DocumentDecryptUnmanagedResult {
     DocumentDecryptUnmanagedResult(
       DocumentId(ddr.getId.getId),
       UserOrGroupId(ddr.getAccessViaUserOrGroup()),
-      ByteVector.view(underlyingBytes)
-    )(underlyingBytes)
+      underlyingBytes
+    )
   }
 
   def apply(

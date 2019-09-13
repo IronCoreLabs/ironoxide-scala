@@ -29,8 +29,8 @@ object DocumentEncryptUnmanagedResult {
       DocumentId(dder.getId.getId),
       EncryptedData(underlyingDataBytes),
       EncryptedDeks(underlyingDekBytes),
-      SucceededResult(dder.getChanged),
-      FailedResult(dder.getErrors)
+      succeededResultToScala(dder.getChanged),
+      failedResultToScala(dder.getErrors)
     )
   }
 }

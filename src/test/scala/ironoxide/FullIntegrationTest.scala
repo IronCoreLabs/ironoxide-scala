@@ -144,7 +144,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
       result.changed shouldBe List(primaryTestUserId)
       val missingGroupId = s"data_recovery_${primaryTestUserId.id}"
-      result.errors should contain theSameElementsAs List(
+      result.errors shouldBe List(
         GroupOrUserAccessError(
           GroupId(missingGroupId),
           s"Policy refers to unknown user or group ''$missingGroupId' [group]'"
@@ -252,7 +252,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
       result.changed shouldBe List(primaryTestUserId)
       val missingGroupId = s"data_recovery_${primaryTestUserId.id}"
-      result.errors should contain theSameElementsAs List(
+      result.errors shouldBe List(
         GroupOrUserAccessError(
           GroupId(missingGroupId),
           s"Policy refers to unknown user or group ''$missingGroupId' [group]'"

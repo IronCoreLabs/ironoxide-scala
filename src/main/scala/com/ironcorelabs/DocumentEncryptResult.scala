@@ -35,8 +35,8 @@ object DocumentEncryptResult {
       underlyingBytes,
       der.getCreated,
       der.getLastUpdated,
-      SucceededResult(der.getChanged),
-      FailedResult(der.getErrors)
+      succeededResultToScala(der.getChanged),
+      failedResultToScala(der.getErrors)
     )
   }
 
