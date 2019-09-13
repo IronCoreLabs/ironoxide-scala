@@ -25,4 +25,11 @@ object DocumentDecryptUnmanagedResult {
       ByteVector.view(underlyingBytes)
     )(underlyingBytes)
   }
+
+  def apply(
+    id: DocumentId,
+    accessVia: UserOrGroupId,
+    decryptedData: Array[Byte]
+  ): DocumentDecryptUnmanagedResult =
+    DocumentDecryptUnmanagedResult(id, accessVia, ByteVector.view(decryptedData))(decryptedData)
 }
