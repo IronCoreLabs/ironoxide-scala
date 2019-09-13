@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.4.0
+
+- Cats effect 2.0.0
+- Scala 2.12.9
+- Update `changed` and `errors` on `DocumentEncryptUnmanagedResult` to be scala friendly types.
+- Update `changed` and `errors` on `DocumentEncryptResult` to be scala friendly types.
+- Add helper methods that take `Array[Byte]` instead of `ByteVector` to keep people from not sharing underlying bytes.
+
+## 0.3.4
+
+- Documentation overhaul
+- Fix bug around sharing of underlying `Array[Byte]`
+
 ## 0.3.3
 
 Allow advanced encrypt/decrypt with unmanaged edeks.
