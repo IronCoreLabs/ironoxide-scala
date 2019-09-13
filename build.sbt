@@ -1,5 +1,5 @@
 ThisBuild / organization := "com.ironcorelabs"
-ThisBuild / scalaVersion := "2.12.8"
+ThisBuild / scalaVersion := "2.12.9"
 
 lazy val root = (project in file(".")).settings(
   name := "ironoxide-scala",
@@ -26,7 +26,7 @@ lazy val root = (project in file(".")).settings(
   libraryDependencies ++= Seq(
     "org.scodec"       %% "scodec-bits"    % "1.1.12",
     "com.ironcorelabs" % "ironoxide-java"  % "0.4.5",
-    "org.typelevel"    %% "cats-effect"    % "1.3.1",
+    "org.typelevel"    %% "cats-effect"    % "2.0.0",
     "com.ironcorelabs" %% "cats-scalatest" % "2.4.0" % Test,
     "org.scalatest"    %% "scalatest"      % "3.0.5" % Test
   )

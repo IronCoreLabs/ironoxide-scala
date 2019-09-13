@@ -1,7 +1,6 @@
 package com.ironcorelabs.scala.sdk
 
 import scodec.bits.ByteVector
-import com.ironcorelabs.sdk.{FailedResult, SucceededResult}
 
 // unsure about delete/finalize
 /**
@@ -17,8 +16,8 @@ case class DocumentEncryptUnmanagedResult(
   id: DocumentId,
   encryptedData: EncryptedData,
   encryptedDeks: EncryptedDeks,
-  changed: SucceededResult,
-  errors: FailedResult
+  changed: List[UserOrGroupId],
+  errors: List[GroupOrUserAccessError]
 )
 
 object DocumentEncryptUnmanagedResult {
@@ -28,10 +27,10 @@ object DocumentEncryptUnmanagedResult {
 
     DocumentEncryptUnmanagedResult(
       DocumentId(dder.getId.getId),
-      EncryptedData(ByteVector.view(underlyingDataBytes))(underlyingDataBytes),
-      EncryptedDeks(ByteVector.view(underlyingDekBytes))(underlyingDekBytes),
-      dder.getChanged,
-      dder.getErrors
+      EncryptedData(underlyingDataBytes),
+      EncryptedDeks(underlyingDekBytes),
+      SucceededResult(dder.getChanged),
+      FailedResult(dder.getErrors)
     )
   }
 }
@@ -40,6 +39,14 @@ object DocumentEncryptUnmanagedResult {
  */
 case class EncryptedData(bytes: ByteVector)(val underlyingBytes: Array[Byte])
 
+object EncryptedData {
+  def apply(bytes: Array[Byte]): EncryptedData = EncryptedData(ByteVector.view(bytes))(bytes)
+}
+
 /** Bytes of encrypted document encryption keys (EDEKs).
  */
 case class EncryptedDeks(bytes: ByteVector)(val underlyingBytes: Array[Byte])
+
+object EncryptedDeks {
+  def apply(bytes: Array[Byte]): EncryptedDeks = EncryptedDeks(ByteVector.view(bytes))(bytes)
+}

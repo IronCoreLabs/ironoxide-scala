@@ -1,11 +1,11 @@
 language: scala
 scala:
-- 2.12.8
+  - 2.12.9
 
 cache:
   directories:
-  - "$HOME/.ivy2/cache"
-  - "$HOME/.sbt/boot/"
+    - "$HOME/.cache/coursier"
+    - "$HOME/.sbt/boot/"
 
 script:
-- sbt scalafmtCheckAll scalastyle test:compile
+  - sbt scalafmtCheckAll scalastyle test:compile

@@ -56,8 +56,8 @@ trait IronSdkAdvanced[F[_]] {
     encryptedDeks: Array[Byte]
   ): F[DocumentDecryptUnmanagedResult] =
     documentDecryptUnmanaged(
-      EncryptedData(ByteVector.view(encryptedData))(encryptedData),
-      EncryptedDeks(ByteVector.view(encryptedDeks))(encryptedDeks)
+      EncryptedData(encryptedData),
+      EncryptedDeks(encryptedDeks)
     )
 
 }

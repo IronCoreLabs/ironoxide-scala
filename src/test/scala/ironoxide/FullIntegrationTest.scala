@@ -113,10 +113,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
         .unsafeRunSync
         .value
 
-      (result.changed.getUsers should have).length(1)
-      result.changed.getUsers.head.getId shouldEqual primaryTestUserId.id
-      (result.changed.getGroups should have).length(1)
-      result.changed.getGroups.head.getId shouldEqual validGroupUUID
+      result.changed shouldBe List(primaryTestUserId, id)
     }
 
     "return failures for bad groups" in {
@@ -128,17 +125,11 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
         sdk.documentEncrypt(data, DocumentEncryptOpts(List(notAUser), List(notAGroup))).attempt.unsafeRunSync.value
 
       // what was valid should go through
-      (result.changed.getUsers should have).length(1)
-      result.changed.getUsers.head.getId shouldBe primaryTestUserId.id
-      (result.changed.getGroups should have).length(0)
-
-      // the invalid stuff should have errored
-      (result.errors.getUsers should have).length(1)
-      result.errors.getUsers.head.getId.getId shouldBe notAUser.id
-      result.errors.getUsers.head.getErr shouldBe "User could not be found"
-      (result.errors.getGroups should have).length(1)
-      result.errors.getGroups.head.getId.getId shouldBe notAGroup.id
-      result.errors.getGroups.head.getErr shouldBe "Group could not be found"
+      result.changed shouldBe List(primaryTestUserId)
+      result.errors should contain theSameElementsAs List(
+        GroupOrUserAccessError(notAUser, "User could not be found"),
+        GroupOrUserAccessError(notAGroup, "Group could not be found")
+      )
     }
 
     "return expected success/failures for policy grant" in {
@@ -151,16 +142,14 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
           .unsafeRunSync
           .value
 
-      // what was valid should go through
-      (result.changed.getUsers should have).length(1)
-      result.changed.getUsers.head.getId shouldBe primaryTestUserId.id
-      (result.changed.getGroups should have).length(0)
-
-      // the invalid stuff should have errored
-      (result.errors.getUsers should have).length(0)
-      (result.errors.getGroups should have).length(1)
-      result.errors.getGroups.head.getId.getId shouldBe s"data_recovery_${primaryTestUserId.id}"
-      result.errors.getGroups.head.getErr should include("Policy refers to unknown user or group")
+      result.changed shouldBe List(primaryTestUserId)
+      val missingGroupId = s"data_recovery_${primaryTestUserId.id}"
+      result.errors should contain theSameElementsAs List(
+        GroupOrUserAccessError(
+          GroupId(missingGroupId),
+          s"Policy refers to unknown user or group ''$missingGroupId' [group]'"
+        )
+      )
     }
   }
 
@@ -216,8 +205,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
         .unsafeRunSync
         .value
 
-      (result.changed.getGroups should have).length(1)
-      result.changed.getGroups.head.getId shouldEqual validGroupUUID
+      result.changed shouldBe List(id)
       result.encryptedDeks.bytes.isEmpty shouldBe false
 
       val decrypt =
@@ -241,19 +229,12 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
           .unsafeRunSync
           .value
 
-      // what was valid should go through
-      (result.changed.getUsers should have).length(1)
-      result.changed.getUsers.head.getId shouldBe primaryTestUserId.id
-      (result.changed.getGroups should have).length(0)
+      result.changed shouldBe List(primaryTestUserId)
       result.encryptedDeks.bytes.isEmpty shouldBe false
-
-      // the invalid stuff should have errored
-      (result.errors.getUsers should have).length(1)
-      result.errors.getUsers.head.getId.getId shouldBe notAUser.id
-      result.errors.getUsers.head.getErr shouldBe "User could not be found"
-      (result.errors.getGroups should have).length(1)
-      result.errors.getGroups.head.getId.getId shouldBe notAGroup.id
-      result.errors.getGroups.head.getErr shouldBe "Group could not be found"
+      result.errors should contain theSameElementsAs List(
+        GroupOrUserAccessError(notAUser, "User could not be found"),
+        GroupOrUserAccessError(notAGroup, "Group could not be found")
+      )
     }
 
     "return expected success/failures for policy grant" in {
@@ -269,17 +250,15 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
           .unsafeRunSync
           .value
 
-      // what was valid should go through
-      (result.changed.getUsers should have).length(1)
-      result.changed.getUsers.head.getId shouldBe primaryTestUserId.id
-      (result.changed.getGroups should have).length(0)
+      result.changed shouldBe List(primaryTestUserId)
+      val missingGroupId = s"data_recovery_${primaryTestUserId.id}"
+      result.errors should contain theSameElementsAs List(
+        GroupOrUserAccessError(
+          GroupId(missingGroupId),
+          s"Policy refers to unknown user or group ''$missingGroupId' [group]'"
+        )
+      )
       result.encryptedDeks.bytes.isEmpty shouldBe false
-
-      // the invalid stuff should have errored
-      (result.errors.getUsers should have).length(0)
-      (result.errors.getGroups should have).length(1)
-      result.errors.getGroups.head.getId.getId shouldBe s"data_recovery_${primaryTestUserId.id}"
-      result.errors.getGroups.head.getErr should include("Policy refers to unknown user or group")
     }
   }
 }
