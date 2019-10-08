@@ -50,10 +50,23 @@ trait IronSdk[F[_]] {
    */
   def groupCreate(options: GroupCreateOpts): F[GroupMetaResult]
 
+  def userCreate(jwt: String, password: String, options: UserCreateOpts): F[UserCreateKeyPair]
+
   /**
    * Accesses advanced SDK operations.
    *
    * @return an instance of the [[IronSdkAdvanced]]
    */
   def advanced: IronSdkAdvanced[F]
+}
+
+object IronSdk {
+  import cats.effect.Sync
+  import cats.implicits._
+  def userCreate[F[_]](jwt: String, password: String, options: UserCreateOpts)(
+    implicit syncF: Sync[F]
+  ): F[UserCreateKeyPair] =
+    options.toJava.map { javaOpts =>
+      UserCreateKeyPair(com.ironcorelabs.sdk.IronSdk.userCreate(jwt, password, javaOpts))
+    }
 }

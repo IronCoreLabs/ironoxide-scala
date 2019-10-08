@@ -27,5 +27,8 @@ case class IronSdkSync[F[_]](deviceContext: DeviceContext)(implicit syncF: Sync[
   def documentDecrypt(encryptedBytes: ByteVector): F[DocumentDecryptResult] =
     underlying.map(_.documentDecrypt(encryptedBytes.toArray)).map(DocumentDecryptResult.apply)
 
+  def userCreate(jwt: String, password: String, options: UserCreateOpts): F[UserCreateKeyPair] =
+    IronSdk.userCreate(jwt, password, options)
+
   def advanced: IronSdkAdvanced[F] = IronSdkAdvancedSync(deviceContext)
 }

@@ -17,4 +17,7 @@ case class IronSdkFuture(deviceContext: DeviceContext) extends IronSdk[Future] {
     underlying.documentDecrypt(encryptedBytes).unsafeToFuture
 
   def advanced: IronSdkAdvanced[Future] = IronSdkAdvancedFuture(deviceContext)
+
+  def userCreate(jwt: String, password: String, options: UserCreateOpts): Future[UserCreateKeyPair] =
+    underlying.userCreate(jwt, password, options).unsafeToFuture
 }
