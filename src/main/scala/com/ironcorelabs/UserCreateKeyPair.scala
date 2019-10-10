@@ -2,16 +2,14 @@ package com.ironcorelabs.scala.sdk
 
 import com.ironcorelabs.{sdk => jsdk}
 
-case class UserCreateKeyPair(
-  userEncryptedMasterKey: PrivateKey,
+case class UserCreateResult(
   userPublicKey: PublicKey,
   needsRotation: Boolean
 )
 
-object UserCreateKeyPair {
-  def apply(uckp: jsdk.UserCreateKeyPair): UserCreateKeyPair =
-    UserCreateKeyPair(
-      PrivateKey(uckp.getUserEncryptedMasterKey),
+object UserCreateResult {
+  def apply(uckp: jsdk.UserCreateResult): UserCreateResult =
+    UserCreateResult(
       PublicKey(uckp.getUserPublicKey.asBytes),
       uckp.getNeedsRotation
     )

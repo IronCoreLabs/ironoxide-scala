@@ -25,7 +25,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
   // Hardcoded user info for these tests because they don't depend on the number of things created for the given user, just
   // the values created.
   val primaryTestUserId = UserId("b29c1ee7-ede9-4401-855a-3a78a34a2759")
-  val primaryTestUserPassword = java.util.UUID.randomUUID().toString()
 
   var primaryTestUserSegmentId = 2013L
   var primaryTestUserPrivateDeviceKeyBytes = PrivateKey(

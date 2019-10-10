@@ -46,11 +46,19 @@ trait IronSdk[F[_]] {
   /**
    * Creates a group. The creating user will become a group admin.
    *
-   * @param options group creation options. Use `new GroupGreateOpts()` for defaults
+   * @param options group creation options. Use `new GroupCreateOpts()` for defaults
    */
   def groupCreate(options: GroupCreateOpts): F[GroupMetaResult]
 
-  def userCreate(jwt: String, password: String, options: UserCreateOpts): F[UserCreateKeyPair]
+  /**
+   * Create a new user within the IronCore system.
+   *
+   * @param jwt valid IronCore or Auth0 JWT
+   * @param password password used to encrypt and escrow the user's private master key
+   * @param options user creation options. Use `new UserCreateOpts()` for defaults
+   * @return Newly generated [[UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys. The escrowed keys are unlocked by the provided password.
+   */
+  def userCreate(jwt: String, password: String, options: UserCreateOpts): F[UserCreateResult]
 
   /**
    * Accesses advanced SDK operations.
@@ -63,10 +71,19 @@ trait IronSdk[F[_]] {
 object IronSdk {
   import cats.effect.Sync
   import cats.implicits._
+
+  /**
+   * Create a new user within the IronCore system.
+   *
+   * @param jwt Valid IronCore or Auth0 JWT
+   * @param password Password used to encrypt and escrow the user's private master key
+   * @param options user creation options. Use `new UserCreateOpts()` for defaults
+   * @return Newly generated [[UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys. The escrowed keys are unlocked by the provided password.
+   */
   def userCreate[F[_]](jwt: String, password: String, options: UserCreateOpts)(
     implicit syncF: Sync[F]
-  ): F[UserCreateKeyPair] =
+  ): F[UserCreateResult] =
     options.toJava.map { javaOpts =>
-      UserCreateKeyPair(com.ironcorelabs.sdk.IronSdk.userCreate(jwt, password, javaOpts))
+      UserCreateResult(com.ironcorelabs.sdk.IronSdk.userCreate(jwt, password, javaOpts))
     }
 }
