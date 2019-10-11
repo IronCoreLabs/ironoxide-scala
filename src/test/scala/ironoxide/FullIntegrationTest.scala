@@ -26,13 +26,15 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
   // the values created.
   val primaryTestUserId = UserId("b29c1ee7-ede9-4401-855a-3a78a34a2759")
   var primaryTestUserSegmentId = 2013L
-  var primaryTestUserPrivateDeviceKeyBytes = PrivateKey(
+  var primaryTestUserDevicePrivateKeyBytes = PrivateKey(
     java.util.Base64.getDecoder.decode("Svt+Z8lfQ8g3FwqeduMyf7X0R1Pbyt9PJXkked7pwuU=")
   )
-  var primaryTestUserSigningKeysBytes = DeviceSigningKeyPair(
+  var primaryTestUserSigningPrivateKeyBytes = DeviceSigningKeyPair(
     java.util.Base64.getDecoder
       .decode("1crhZ4PELDOkzEqX9QbcMQzEDH6dOAr6zybHWryp2pwFhmxRx2EcYD6nUtgVm3OwfaJvGhmIViuj88wV/+duEg==")
   )
+
+  val validDeviceId = DeviceId(1)
 
   def clearBytes(a: Array[Byte]) =
     for (i <- 0.until(a.length)) {
@@ -46,10 +48,11 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
    */
   def createDeviceContext =
     DeviceContext(
+      validDeviceId,
       primaryTestUserId,
       primaryTestUserSegmentId,
-      primaryTestUserPrivateDeviceKeyBytes,
-      primaryTestUserSigningKeysBytes
+      primaryTestUserDevicePrivateKeyBytes,
+      primaryTestUserSigningPrivateKeyBytes
     )
 
   "Group Create" should {
