@@ -27,4 +27,20 @@ case class DeviceContext(
       javaDPK      <- devicePrivateKey.toJava
       javaSPK      <- signingPrivateKey.toJava
     } yield new jsdk.DeviceContext(javaDeviceId, javaUserId, segmentId, javaDPK, javaSPK)
+
+  def toJsonString[F[_]](implicit syncF: Sync[F]): F[String] =
+    toJava[F].map(_.toJsonString)
+}
+
+object DeviceContext {
+  def fromJsonString(jsonString: String): DeviceContext = {
+    val javaContext = jsdk.DeviceContext.fromJsonString(jsonString)
+    DeviceContext(
+      DeviceId(javaContext.getDeviceId.getId),
+      UserId(javaContext.getAccountId.getId),
+      javaContext.getSegmentId,
+      PrivateKey(javaContext.getDevicePrivateKey.asBytes),
+      DeviceSigningKeyPair(javaContext.getSigningPrivateKey.asBytes)
+    )
+  }
 }

@@ -72,6 +72,28 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
   }
 
+  "DeviceContext" should {
+    "succeed roundtrip serialize/deserialize" in {
+      val context = createDeviceContext
+      val jsonString = context.toJsonString[IO].unsafeRunSync
+      val deserialized = DeviceContext.fromJsonString(jsonString)
+      val deviceId = context.deviceId.id
+      val accountId = context.userId.id
+      val segmentId = context.segmentId
+      val signingPrivateKeyBase64 = context.signingPrivateKey.bytes.toBase64
+      val devicePrivateKeyBase64 = context.devicePrivateKey.bytes.toBase64
+      val expectJson =
+        s"""{"deviceId":$deviceId,"accountId":"$accountId","segmentId":$segmentId,"signingPrivateKey":"$signingPrivateKeyBase64","devicePrivateKey":"$devicePrivateKeyBase64"}"""
+
+      jsonString shouldBe expectJson
+      context.deviceId.id shouldBe deserialized.deviceId.id
+      context.devicePrivateKey.bytes shouldBe deserialized.devicePrivateKey.bytes
+      context.segmentId shouldBe deserialized.segmentId
+      context.signingPrivateKey.bytes shouldBe deserialized.signingPrivateKey.bytes
+      context.userId.id shouldBe deserialized.userId.id
+    }
+  }
+
   "Document encrypt/decrypt" should {
     "succeed for good name and data" in {
       val sdk = IronSdkSync[IO](createDeviceContext)
