@@ -25,6 +25,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
   // Hardcoded user info for these tests because they don't depend on the number of things created for the given user, just
   // the values created.
   val primaryTestUserId = UserId("b29c1ee7-ede9-4401-855a-3a78a34a2759")
+
   var primaryTestUserSegmentId = 2013L
   var primaryTestUserDevicePrivateKeyBytes = PrivateKey(
     java.util.Base64.getDecoder.decode("Svt+Z8lfQ8g3FwqeduMyf7X0R1Pbyt9PJXkked7pwuU=")
@@ -54,6 +55,15 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       primaryTestUserDevicePrivateKeyBytes,
       primaryTestUserSigningPrivateKeyBytes
     )
+
+  "User Create" should {
+    "fail for invalid jwt" in {
+      val jwt =
+        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTA3NzE4MjMsImlhdCI6MTU1MDc3MTcwMywia2lkIjo1NTEsInBpZCI6MTAxMiwic2lkIjoidGVzdC1zZWdtZW50Iiwic3ViIjoiYTAzYjhlNTYtMTVkMi00Y2Y3LTk0MWYtYzYwMWU1NzUxNjNiIn0.vlqt0da5ltA2dYEK9i_pfRxPd3K2uexnkbAbzmbjW65XNcWlBOIbcdmmQLnSIZkRyTORD3DLXOIPYbGlApaTCR5WbaR3oPiSsR9IqdhgMEZxCcarqGg7b_zzwTP98fDcALGZNGsJL1hIrl3EEXdPoYjsOJ5LMF1H57NZiteBDAsm1zfXgOgCtvCdt7PQFSCpM5GyE3und9VnEgjtcQ6HAZYdutqjI79vaTnjt2A1X38pbHcnfvSanzJoeU3szwtBiVlB3cfXbROvBC7Kz8KvbWJzImJcJiRT-KyI4kk3l8wAs2FUjSRco8AQ1nIX21QHlRI0vVr_vdOd_pTXOUU51g"
+      val resp = IronSdk.userCreate[IO](jwt, "foo", UserCreateOpts(true)).attempt.unsafeRunSync
+      resp shouldBe 'left
+    }
+  }
 
   "Group Create" should {
     "Create valid group" in {
