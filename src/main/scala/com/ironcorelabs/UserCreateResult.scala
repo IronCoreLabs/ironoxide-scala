@@ -8,9 +8,9 @@ case class UserCreateResult(
 )
 
 object UserCreateResult {
-  def apply(uckp: jsdk.UserCreateResult): UserCreateResult =
+  def apply(ucr: jsdk.UserCreateResult): UserCreateResult =
     UserCreateResult(
-      PublicKey(uckp.getUserPublicKey.asBytes),
-      uckp.getNeedsRotation
+      PublicKey(ucr.getUserPublicKey.asBytes),
+      ucr.getNeedsRotation
     )
 }
