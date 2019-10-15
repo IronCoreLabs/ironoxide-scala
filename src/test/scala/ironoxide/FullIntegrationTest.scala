@@ -2,11 +2,11 @@ package ironoxide
 
 import scodec.bits.ByteVector
 import com.ironcorelabs.scala.sdk._
-import org.scalatest.{AsyncWordSpec, Matchers}
+import org.scalatest.{AsyncWordSpec, Matchers, ParallelTestExecution}
 import cats.scalatest.EitherValues
 import cats.effect.IO
 
-class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues {
+class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues with ParallelTestExecution {
   try {
     java.lang.System.loadLibrary("ironoxide_java")
   } catch {
