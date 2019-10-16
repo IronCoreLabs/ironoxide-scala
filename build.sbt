@@ -27,8 +27,8 @@ lazy val root = (project in file(".")).settings(
     "org.scodec"       %% "scodec-bits"    % "1.1.12",
     "com.ironcorelabs" % "ironoxide-java"  % "0.6.0",
     "org.typelevel"    %% "cats-effect"    % "2.0.0",
-    "com.ironcorelabs" %% "cats-scalatest" % "2.4.0" % Test,
-    "org.scalatest"    %% "scalatest"      % "3.0.5" % Test
+    "com.ironcorelabs" %% "cats-scalatest" % "2.4.1" % Test,
+    "org.scalatest"    %% "scalatest"      % "3.0.8" % Test
   )
 )
 

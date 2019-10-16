@@ -11,14 +11,14 @@ import com.ironcorelabs.{sdk => jsdk}
  * @param userId ID of a user
  * @param segmentId ID of a segment
  * @param devicePrivateKey asymmetric private key
- * @param signingPrivateKey signing keypair specific to a device
+ * @param signingPrivateKey signing private key specific to a device
  */
 case class DeviceContext(
   deviceId: DeviceId,
   userId: UserId,
   segmentId: Long,
   devicePrivateKey: PrivateKey,
-  signingPrivateKey: DeviceSigningKeyPair
+  signingPrivateKey: DeviceSigningPrivateKey
 ) {
   private[sdk] def toJava[F[_]](implicit syncF: Sync[F]): F[jsdk.DeviceContext] =
     for {
@@ -33,14 +33,14 @@ case class DeviceContext(
 }
 
 object DeviceContext {
-  def fromJsonString(jsonString: String): DeviceContext = {
-    val javaContext = jsdk.DeviceContext.fromJsonString(jsonString)
-    DeviceContext(
-      DeviceId(javaContext.getDeviceId.getId),
-      UserId(javaContext.getAccountId.getId),
-      javaContext.getSegmentId,
-      PrivateKey(javaContext.getDevicePrivateKey.asBytes),
-      DeviceSigningKeyPair(javaContext.getSigningPrivateKey.asBytes)
-    )
-  }
+  def fromJsonString[F[_]](jsonString: String)(implicit syncF: Sync[F]): F[DeviceContext] =
+    syncF.delay(jsdk.DeviceContext.fromJsonString(jsonString)).map { javaContext =>
+      DeviceContext(
+        DeviceId(javaContext.getDeviceId.getId),
+        UserId(javaContext.getAccountId.getId),
+        javaContext.getSegmentId,
+        PrivateKey(javaContext.getDevicePrivateKey.asBytes),
+        DeviceSigningPrivateKey(javaContext.getSigningPrivateKey.asBytes)
+      )
+    }
 }
