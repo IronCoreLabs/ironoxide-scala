@@ -25,32 +25,28 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
   // Hardcoded user info for these tests because they don't depend on the number of things created for the given user, just
   // the values created.
   val primaryTestUserId = UserId("b29c1ee7-ede9-4401-855a-3a78a34a2759")
-
-  var primaryTestUserSegmentId = 2013L
-  var primaryTestUserPrivateDeviceKeyBytes = PrivateKey(
+  val primaryTestUserSegmentId = 2013L
+  val primaryTestUserDevicePrivateKeyBytes = PrivateKey(
     java.util.Base64.getDecoder.decode("Svt+Z8lfQ8g3FwqeduMyf7X0R1Pbyt9PJXkked7pwuU=")
   )
-  var primaryTestUserSigningKeysBytes = DeviceSigningKeyPair(
+  val primaryTestUserSigningPrivateKeyBytes = DeviceSigningPrivateKey(
     java.util.Base64.getDecoder
       .decode("1crhZ4PELDOkzEqX9QbcMQzEDH6dOAr6zybHWryp2pwFhmxRx2EcYD6nUtgVm3OwfaJvGhmIViuj88wV/+duEg==")
   )
+  val validDeviceId = DeviceId(1)
 
   def clearBytes(a: Array[Byte]) =
     for (i <- 0.until(a.length)) {
       a(i) = 0.toByte
     }
 
-  /**
-   * Convenience function to create a new DeviceContext instance from the stored off components we need. Takes the
-   * users account ID, segment ID, private device key bytes, and signing key bytes and returns a new DeviceContext
-   * instance. This helps us prove that we can create this class instance from scratch.
-   */
-  def createDeviceContext =
+  val deviceContext =
     DeviceContext(
+      validDeviceId,
       primaryTestUserId,
       primaryTestUserSegmentId,
-      primaryTestUserPrivateDeviceKeyBytes,
-      primaryTestUserSigningKeysBytes
+      primaryTestUserDevicePrivateKeyBytes,
+      primaryTestUserSigningPrivateKeyBytes
     )
 
   "User Create" should {
@@ -64,7 +60,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "Group Create" should {
     "Create valid group" in {
-      val sdk = IronSdkSync[IO](createDeviceContext)
+      val sdk = IronSdkSync[IO](deviceContext)
       val name = GroupName("a name")
       // this is all under the same user now, so this may not be a real test if it already exists, though it won't fail
       val id = GroupId(java.util.UUID.randomUUID.toString)
@@ -79,9 +75,34 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
   }
 
+  "DeviceContext" should {
+    "succeed roundtrip serialize/deserialize" in {
+      val jsonString = deviceContext.toJsonString[IO].unsafeRunSync
+      val deserialized = DeviceContext.fromJsonString[IO](jsonString).unsafeRunSync
+      val deviceId = deviceContext.deviceId.id
+      val accountId = deviceContext.userId.id
+      val segmentId = deviceContext.segmentId
+      val signingPrivateKeyBase64 = deviceContext.signingPrivateKey.bytes.toBase64
+      val devicePrivateKeyBase64 = deviceContext.devicePrivateKey.bytes.toBase64
+      val expectJson =
+        s"""{"deviceId":$deviceId,"accountId":"$accountId","segmentId":$segmentId,"signingPrivateKey":"$signingPrivateKeyBase64","devicePrivateKey":"$devicePrivateKeyBase64"}"""
+
+      jsonString shouldBe expectJson
+      deviceContext.deviceId.id shouldBe deserialized.deviceId.id
+      deviceContext.devicePrivateKey.bytes shouldBe deserialized.devicePrivateKey.bytes
+      deviceContext.segmentId shouldBe deserialized.segmentId
+      deviceContext.signingPrivateKey.bytes shouldBe deserialized.signingPrivateKey.bytes
+      deviceContext.userId.id shouldBe deserialized.userId.id
+    }
+    "fail for invalid json" in {
+      val resp = DeviceContext.fromJsonString[IO]("aaa").attempt.unsafeRunSync
+      resp shouldBe 'left
+    }
+  }
+
   "Document encrypt/decrypt" should {
     "succeed for good name and data" in {
-      val sdk = IronSdkSync[IO](createDeviceContext)
+      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
       val result = sdk.documentEncrypt(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
 
@@ -90,7 +111,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
 
     "roundtrip for single level transform for no name and good data" in {
-      val sdk = IronSdkSync[IO](createDeviceContext)
+      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(10, 2, 3).map(_.toByte))
       val result = sdk.documentEncrypt(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
 
@@ -108,7 +129,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
 
     "grant to specified groups" in {
-      val sdk = IronSdkSync[IO](createDeviceContext)
+      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
 
       val name = GroupName("a name")
@@ -127,7 +148,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
 
     "return failures for bad groups" in {
-      val sdk = IronSdkSync[IO](createDeviceContext)
+      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
       val notAUser = UserId("also-definitely-not-a-user")
       val notAGroup = GroupId("definitely-not-generated")
@@ -143,7 +164,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
 
     "return expected success/failures for policy grant" in {
-      val sdk = IronSdkSync[IO](createDeviceContext)
+      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
       val result =
         sdk
@@ -165,7 +186,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "Document unmanaged encrypt/decrypt" should {
     "roundtrip through a user" in {
-      val sdk = IronSdkSync[IO](createDeviceContext)
+      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
       val encryptResult = sdk.advanced.documentEncryptUnmanaged(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
 
@@ -196,7 +217,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
 
     "roundtrip through a group" in {
-      val sdk = IronSdkSync[IO](createDeviceContext)
+      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
 
       val name = GroupName("a name")
@@ -228,7 +249,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
 
     "return failures for bad groups" in {
-      val sdk = IronSdkSync[IO](createDeviceContext)
+      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
       val notAUser = UserId("also-definitely-not-a-user")
       val notAGroup = GroupId("definitely-not-generated")
@@ -248,7 +269,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
 
     "return expected success/failures for policy grant" in {
-      val sdk = IronSdkSync[IO](createDeviceContext)
+      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
       val result =
         sdk.advanced
