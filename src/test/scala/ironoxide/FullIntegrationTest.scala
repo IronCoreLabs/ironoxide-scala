@@ -72,6 +72,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       groupCreateResult.isMember shouldBe true
       groupCreateResult.created should not be null
       groupCreateResult.lastUpdated shouldBe groupCreateResult.created
+      groupCreateResult.needsRotation shouldBe Some(false)
     }
   }
 
