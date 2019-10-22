@@ -4,7 +4,7 @@ import com.ironcorelabs.{sdk => jsdk}
 import java.{util => ju}
 
 /**
- * Abbreviated group meta information.
+ * Group information
  */
 case class GroupGetResult(
   id: GroupId,
