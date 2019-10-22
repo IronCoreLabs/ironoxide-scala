@@ -50,6 +50,9 @@ trait IronSdk[F[_]] {
    */
   def groupCreate(options: GroupCreateOpts): F[GroupMetaResult]
 
+  //TODO: docs
+  def groupGetMetadata(id: GroupId): F[GroupGetResult]
+
   /**
    * Create a new user within the IronCore system.
    *

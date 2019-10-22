@@ -10,6 +10,8 @@ case class IronSdkFuture(deviceContext: DeviceContext) extends IronSdk[Future] {
   def groupCreate(options: GroupCreateOpts): Future[GroupMetaResult] =
     underlying.groupCreate(options).unsafeToFuture
 
+  def groupGetMetadata(id: GroupId): Future[GroupGetResult] = underlying.groupGetMetadata(id).unsafeToFuture
+
   def documentEncrypt(data: ByteVector, options: DocumentEncryptOpts): Future[DocumentEncryptResult] =
     underlying.documentEncrypt(data, options).unsafeToFuture
 

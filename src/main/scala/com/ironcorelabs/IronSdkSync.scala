@@ -13,6 +13,12 @@ case class IronSdkSync[F[_]](deviceContext: DeviceContext)(implicit syncF: Sync[
       result   <- underlying.map(_.groupCreate(javaOpts))
     } yield GroupMetaResult(result)
 
+  def groupGetMetadata(id: GroupId): F[GroupGetResult] =
+    for {
+      javaId <- id.toJava
+      result <- underlying.map(_.groupGetMetadata(javaId))
+    } yield GroupGetResult(result)
+
   def documentEncrypt(data: ByteVector, options: DocumentEncryptOpts): F[DocumentEncryptResult] =
     for {
       javaOpts <- options.toJava

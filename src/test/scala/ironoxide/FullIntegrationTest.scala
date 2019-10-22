@@ -34,6 +34,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       .decode("1crhZ4PELDOkzEqX9QbcMQzEDH6dOAr6zybHWryp2pwFhmxRx2EcYD6nUtgVm3OwfaJvGhmIViuj88wV/+duEg==")
   )
   val validDeviceId = DeviceId(1)
+  val validGroupId = GroupId(java.util.UUID.randomUUID.toString)
 
   def clearBytes(a: Array[Byte]) =
     for (i <- 0.until(a.length)) {
@@ -62,9 +63,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     "Create valid group" in {
       val sdk = IronSdkSync[IO](deviceContext)
       val name = GroupName("a name")
-      // this is all under the same user now, so this may not be a real test if it already exists, though it won't fail
-      val id = GroupId(java.util.UUID.randomUUID.toString)
-      val groupCreateResult = sdk.groupCreate(GroupCreateOpts(id, name)).attempt.unsafeRunSync.value
+      val groupCreateResult = sdk.groupCreate(GroupCreateOpts(validGroupId, name)).attempt.unsafeRunSync.value
 
       groupCreateResult.id.id.length shouldBe 36
       groupCreateResult.name.get.name shouldBe name.name
@@ -73,6 +72,23 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       groupCreateResult.created should not be null
       groupCreateResult.lastUpdated shouldBe groupCreateResult.created
       groupCreateResult.needsRotation shouldBe Some(false)
+    }
+  }
+
+  "Group Get" should {
+    "Return data for valid group admin" in {
+      val sdk = IronSdkSync[IO](deviceContext)
+      val groupGetResult = sdk.groupGetMetadata(validGroupId).attempt.unsafeRunSync.value
+
+      groupGetResult.id.id.length shouldBe 36
+      groupGetResult.name.get.name shouldBe "a name"
+      groupGetResult.isAdmin shouldBe true
+      groupGetResult.isMember shouldBe true
+      groupGetResult.adminList shouldBe Some(List(primaryTestUserId))
+      groupGetResult.memberList shouldBe Some(List(primaryTestUserId))
+      groupGetResult.created should not be null
+      groupGetResult.lastUpdated shouldBe groupGetResult.created
+      groupGetResult.needsRotation shouldBe Some(false)
     }
   }
 
