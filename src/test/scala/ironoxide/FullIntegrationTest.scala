@@ -90,6 +90,11 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       groupGetResult.lastUpdated shouldBe groupGetResult.created
       groupGetResult.needsRotation shouldBe Some(false)
     }
+    "Fail for invalid group id" in {
+      val sdk = IronSdkSync[IO](deviceContext)
+      val maybeGroupGetResult = sdk.groupGetMetadata(GroupId("tsp")).attempt.unsafeRunSync
+      maybeGroupGetResult.isLeft shouldBe true
+    }
   }
 
   "DeviceContext" should {
