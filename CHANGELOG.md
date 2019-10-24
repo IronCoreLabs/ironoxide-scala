@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.2
+
+- Add `groupGetMetadata()` to return group data for a given `GroupId`
+- Add `needsRotation` as an `Option[Boolean]` to `GroupMetaResult`
+
 ## 0.5.1
 
 - Update to ironoxide-java 0.6.1
