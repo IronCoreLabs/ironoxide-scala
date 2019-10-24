@@ -51,7 +51,15 @@ trait IronSdk[F[_]] {
   def groupCreate(options: GroupCreateOpts): F[GroupMetaResult]
 
   /**
-   * Create a new user within the IronCore system.
+   * Gets the full metadata for a specific group given its ID.
+   *
+   * @param id unique id of the group to retrieve
+   * @return details about the requested group
+   */
+  def groupGetMetadata(id: GroupId): F[GroupGetResult]
+
+  /**
+   * Creates a new user within the IronCore system.
    *
    * @param jwt valid IronCore or Auth0 JWT
    * @param password password used to encrypt and escrow the user's private master key
