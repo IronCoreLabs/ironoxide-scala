@@ -60,6 +60,9 @@ trait IronSdk[F[_]] {
    */
   def userCreate(jwt: String, password: String, options: UserCreateOpts): F[UserCreateResult]
 
+  //TODO: docs
+  def userRotatePrivateKey(password: String): F[UserUpdatePrivateKeyResult]
+
   /**
    * Accesses advanced SDK operations.
    *

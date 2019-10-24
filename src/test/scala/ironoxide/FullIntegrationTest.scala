@@ -58,6 +58,14 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
   }
 
+  "User Rotate Private Key" should {
+    "fail for incorrect password" in {
+      val sdk = IronSdkSync[IO](deviceContext)
+      val resp = sdk.userRotatePrivateKey("this isn't my password").attempt.unsafeRunSync
+      resp shouldBe 'left
+    }
+  }
+
   "Group Create" should {
     "Create valid group" in {
       val sdk = IronSdkSync[IO](deviceContext)

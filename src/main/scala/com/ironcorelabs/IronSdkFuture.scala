@@ -20,4 +20,8 @@ case class IronSdkFuture(deviceContext: DeviceContext) extends IronSdk[Future] {
 
   def userCreate(jwt: String, password: String, options: UserCreateOpts): Future[UserCreateResult] =
     underlying.userCreate(jwt, password, options).unsafeToFuture
+
+  def userRotatePrivateKey(password: String): Future[UserUpdatePrivateKeyResult] =
+    underlying.userRotatePrivateKey(password).unsafeToFuture
+
 }

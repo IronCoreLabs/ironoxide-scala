@@ -30,5 +30,8 @@ case class IronSdkSync[F[_]](deviceContext: DeviceContext)(implicit syncF: Sync[
   def userCreate(jwt: String, password: String, options: UserCreateOpts): F[UserCreateResult] =
     IronSdk.userCreate(jwt, password, options)
 
+  def userRotatePrivateKey(password: String): F[UserUpdatePrivateKeyResult] =
+    underlying.map(_.userRotatePrivateKey(password)).map(UserUpdatePrivateKeyResult.apply)
+
   def advanced: IronSdkAdvanced[F] = IronSdkAdvancedSync(deviceContext)
 }
