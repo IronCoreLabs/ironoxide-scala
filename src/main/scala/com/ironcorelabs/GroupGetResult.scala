@@ -7,7 +7,7 @@ import java.{util => ju}
  * Group information
  *
  * @param id unique id of the group (within the segment)
- * @param name optional group name
+ * @param name None if the group has no name, else the group's name
  * @param groupMasterPublicKey public key of the group
  * @param isAdmin true if the calling user is a group administrator
  * @param isMember true if the calling user is a group member
@@ -15,7 +15,7 @@ import java.{util => ju}
  * @param memberList None if the calling user is not in the group, else a list of group member UserIds
  * @param created date and time when the group was created
  * @param updated date and time when the group was last updated
- * @param needsRotation None if the calling user is not a group admin, else a boolean of if the group private key needs rotation
+ * @param needsRotation None if the calling user is not a group admin, else a boolean of if the group's private key needs rotation
  */
 case class GroupGetResult(
   id: GroupId,

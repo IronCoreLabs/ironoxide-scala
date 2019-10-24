@@ -5,6 +5,14 @@ import java.{util => ju}
 
 /**
  * Abbreviated group meta information.
+ *
+ * @param id unique id of the group (within the segment)
+ * @param name None if the group has no name, else the group's name
+ * @param isAdmin true if the calling user is a group administrator
+ * @param isMember true if the calling user is a group member
+ * @param created date and time when the group was created
+ * @param lastUpdated date and time when the group was last updated
+ * @param needsRotation None if the calling user is not a group admin, else a boolean of if the group's private key needs rotation
  */
 case class GroupMetaResult(
   id: GroupId,
