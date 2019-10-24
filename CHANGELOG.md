@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.6.1
+- Update to ironoxide-java 0.6.1
+
 ## 0.4.0
 
 - Cats effect 2.0.0
