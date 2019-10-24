@@ -2,11 +2,11 @@ package ironoxide
 
 import scodec.bits.ByteVector
 import com.ironcorelabs.scala.sdk._
-import org.scalatest.{AsyncWordSpec, Matchers}
+import org.scalatest.{AsyncWordSpec, Matchers, OptionValues}
 import cats.scalatest.EitherValues
 import cats.effect.IO
 
-class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues {
+class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues with OptionValues {
   try {
     java.lang.System.loadLibrary("ironoxide_java")
   } catch {
@@ -84,11 +84,11 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       groupGetResult.name.get.name shouldBe "a name"
       groupGetResult.isAdmin shouldBe true
       groupGetResult.isMember shouldBe true
-      groupGetResult.adminList shouldBe Some(List(primaryTestUserId))
-      groupGetResult.memberList shouldBe Some(List(primaryTestUserId))
+      groupGetResult.adminList.value shouldBe List(primaryTestUserId)
+      groupGetResult.memberList.value shouldBe List(primaryTestUserId)
       groupGetResult.created should not be null
       groupGetResult.lastUpdated shouldBe groupGetResult.created
-      groupGetResult.needsRotation shouldBe Some(false)
+      groupGetResult.needsRotation.value shouldBe false
     }
     "Fail for invalid group id" in {
       val sdk = IronSdkSync[IO](deviceContext)

@@ -5,6 +5,17 @@ import java.{util => ju}
 
 /**
  * Group information
+ *
+ * @param id unique id of the group (within the segment)
+ * @param name optional group name
+ * @param groupMasterPublicKey public key of the group
+ * @param isAdmin true if the calling user is a group administrator
+ * @param isMember true if the calling user is a group member
+ * @param adminList None if the calling user is not in the group, else a list of group admin UserIds
+ * @param memberList None if the calling user is not in the group, else a list of group member UserIds
+ * @param created date and time when the group was created
+ * @param updated date and time when the group was last updated
+ * @param needsRotation None if the calling user is not a group admin, else a boolean of if the group private key needs rotation
  */
 case class GroupGetResult(
   id: GroupId,
@@ -20,22 +31,22 @@ case class GroupGetResult(
 )
 
 object GroupGetResult {
-  def apply(gmr: jsdk.GroupGetResult): GroupGetResult = {
-    val optName: Option[GroupName] = gmr.getName.toScala.map(n => GroupName(n.getName))
-    val optRotation = gmr.getNeedsRotation.toScala.map(_.getBoolean)
-    val optAdmins = gmr.getAdminList.toScala.map(_.getList.toList.map(id => UserId(id)))
-    val optMembers = gmr.getMemberList.toScala.map(_.getList.toList.map(id => UserId(id)))
+  def apply(ggr: jsdk.GroupGetResult): GroupGetResult = {
+    val optName: Option[GroupName] = ggr.getName.toScala.map(n => GroupName(n.getName))
+    val optRotation = ggr.getNeedsRotation.toScala.map(_.getBoolean)
+    val optAdmins = ggr.getAdminList.toScala.map(_.getList.toList.map(UserId(_)))
+    val optMembers = ggr.getMemberList.toScala.map(_.getList.toList.map(UserId(_)))
 
     GroupGetResult(
-      GroupId(gmr.getId.getId),
+      GroupId(ggr.getId.getId),
       optName,
-      PublicKey(gmr.getGroupMasterPublicKey.asBytes),
-      gmr.isAdmin,
-      gmr.isMember,
+      PublicKey(ggr.getGroupMasterPublicKey.asBytes),
+      ggr.isAdmin,
+      ggr.isMember,
       optAdmins,
       optMembers,
-      gmr.getCreated,
-      gmr.getLastUpdated,
+      ggr.getCreated,
+      ggr.getLastUpdated,
       optRotation
     )
   }
