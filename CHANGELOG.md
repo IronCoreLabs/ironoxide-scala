@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.6.1
+## 0.5.1
 - Update to ironoxide-java 0.6.1
 
 ## 0.4.0
