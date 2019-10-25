@@ -16,4 +16,5 @@ case class PrivateKey(bytes: ByteVector) {
 
 object PrivateKey {
   def apply(bytes: Array[Byte]): PrivateKey = PrivateKey(ByteVector.view(bytes))
+  def apply(pk: jsdk.PrivateKey): PrivateKey = PrivateKey(pk.asBytes)
 }

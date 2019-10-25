@@ -10,7 +10,7 @@ case class GroupAccessEditResult(
 object GroupAccessEditResult {
   def apply(gaer: jsdk.GroupAccessEditResult): GroupAccessEditResult =
     GroupAccessEditResult(
-      gaer.getSucceeded.map(id => UserId(id.getId)).toList,
-      gaer.getFailed.map(err => GroupAccessEditErr(UserId(err.getUser), err.getError)).toList
+      gaer.getSucceeded.map(UserId(_)).toList,
+      gaer.getFailed.map(GroupAccessEditErr(_)).toList
     )
 }

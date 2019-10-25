@@ -26,7 +26,7 @@ object DocumentEncryptUnmanagedResult {
     val underlyingDekBytes = dder.getEncryptedDeks
 
     DocumentEncryptUnmanagedResult(
-      DocumentId(dder.getId.getId),
+      DocumentId(dder.getId),
       EncryptedData(underlyingDataBytes),
       EncryptedDeks(underlyingDekBytes),
       succeededResultToScala(dder.getChanged),
