@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.5.3
+
+- Add `groupAddMembers()` and `groupRemoveMembers()` to add/remove group members.
+
 ## 0.5.2
 
 - Add `groupGetMetadata()` to return group data for a given `GroupId`
