@@ -36,11 +36,11 @@ object DeviceContext {
   def fromJsonString[F[_]](jsonString: String)(implicit syncF: Sync[F]): F[DeviceContext] =
     syncF.delay(jsdk.DeviceContext.fromJsonString(jsonString)).map { javaContext =>
       DeviceContext(
-        DeviceId(javaContext.getDeviceId.getId),
-        UserId(javaContext.getAccountId.getId),
+        DeviceId(javaContext.getDeviceId),
+        UserId(javaContext.getAccountId),
         javaContext.getSegmentId,
-        PrivateKey(javaContext.getDevicePrivateKey.asBytes),
-        DeviceSigningPrivateKey(javaContext.getSigningPrivateKey.asBytes)
+        PrivateKey(javaContext.getDevicePrivateKey),
+        DeviceSigningPrivateKey(javaContext.getSigningPrivateKey)
       )
     }
 }

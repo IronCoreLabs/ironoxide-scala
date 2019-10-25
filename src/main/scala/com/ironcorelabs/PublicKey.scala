@@ -16,4 +16,5 @@ case class PublicKey(bytes: ByteVector) {
 
 object PublicKey {
   def apply(bytes: Array[Byte]): PublicKey = PublicKey(ByteVector.view(bytes))
+  def apply(pk: jsdk.PublicKey): PublicKey = PublicKey(pk.asBytes)
 }

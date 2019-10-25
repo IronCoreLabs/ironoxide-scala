@@ -32,15 +32,15 @@ case class GroupGetResult(
 
 object GroupGetResult {
   def apply(ggr: jsdk.GroupGetResult): GroupGetResult = {
-    val optName: Option[GroupName] = ggr.getName.toScala.map(n => GroupName(n.getName))
+    val optName = ggr.getName.toScala.map(GroupName(_))
     val optRotation = ggr.getNeedsRotation.toScala.map(_.getBoolean)
     val optAdmins = ggr.getAdminList.toScala.map(_.getList.toList.map(UserId(_)))
     val optMembers = ggr.getMemberList.toScala.map(_.getList.toList.map(UserId(_)))
 
     GroupGetResult(
-      GroupId(ggr.getId.getId),
+      GroupId(ggr.getId),
       optName,
-      PublicKey(ggr.getGroupMasterPublicKey.asBytes),
+      PublicKey(ggr.getGroupMasterPublicKey),
       ggr.isAdmin,
       ggr.isMember,
       optAdmins,
