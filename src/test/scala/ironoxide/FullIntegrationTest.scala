@@ -81,9 +81,10 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       val maybeAddMembersResult = sdk.groupAddMembers(GroupId("kumquat"), Nil).attempt.unsafeRunSync
       maybeAddMembersResult.isLeft shouldBe true
     }
-    "Fail for adding an existing member" in {
+    "Succeed in the call, but fail to add an existing member" in {
       val sdk = IronSdkSync[IO](deviceContext)
       val addMembersResult = sdk.groupAddMembers(validGroupId, List(primaryTestUserId)).attempt.unsafeRunSync.value
+      addMembersResult.failed.length shouldBe 1
       addMembersResult.failed.head.error should include("User was already a member")
     }
     "Fail for nonexistent UserId" in {
@@ -99,16 +100,19 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       val maybeRemoveMembersResult = sdk.groupRemoveMembers(GroupId("icl"), Nil).attempt.unsafeRunSync
       maybeRemoveMembersResult.isLeft shouldBe true
     }
-    "Fail for nonexistent UserId" in {
+    "Succeed in the call, but fail to remove a nonexistent UserId" in {
       val sdk = IronSdkSync[IO](deviceContext)
-      val maybeRemoveMembersResult =
-        sdk.groupRemoveMembers(validGroupId, List(UserId("tony"))).attempt.unsafeRunSync
-      maybeRemoveMembersResult.value.failed.head.error should include("could not be removed")
+      val removeMembersResult =
+        sdk.groupRemoveMembers(validGroupId, List(UserId("tony"))).attempt.unsafeRunSync.value
+      removeMembersResult.failed.length shouldBe 1
+      removeMembersResult.failed.head.error should include("could not be removed")
     }
     "succeed for valid GroupId/UserId" in {
       val sdk = IronSdkSync[IO](deviceContext)
-      val maybeRemoveMembersResult = sdk.groupRemoveMembers(validGroupId, List(primaryTestUserId)).attempt.unsafeRunSync
-      maybeRemoveMembersResult.value.succeeded.head shouldBe primaryTestUserId
+      val removeMembersResult =
+        sdk.groupRemoveMembers(validGroupId, List(primaryTestUserId)).attempt.unsafeRunSync.value
+      removeMembersResult.succeeded.length shouldBe 1
+      removeMembersResult.succeeded.head shouldBe primaryTestUserId
     }
   }
 
@@ -116,6 +120,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     "succeed for valid UserId" in {
       val sdk = IronSdkSync[IO](deviceContext)
       val addMembersResult = sdk.groupAddMembers(validGroupId, List(primaryTestUserId)).attempt.unsafeRunSync.value
+      addMembersResult.succeeded.length shouldBe 1
       addMembersResult.succeeded.head shouldBe primaryTestUserId
     }
   }
