@@ -16,6 +16,12 @@ case class IronSdkFuture(deviceContext: DeviceContext) extends IronSdk[Future] {
   def groupRemoveMembers(id: GroupId, userRevokes: List[UserId]): Future[GroupAccessEditResult] =
     underlying.groupRemoveMembers(id, userRevokes).unsafeToFuture
 
+  def groupAddAdmins(id: GroupId, users: List[UserId]): Future[GroupAccessEditResult] =
+    underlying.groupAddAdmins(id, users).unsafeToFuture
+
+  def groupRemoveAdmins(id: GroupId, userRevokes: List[UserId]): Future[GroupAccessEditResult] =
+    underlying.groupRemoveAdmins(id, userRevokes).unsafeToFuture
+
   def groupGetMetadata(id: GroupId): Future[GroupGetResult] = underlying.groupGetMetadata(id).unsafeToFuture
 
   def documentEncrypt(data: ByteVector, options: DocumentEncryptOpts): Future[DocumentEncryptResult] =

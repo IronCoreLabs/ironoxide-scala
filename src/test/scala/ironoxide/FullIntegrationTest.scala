@@ -125,6 +125,25 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
   }
 
+  "Group Add Admins" should {
+    "Fail for nonexistent GroupId" in {
+      val sdk = IronSdkSync[IO](deviceContext)
+      val maybeAddAdminsResult = sdk.groupAddAdmins(GroupId("tony"), Nil).attempt.unsafeRunSync
+      maybeAddAdminsResult.isLeft shouldBe true
+    }
+    "Succeed in the call, but fail to add an existing member" in {
+      val sdk = IronSdkSync[IO](deviceContext)
+      val addAdminsResult = sdk.groupAddAdmins(validGroupId, List(primaryTestUserId)).attempt.unsafeRunSync.value
+      addAdminsResult.failed.length shouldBe 1
+      addAdminsResult.failed.head.error should include("User was already an admin")
+    }
+    "Fail for nonexistent UserId" in {
+      val sdk = IronSdkSync[IO](deviceContext)
+      val maybeAddAdminsResult = sdk.groupAddAdmins(validGroupId, List(UserId("steve"))).attempt.unsafeRunSync
+      maybeAddAdminsResult.isLeft shouldBe true
+    }
+  }
+
   "Group Get" should {
     "Return data for valid group admin" in {
       val sdk = IronSdkSync[IO](deviceContext)

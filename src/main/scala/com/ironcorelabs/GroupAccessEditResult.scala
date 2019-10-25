@@ -1,6 +1,8 @@
 package com.ironcorelabs.scala.sdk
 
 import com.ironcorelabs.{sdk => jsdk}
+import cats.implicits._
+import cats.effect.Sync
 
 case class GroupAccessEditResult(
   succeeded: List[UserId],
@@ -13,4 +15,16 @@ object GroupAccessEditResult {
       gaer.getSucceeded.map(UserId(_)).toList,
       gaer.getFailed.map(GroupAccessEditErr(_)).toList
     )
+
+  def apply[F[_]](
+    id: GroupId,
+    users: List[UserId],
+    fn: (jsdk.GroupId, Array[jsdk.UserId]) => jsdk.GroupAccessEditResult
+  )(implicit syncF: Sync[F]): F[GroupAccessEditResult] =
+    for {
+      javaId        <- id.toJava
+      javaUsersList <- users.traverse(_.toJava)
+      javaUsersArray = javaUsersList.toArray[com.ironcorelabs.sdk.UserId]
+      result = fn(javaId, javaUsersArray)
+    } yield GroupAccessEditResult(result)
 }
