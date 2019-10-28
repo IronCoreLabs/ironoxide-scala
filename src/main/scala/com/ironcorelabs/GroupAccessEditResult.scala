@@ -4,6 +4,9 @@ import com.ironcorelabs.{sdk => jsdk}
 import cats.implicits._
 import cats.effect.Sync
 
+/**
+ * Result from requesting changes to a group's membership or administrators. Partial success is supported.
+ */
 case class GroupAccessEditResult(
   succeeded: List[UserId],
   failed: List[GroupAccessEditErr]
