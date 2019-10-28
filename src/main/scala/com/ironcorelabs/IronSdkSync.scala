@@ -13,6 +13,28 @@ case class IronSdkSync[F[_]](deviceContext: DeviceContext)(implicit syncF: Sync[
       result   <- underlying.map(_.groupCreate(javaOpts))
     } yield GroupMetaResult(result)
 
+  def groupAddMembers(id: GroupId, users: List[UserId]): F[GroupAccessEditResult] =
+    for {
+      javaId        <- id.toJava
+      javaUsersList <- users.traverse(_.toJava)
+      javaUsersArray = javaUsersList.toArray[com.ironcorelabs.sdk.UserId]
+      result <- underlying.map(_.groupAddMembers(javaId, javaUsersArray))
+    } yield GroupAccessEditResult(result)
+
+  def groupRemoveMembers(id: GroupId, userRevokes: List[UserId]): F[GroupAccessEditResult] =
+    for {
+      javaId        <- id.toJava
+      javaUsersList <- userRevokes.traverse(_.toJava)
+      javaUsersArray = javaUsersList.toArray[com.ironcorelabs.sdk.UserId]
+      result <- underlying.map(_.groupRemoveMembers(javaId, javaUsersArray))
+    } yield GroupAccessEditResult(result)
+
+  def groupGetMetadata(id: GroupId): F[GroupGetResult] =
+    for {
+      javaId <- id.toJava
+      result <- underlying.map(_.groupGetMetadata(javaId))
+    } yield GroupGetResult(result)
+
   def documentEncrypt(data: ByteVector, options: DocumentEncryptOpts): F[DocumentEncryptResult] =
     for {
       javaOpts <- options.toJava

@@ -30,7 +30,7 @@ object DocumentEncryptResult {
     val underlyingBytes = der.getEncryptedData
 
     DocumentEncryptResult(
-      DocumentId(der.getId.getId),
+      DocumentId(der.getId),
       DocumentName.fromJava(der.getName),
       underlyingBytes,
       der.getCreated,

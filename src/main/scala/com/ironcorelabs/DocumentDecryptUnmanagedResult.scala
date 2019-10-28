@@ -20,7 +20,7 @@ object DocumentDecryptUnmanagedResult {
     val underlyingBytes = ddr.getDecryptedData
 
     DocumentDecryptUnmanagedResult(
-      DocumentId(ddr.getId.getId),
+      DocumentId(ddr.getId),
       UserOrGroupId(ddr.getAccessViaUserOrGroup()),
       underlyingBytes
     )

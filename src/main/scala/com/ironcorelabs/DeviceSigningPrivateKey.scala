@@ -16,4 +16,5 @@ case class DeviceSigningPrivateKey(bytes: ByteVector) {
 
 object DeviceSigningPrivateKey {
   def apply(bytes: Array[Byte]): DeviceSigningPrivateKey = DeviceSigningPrivateKey(ByteVector.view(bytes))
+  def apply(dspk: jsdk.DeviceSigningKeyPair): DeviceSigningPrivateKey = DeviceSigningPrivateKey(dspk.asBytes)
 }

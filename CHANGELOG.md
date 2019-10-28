@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.5.3
+
+- Add `groupAddMembers()` and `groupRemoveMembers()` to add/remove group members.
+
+## 0.5.2
+
+- Add `groupGetMetadata()` to return group data for a given `GroupId`
+- Add `needsRotation` as an `Option[Boolean]` to `GroupMetaResult`
+
+## 0.5.1
+
+- Update to ironoxide-java 0.6.1
+
+## 0.5.0
+
+- Add `userCreate()` to create a new user from a jwt, password, and user creation options.
+- Change parameters of `DeviceContext`, adding functions `toJsonString()` and `fromJsonString()`
+- Rename `DeviceSigningKeyPair` to `DeviceSigningPrivateKey`
+
 ## 0.4.0
 
 - Cats effect 2.0.0
@@ -15,11 +34,11 @@
 
 ## 0.3.3
 
-Allow advanced encrypt/decrypt with unmanaged edeks.
+- Allow advanced encrypt/decrypt with unmanaged edeks.
 
 ## 0.3.1
 
-Consume latest ironoxide which allows safe concurrent access for all APIs.
+- Consume latest ironoxide which allows safe concurrent access for all APIs.
 
 ## 0.3.0
 

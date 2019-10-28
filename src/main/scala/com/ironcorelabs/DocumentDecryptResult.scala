@@ -25,7 +25,7 @@ object DocumentDecryptResult {
     val underlyingBytes = ddr.getDecryptedData
 
     DocumentDecryptResult(
-      DocumentId(ddr.getId.getId),
+      DocumentId(ddr.getId),
       DocumentName.fromJava(ddr.getName),
       ByteVector.view(underlyingBytes),
       ddr.getCreated,

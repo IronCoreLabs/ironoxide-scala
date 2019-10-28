@@ -2,11 +2,11 @@ package ironoxide
 
 import scodec.bits.ByteVector
 import com.ironcorelabs.scala.sdk._
-import org.scalatest.{AsyncWordSpec, Matchers}
+import org.scalatest.{AsyncWordSpec, Matchers, OptionValues}
 import cats.scalatest.EitherValues
 import cats.effect.IO
 
-class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues {
+class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues with OptionValues {
   try {
     java.lang.System.loadLibrary("ironoxide_java")
   } catch {
@@ -34,6 +34,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       .decode("1crhZ4PELDOkzEqX9QbcMQzEDH6dOAr6zybHWryp2pwFhmxRx2EcYD6nUtgVm3OwfaJvGhmIViuj88wV/+duEg==")
   )
   val validDeviceId = DeviceId(1)
+  val validGroupId = GroupId(java.util.UUID.randomUUID.toString)
 
   def clearBytes(a: Array[Byte]) =
     for (i <- 0.until(a.length)) {
@@ -70,16 +71,87 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     "Create valid group" in {
       val sdk = IronSdkSync[IO](deviceContext)
       val name = GroupName("a name")
-      // this is all under the same user now, so this may not be a real test if it already exists, though it won't fail
-      val id = GroupId(java.util.UUID.randomUUID.toString)
-      val groupCreateResult = sdk.groupCreate(GroupCreateOpts(id, name)).attempt.unsafeRunSync.value
+      val groupCreateResult = sdk.groupCreate(GroupCreateOpts(validGroupId, name)).attempt.unsafeRunSync.value
 
-      groupCreateResult.id.id.length shouldBe 36
+      groupCreateResult.id.id shouldBe validGroupId.id
       groupCreateResult.name.get.name shouldBe name.name
       groupCreateResult.isAdmin shouldBe true
       groupCreateResult.isMember shouldBe true
       groupCreateResult.created should not be null
       groupCreateResult.lastUpdated shouldBe groupCreateResult.created
+      groupCreateResult.needsRotation.value shouldBe false
+    }
+  }
+
+  "Group Add Members" should {
+    "Fail for nonexistent GroupId" in {
+      val sdk = IronSdkSync[IO](deviceContext)
+      val maybeAddMembersResult = sdk.groupAddMembers(GroupId("kumquat"), Nil).attempt.unsafeRunSync
+      maybeAddMembersResult.isLeft shouldBe true
+    }
+    "Succeed in the call, but fail to add an existing member" in {
+      val sdk = IronSdkSync[IO](deviceContext)
+      val addMembersResult = sdk.groupAddMembers(validGroupId, List(primaryTestUserId)).attempt.unsafeRunSync.value
+      addMembersResult.failed.length shouldBe 1
+      addMembersResult.failed.head.error should include("User was already a member")
+    }
+    "Fail for nonexistent UserId" in {
+      val sdk = IronSdkSync[IO](deviceContext)
+      val maybeAddMembersResult = sdk.groupAddMembers(validGroupId, List(UserId("spanakopita"))).attempt.unsafeRunSync
+      maybeAddMembersResult.isLeft shouldBe true
+    }
+  }
+
+  "Group Remove Members" should {
+    "fail for nonexistent GroupId" in {
+      val sdk = IronSdkSync[IO](deviceContext)
+      val maybeRemoveMembersResult = sdk.groupRemoveMembers(GroupId("icl"), Nil).attempt.unsafeRunSync
+      maybeRemoveMembersResult.isLeft shouldBe true
+    }
+    "Succeed in the call, but fail to remove a nonexistent UserId" in {
+      val sdk = IronSdkSync[IO](deviceContext)
+      val removeMembersResult =
+        sdk.groupRemoveMembers(validGroupId, List(UserId("tony"))).attempt.unsafeRunSync.value
+      removeMembersResult.failed.length shouldBe 1
+      removeMembersResult.failed.head.error should include("could not be removed")
+    }
+    "succeed for valid GroupId/UserId" in {
+      val sdk = IronSdkSync[IO](deviceContext)
+      val removeMembersResult =
+        sdk.groupRemoveMembers(validGroupId, List(primaryTestUserId)).attempt.unsafeRunSync.value
+      removeMembersResult.succeeded.length shouldBe 1
+      removeMembersResult.succeeded.head shouldBe primaryTestUserId
+    }
+  }
+
+  "Group Add Members again" should {
+    "succeed for valid UserId" in {
+      val sdk = IronSdkSync[IO](deviceContext)
+      val addMembersResult = sdk.groupAddMembers(validGroupId, List(primaryTestUserId)).attempt.unsafeRunSync.value
+      addMembersResult.succeeded.length shouldBe 1
+      addMembersResult.succeeded.head shouldBe primaryTestUserId
+    }
+  }
+
+  "Group Get" should {
+    "Return data for valid group admin" in {
+      val sdk = IronSdkSync[IO](deviceContext)
+      val groupGetResult = sdk.groupGetMetadata(validGroupId).attempt.unsafeRunSync.value
+
+      groupGetResult.id.id shouldBe validGroupId.id
+      groupGetResult.name.get.name shouldBe "a name"
+      groupGetResult.isAdmin shouldBe true
+      groupGetResult.isMember shouldBe true
+      groupGetResult.adminList.value shouldBe List(primaryTestUserId)
+      groupGetResult.memberList.value shouldBe List(primaryTestUserId)
+      groupGetResult.created should not be null
+      groupGetResult.lastUpdated should be > groupGetResult.created
+      groupGetResult.needsRotation.value shouldBe false
+    }
+    "Fail for invalid group id" in {
+      val sdk = IronSdkSync[IO](deviceContext)
+      val maybeGroupGetResult = sdk.groupGetMetadata(GroupId("tsp")).attempt.unsafeRunSync
+      maybeGroupGetResult.isLeft shouldBe true
     }
   }
 

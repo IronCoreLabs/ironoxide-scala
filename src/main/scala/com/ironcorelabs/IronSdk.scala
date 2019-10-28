@@ -51,7 +51,33 @@ trait IronSdk[F[_]] {
   def groupCreate(options: GroupCreateOpts): F[GroupMetaResult]
 
   /**
-   * Create a new user within the IronCore system.
+   * Add a list of users as members of a group.
+   *
+   * @param id      id of the group to add members to
+   * @param users   the list of users thet will be added to the group as members
+   * @return all the users that were added and all the users that were not added with the reason they were not
+   */
+  def groupAddMembers(id: GroupId, users: List[UserId]): F[GroupAccessEditResult]
+
+  /**
+   * Remove a list of users as members from the group.
+   *
+   * @param id          id of the group to remove members from
+   * @param userRevokes list of user ids to remove as members
+   * @return list of users that were removed and the users that failed to be removed with the reason they were not
+   */
+  def groupRemoveMembers(id: GroupId, userRevokes: List[UserId]): F[GroupAccessEditResult]
+
+  /**
+   * Gets the full metadata for a specific group given its ID.
+   *
+   * @param id unique id of the group to retrieve
+   * @return details about the requested group
+   */
+  def groupGetMetadata(id: GroupId): F[GroupGetResult]
+
+  /**
+   * Creates a new user within the IronCore system.
    *
    * @param jwt valid IronCore or Auth0 JWT
    * @param password password used to encrypt and escrow the user's private master key
