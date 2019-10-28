@@ -86,7 +86,15 @@ trait IronSdk[F[_]] {
    */
   def userCreate(jwt: String, password: String, options: UserCreateOpts): F[UserCreateResult]
 
-  //TODO: docs
+  /**
+   * Rotate the current user's private key, but leave the public key the same.
+   * There's no black magic here! This is accomplished via multi-party computation with the
+   * IronCore webservice.
+   *
+   * @param password password to unlock the current user's master private key
+   *
+   * @return The (encrypted) updated private key and associated metadata
+   */
   def userRotatePrivateKey(password: String): F[UserUpdatePrivateKeyResult]
 
   /**
