@@ -72,7 +72,7 @@ trait IronSdk[F[_]] {
    * Add a list of users as admins of a group.
    *
    * @param id      id of the group to add admins to
-   * @param users   the list of users thet will be added to the group as admins
+   * @param users   the list of users that will be added to the group as admins
    * @return all the users that were added and all the users that were not added with the reason they were not
    */
   def groupAddAdmins(id: GroupId, users: List[UserId]): F[GroupAccessEditResult]
