@@ -2,7 +2,9 @@
 
 ## 0.5.3
 
+- Update to ironoxide-java 0.7.0
 - Add `groupAddMembers()` and `groupRemoveMembers()` to add/remove group members.
+- Add `groupAddAdmins()` and `groupRemoveAdmins()` to add/remove group admins.
 
 ## 0.5.2
 
