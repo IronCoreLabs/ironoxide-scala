@@ -12,5 +12,7 @@ case class DeviceName(name: String) {
 }
 
 object DeviceName {
-  def apply(name: jsdk.DeviceName): DeviceName = DeviceName(name.getName)
+  def apply(name: jsdk.DeviceName): Option[DeviceName] =
+    Option(name).map(n => DeviceName(n.getName))
+  // def apply(name: String): DeviceName = DeviceName(Some(name))
 }

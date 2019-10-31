@@ -1,7 +1,6 @@
-package ironoxide
+package com.ironcorelabs.scala.sdk
 
 import scodec.bits.ByteVector
-import com.ironcorelabs.scala.sdk._
 import org.scalatest.{AsyncWordSpec, Matchers, OptionValues}
 import cats.scalatest.EitherValues
 import cats.effect.IO
@@ -49,6 +48,13 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       primaryTestUserDevicePrivateKeyBytes,
       primaryTestUserSigningPrivateKeyBytes
     )
+
+  "DeviceCreateOpts" should {
+    "create with DeviceName of null" in {
+      val deviceName: com.ironcorelabs.sdk.DeviceName = null
+      DeviceCreateOpts(DeviceName.apply(deviceName)).name shouldBe None
+    }
+  }
 
   "User Create" should {
     "fail for invalid jwt" in {
