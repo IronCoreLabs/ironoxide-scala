@@ -1,7 +1,6 @@
 package com.ironcorelabs.scala.sdk
 
 import com.ironcorelabs.{sdk => jsdk}
-import scodec.bits.ByteVector
 
 case class UserUpdatePrivateKeyResult(
   userMasterPrivateKey: EncryptedPrivateKey,
@@ -11,7 +10,7 @@ case class UserUpdatePrivateKeyResult(
 object UserUpdatePrivateKeyResult {
   def apply(uupkr: jsdk.UserUpdatePrivateKeyResult): UserUpdatePrivateKeyResult =
     UserUpdatePrivateKeyResult(
-      EncryptedPrivateKey(ByteVector(uupkr.getUserMasterPrivateKey.asBytes)),
+      EncryptedPrivateKey(uupkr.getUserMasterPrivateKey),
       uupkr.getNeedsRotation
     )
 }
