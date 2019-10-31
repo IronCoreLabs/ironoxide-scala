@@ -4,7 +4,6 @@ import com.ironcorelabs.{sdk => jsdk}
 import scodec.bits.ByteVector
 
 case class UserUpdatePrivateKeyResult(
-  userKeyId: Long,
   userMasterPrivateKey: EncryptedPrivateKey,
   needsRotation: Boolean
 )
@@ -12,7 +11,6 @@ case class UserUpdatePrivateKeyResult(
 object UserUpdatePrivateKeyResult {
   def apply(uupkr: jsdk.UserUpdatePrivateKeyResult): UserUpdatePrivateKeyResult =
     UserUpdatePrivateKeyResult(
-      uupkr.getUserKeyId,
       EncryptedPrivateKey(ByteVector(uupkr.getUserMasterPrivateKey.asBytes)),
       uupkr.getNeedsRotation
     )
