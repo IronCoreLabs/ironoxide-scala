@@ -1,4 +1,6 @@
+
 # IronCore Labs IronOxide Scala SDK
+[![scaladoc](https://javadoc-badge.appspot.com/com.ironcorelabs/ironoxide-scala_2.12.svg?label=scaladoc)](https://javadoc-badge.appspot.com/com.ironcorelabs/ironoxide-scala_2.12)
 
 SDK for using IronCore Labs from Scala server side applications. This library wraps [ironoxide-java](https://github.com/IronCoreLabs/ironoxide-java)
 with more Scala friendly interfaces and types. It presents two top level APIs:
