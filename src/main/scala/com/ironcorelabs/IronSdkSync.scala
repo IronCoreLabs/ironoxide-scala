@@ -14,20 +14,16 @@ case class IronSdkSync[F[_]](deviceContext: DeviceContext)(implicit syncF: Sync[
     } yield GroupMetaResult(result)
 
   def groupAddMembers(id: GroupId, users: List[UserId]): F[GroupAccessEditResult] =
-    for {
-      javaId        <- id.toJava
-      javaUsersList <- users.traverse(_.toJava)
-      javaUsersArray = javaUsersList.toArray[com.ironcorelabs.sdk.UserId]
-      result <- underlying.map(_.groupAddMembers(javaId, javaUsersArray))
-    } yield GroupAccessEditResult(result)
+    underlying.flatMap(sdk => GroupAccessEditResult(id, users, sdk.groupAddMembers))
 
   def groupRemoveMembers(id: GroupId, userRevokes: List[UserId]): F[GroupAccessEditResult] =
-    for {
-      javaId        <- id.toJava
-      javaUsersList <- userRevokes.traverse(_.toJava)
-      javaUsersArray = javaUsersList.toArray[com.ironcorelabs.sdk.UserId]
-      result <- underlying.map(_.groupRemoveMembers(javaId, javaUsersArray))
-    } yield GroupAccessEditResult(result)
+    underlying.flatMap(sdk => GroupAccessEditResult(id, userRevokes, sdk.groupRemoveMembers))
+
+  def groupAddAdmins(id: GroupId, users: List[UserId]): F[GroupAccessEditResult] =
+    underlying.flatMap(sdk => GroupAccessEditResult(id, users, sdk.groupAddAdmins))
+
+  def groupRemoveAdmins(id: GroupId, userRevokes: List[UserId]): F[GroupAccessEditResult] =
+    underlying.flatMap(sdk => GroupAccessEditResult(id, userRevokes, sdk.groupRemoveAdmins))
 
   def groupGetMetadata(id: GroupId): F[GroupGetResult] =
     for {
@@ -38,12 +34,7 @@ case class IronSdkSync[F[_]](deviceContext: DeviceContext)(implicit syncF: Sync[
   def documentEncrypt(data: ByteVector, options: DocumentEncryptOpts): F[DocumentEncryptResult] =
     for {
       javaOpts <- options.toJava
-      result <- underlying.map(
-        _.documentEncrypt(
-          data.toArray,
-          javaOpts
-        )
-      )
+      result   <- underlying.map(_.documentEncrypt(data.toArray, javaOpts))
     } yield DocumentEncryptResult(result)
 
   def documentDecrypt(encryptedBytes: ByteVector): F[DocumentDecryptResult] =

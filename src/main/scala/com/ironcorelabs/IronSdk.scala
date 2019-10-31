@@ -70,6 +70,24 @@ trait IronSdk[F[_]] {
   def groupRemoveMembers(id: GroupId, userRevokes: List[UserId]): F[GroupAccessEditResult]
 
   /**
+   * Add a list of users as admins of a group.
+   *
+   * @param id      id of the group to add admins to
+   * @param users   the list of users that will be added to the group as admins
+   * @return all the users that were added and all the users that were not added with the reason they were not
+   */
+  def groupAddAdmins(id: GroupId, users: List[UserId]): F[GroupAccessEditResult]
+
+  /**
+   * Remove a list of users as admins from the group.
+   *
+   * @param id          id of the group to remove admins from
+   * @param userRevokes list of user ids to remove as admins
+   * @return list of users that were removed and the users that failed to be removed with the reason they were not
+   */
+  def groupRemoveAdmins(id: GroupId, userRevokes: List[UserId]): F[GroupAccessEditResult]
+
+  /**
    * Gets the full metadata for a specific group given its ID.
    *
    * @param id unique id of the group to retrieve
