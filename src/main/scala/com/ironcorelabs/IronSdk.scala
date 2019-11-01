@@ -127,6 +127,14 @@ object IronSdk {
   import cats.effect.Sync
   import cats.implicits._
 
+  def initialize[F[_]](deviceContext: DeviceContext)(implicit syncF: Sync[F]): F[IronSdk[F]] =
+    deviceContext.toJava.map(com.ironcorelabs.sdk.IronSdk.initialize).map(IronSdkSync(_))
+
+  def initializeAndRotate[F[_]](deviceContext: DeviceContext, password: String)(
+    implicit syncF: Sync[F]
+  ): F[IronSdk[F]] =
+    deviceContext.toJava.map(com.ironcorelabs.sdk.IronSdk.initializeAndRotate(_, password)).map(IronSdkSync(_))
+
   /**
    * Create a new user within the IronCore system.
    *
