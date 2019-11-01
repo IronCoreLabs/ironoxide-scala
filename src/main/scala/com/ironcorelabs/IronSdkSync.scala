@@ -10,7 +10,7 @@ case class IronSdkSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: Sync[F]) 
   def groupCreate(options: GroupCreateOpts): F[GroupMetaResult] =
     for {
       javaOpts <- options.toJava
-      result = underlying.groupCreate(javaOpts)
+      result   <- syncF.delay(underlying.groupCreate(javaOpts))
     } yield GroupMetaResult(result)
 
   def groupAddMembers(id: GroupId, users: List[UserId]): F[GroupAccessEditResult] =
@@ -28,13 +28,13 @@ case class IronSdkSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: Sync[F]) 
   def groupGetMetadata(id: GroupId): F[GroupGetResult] =
     for {
       javaId <- id.toJava
-      result = underlying.groupGetMetadata(javaId)
+      result <- syncF.delay(underlying.groupGetMetadata(javaId))
     } yield GroupGetResult(result)
 
   def documentEncrypt(data: ByteVector, options: DocumentEncryptOpts): F[DocumentEncryptResult] =
     for {
       javaOpts <- options.toJava
-      result = underlying.documentEncrypt(data.toArray, javaOpts)
+      result   <- syncF.delay(underlying.documentEncrypt(data.toArray, javaOpts))
     } yield DocumentEncryptResult(result)
 
   def documentDecrypt(encryptedBytes: ByteVector): F[DocumentDecryptResult] =

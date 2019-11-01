@@ -11,7 +11,7 @@ case class IronSdkAdvancedSync[F[_]](underlying: jsdk.IronSdkAdvanced)(implicit 
   def documentEncryptUnmanaged(data: ByteVector, options: DocumentEncryptOpts): F[DocumentEncryptUnmanagedResult] =
     for {
       javaOpts <- options.toJava
-      result = underlying.documentEncryptUnmanaged(data.toArray, javaOpts)
+      result   <- syncF.delay(underlying.documentEncryptUnmanaged(data.toArray, javaOpts))
     } yield DocumentEncryptUnmanagedResult(result)
 
   def documentDecryptUnmanaged(

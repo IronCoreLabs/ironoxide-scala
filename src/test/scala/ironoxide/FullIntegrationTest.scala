@@ -50,8 +50,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       primaryTestUserSigningPrivateKeyBytes
     )
 
-  val javaSdk = jsdk.IronSdk.initialize(deviceContext.toJava[IO].unsafeRunSync)
-  val sdk = IronSdkSync[IO](javaSdk)
+  val sdk = deviceContext.toJava[IO].map(d => IronSdkSync[IO](jsdk.IronSdk.initialize(d))).unsafeRunSync
 
   "User Create" should {
     "fail for invalid jwt" in {

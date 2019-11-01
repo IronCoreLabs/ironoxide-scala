@@ -9,8 +9,5 @@ case class UserUpdatePrivateKeyResult(
 
 object UserUpdatePrivateKeyResult {
   def apply(uupkr: jsdk.UserUpdatePrivateKeyResult): UserUpdatePrivateKeyResult =
-    UserUpdatePrivateKeyResult(
-      EncryptedPrivateKey(uupkr.getUserMasterPrivateKey),
-      uupkr.getNeedsRotation
-    )
+    UserUpdatePrivateKeyResult(EncryptedPrivateKey(uupkr.getUserMasterPrivateKey), uupkr.getNeedsRotation)
 }
