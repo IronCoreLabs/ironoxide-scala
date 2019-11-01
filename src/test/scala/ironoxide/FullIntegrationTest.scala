@@ -1,7 +1,6 @@
-package ironoxide
+package com.ironcorelabs.scala.sdk
 
 import scodec.bits.ByteVector
-import com.ironcorelabs.scala.sdk._
 import org.scalatest.{AsyncWordSpec, Matchers, OptionValues}
 import cats.scalatest.EitherValues
 import cats.effect.IO
@@ -50,11 +49,28 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       primaryTestUserSigningPrivateKeyBytes
     )
 
+  "DeviceCreateOpts" should {
+    "create with DeviceName of null" in {
+      val deviceName: com.ironcorelabs.sdk.DeviceName = null
+      DeviceCreateOpts(DeviceName.apply(deviceName)).name shouldBe None
+    }
+  }
+
   "User Create" should {
     "fail for invalid jwt" in {
       val jwt =
         "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTA3NzE4MjMsImlhdCI6MTU1MDc3MTcwMywia2lkIjo1NTEsInBpZCI6MTAxMiwic2lkIjoidGVzdC1zZWdtZW50Iiwic3ViIjoiYTAzYjhlNTYtMTVkMi00Y2Y3LTk0MWYtYzYwMWU1NzUxNjNiIn0.vlqt0da5ltA2dYEK9i_pfRxPd3K2uexnkbAbzmbjW65XNcWlBOIbcdmmQLnSIZkRyTORD3DLXOIPYbGlApaTCR5WbaR3oPiSsR9IqdhgMEZxCcarqGg7b_zzwTP98fDcALGZNGsJL1hIrl3EEXdPoYjsOJ5LMF1H57NZiteBDAsm1zfXgOgCtvCdt7PQFSCpM5GyE3und9VnEgjtcQ6HAZYdutqjI79vaTnjt2A1X38pbHcnfvSanzJoeU3szwtBiVlB3cfXbROvBC7Kz8KvbWJzImJcJiRT-KyI4kk3l8wAs2FUjSRco8AQ1nIX21QHlRI0vVr_vdOd_pTXOUU51g"
       val resp = IronSdk.userCreate[IO](jwt, "foo", UserCreateOpts(true)).attempt.unsafeRunSync
+      resp shouldBe 'left
+    }
+  }
+
+  "Device Create" should {
+    "fail for invalid jwt" in {
+      val jwt =
+        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTA3NzE4MjMsImlhdCI6MTU1MDc3MTcwMywia2lkIjo1NTEsInBpZCI6MTAxMiwic2lkIjoidGVzdC1zZWdtZW50Iiwic3ViIjoiYTAzYjhlNTYtMTVkMi00Y2Y3LTk0MWYtYzYwMWU1NzUxNjNiIn0.vlqt0da5ltA2dYEK9i_pfRxPd3K2uexnkbAbzmbjW65XNcWlBOIbcdmmQLnSIZkRyTORD3DLXOIPYbGlApaTCR5WbaR3oPiSsR9IqdhgMEZxCcarqGg7b_zzwTP98fDcALGZNGsJL1hIrl3EEXdPoYjsOJ5LMF1H57NZiteBDAsm1zfXgOgCtvCdt7PQFSCpM5GyE3und9VnEgjtcQ6HAZYdutqjI79vaTnjt2A1X38pbHcnfvSanzJoeU3szwtBiVlB3cfXbROvBC7Kz8KvbWJzImJcJiRT-KyI4kk3l8wAs2FUjSRco8AQ1nIX21QHlRI0vVr_vdOd_pTXOUU51g"
+      val resp =
+        IronSdk.generateNewDevice[IO](jwt, "foo", DeviceCreateOpts(DeviceName("failure"))).attempt.unsafeRunSync
       resp shouldBe 'left
     }
   }

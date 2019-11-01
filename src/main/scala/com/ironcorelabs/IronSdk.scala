@@ -1,6 +1,7 @@
 package com.ironcorelabs.scala.sdk
 
 import scodec.bits.ByteVector
+import com.ironcorelabs.{sdk => jsdk}
 
 /**
  * Ability to make authenticated requests to the IronCore API. Instantiated with the details
@@ -117,6 +118,23 @@ object IronSdk {
   import cats.implicits._
 
   /**
+   * Generate a new device for the user specified in the signed JWT.
+   * This will result in a new transform key (from the user's master private key to the new device's public key)
+   * being generated and stored with the IronCore Service.
+   *
+   * @param jwt                 valid IronCore JWT
+   * @param password            password used to encrypt and escrow the user's private key
+   * @param deviceCreateOptions optional values, like device name
+   * @return details about the newly created device
+   */
+  def generateNewDevice[F[_]](jwt: String, password: String, deviceCreateOptions: DeviceCreateOpts)(
+    implicit syncF: Sync[F]
+  ): F[DeviceContext] =
+    deviceCreateOptions.toJava.map { javaOpts =>
+      DeviceContext(jsdk.IronSdk.generateNewDevice(jwt, password, javaOpts))
+    }
+
+  /**
    * Create a new user within the IronCore system.
    *
    * @param jwt Valid IronCore or Auth0 JWT
@@ -128,6 +146,6 @@ object IronSdk {
     implicit syncF: Sync[F]
   ): F[UserCreateResult] =
     options.toJava.map { javaOpts =>
-      UserCreateResult(com.ironcorelabs.sdk.IronSdk.userCreate(jwt, password, javaOpts))
+      UserCreateResult(jsdk.IronSdk.userCreate(jwt, password, javaOpts))
     }
 }
