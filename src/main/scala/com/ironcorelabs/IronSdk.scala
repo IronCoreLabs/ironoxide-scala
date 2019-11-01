@@ -127,9 +127,26 @@ object IronSdk {
   import cats.effect.Sync
   import cats.implicits._
 
+  /**
+   * Initialize IronSdk with a device. Verifies that the provided user/segment exists and the provided device
+   * keys are valid and exist for the provided account.
+   *
+   * @param deviceContext device context used to initialize the IronSdk with a set of device keys
+   * @return an instance of the IronSdk
+   */
   def initialize[F[_]](deviceContext: DeviceContext)(implicit syncF: Sync[F]): F[IronSdk[F]] =
     deviceContext.toJava.map(com.ironcorelabs.sdk.IronSdk.initialize).map(IronSdkSync(_))
 
+  /**
+   * Initialize IronSdk with a device. Verifies that the provided user/segment exists and the provided device
+   * keys are valid and exist for the provided account.
+   * After initialization, checks whether the calling user's private key needs rotation and rotates it
+   * if necessary.
+   *
+   * @param deviceContext device context used to initialize the IronSdk with a set of device keys
+   * @param password password used to encrypt and escrow the user's private master key
+   * @return an instance of the IronSdk
+   */
   def initializeAndRotate[F[_]](deviceContext: DeviceContext, password: String)(
     implicit syncF: Sync[F]
   ): F[IronSdk[F]] =
