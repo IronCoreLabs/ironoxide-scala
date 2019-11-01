@@ -33,6 +33,15 @@ case class DeviceContext(
 }
 
 object DeviceContext {
+  def apply(context: jsdk.DeviceContext): DeviceContext =
+    DeviceContext(
+      DeviceId(context.getDeviceId),
+      UserId(context.getAccountId),
+      context.getSegmentId,
+      PrivateKey(context.getDevicePrivateKey),
+      DeviceSigningPrivateKey(context.getSigningPrivateKey)
+    )
+
   def fromJsonString[F[_]](jsonString: String)(implicit syncF: Sync[F]): F[DeviceContext] =
     syncF.delay(jsdk.DeviceContext.fromJsonString(jsonString)).map { javaContext =>
       DeviceContext(

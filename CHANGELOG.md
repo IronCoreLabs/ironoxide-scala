@@ -8,6 +8,7 @@
 - Add `userRotatePrivateKey()` to rotate the user's private key.
 - Add `groupAddMembers()` and `groupRemoveMembers()` to add/remove group members.
 - Add `groupAddAdmins()` and `groupRemoveAdmins()` to add/remove group admins.
+- Add `generateNewDevice()` to generate a new device for the user.
 
 ## 0.5.2
 
