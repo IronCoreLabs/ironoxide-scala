@@ -6,6 +6,5 @@ import com.ironcorelabs.{sdk => jsdk}
 case class EncryptedPrivateKey(bytes: ByteVector)
 
 object EncryptedPrivateKey {
-  def apply(bytes: Array[Byte]): EncryptedPrivateKey = EncryptedPrivateKey(ByteVector.view(bytes))
-  def apply(epk: jsdk.EncryptedPrivateKey): EncryptedPrivateKey = EncryptedPrivateKey(epk.asBytes)
+  def apply(epk: jsdk.EncryptedPrivateKey): EncryptedPrivateKey = EncryptedPrivateKey(ByteVector.view(epk.asBytes))
 }
