@@ -4,6 +4,7 @@ import scodec.bits.ByteVector
 import org.scalatest.{AsyncWordSpec, Matchers, OptionValues}
 import cats.scalatest.EitherValues
 import cats.effect.IO
+import com.ironcorelabs.{sdk => jsdk}
 
 class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues with OptionValues {
   try {
@@ -49,6 +50,8 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       primaryTestUserSigningPrivateKeyBytes
     )
 
+  val sdk = deviceContext.toJava[IO].map(d => IronSdkSync[IO](jsdk.IronSdk.initialize(d))).unsafeRunSync
+
   "DeviceCreateOpts" should {
     "create with DeviceName of null" in {
       val deviceName: com.ironcorelabs.sdk.DeviceName = null
@@ -65,6 +68,13 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
   }
 
+  "User Rotate Private Key" should {
+    "fail for incorrect password" in {
+      val resp = sdk.userRotatePrivateKey("this isn't my password").attempt.unsafeRunSync
+      resp shouldBe 'left
+    }
+  }
+
   "Device Create" should {
     "fail for invalid jwt" in {
       val jwt =
@@ -77,7 +87,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "Group Create" should {
     "Create valid group" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val name = GroupName("a name")
       val groupCreateResult = sdk.groupCreate(GroupCreateOpts(validGroupId, name)).attempt.unsafeRunSync.value
 
@@ -93,18 +102,15 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "Group Add Members" should {
     "Fail for nonexistent GroupId" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val maybeAddMembersResult = sdk.groupAddMembers(GroupId("kumquat"), Nil).attempt.unsafeRunSync
       maybeAddMembersResult.isLeft shouldBe true
     }
     "Succeed in the call, but fail to add an existing member" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val addMembersResult = sdk.groupAddMembers(validGroupId, List(primaryTestUserId)).attempt.unsafeRunSync.value
       addMembersResult.failed.length shouldBe 1
       addMembersResult.failed.head.error should include("User was already a member")
     }
     "Fail for nonexistent UserId" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val maybeAddMembersResult = sdk.groupAddMembers(validGroupId, List(UserId("spanakopita"))).attempt.unsafeRunSync
       maybeAddMembersResult.isLeft shouldBe true
     }
@@ -112,19 +118,16 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "Group Remove Members" should {
     "fail for nonexistent GroupId" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val maybeRemoveMembersResult = sdk.groupRemoveMembers(GroupId("icl"), Nil).attempt.unsafeRunSync
       maybeRemoveMembersResult.isLeft shouldBe true
     }
     "Succeed in the call, but fail to remove a nonexistent UserId" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val removeMembersResult =
         sdk.groupRemoveMembers(validGroupId, List(UserId("tony"))).attempt.unsafeRunSync.value
       removeMembersResult.failed.length shouldBe 1
       removeMembersResult.failed.head.error should include("could not be removed")
     }
     "succeed for valid GroupId/UserId" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val removeMembersResult =
         sdk.groupRemoveMembers(validGroupId, List(primaryTestUserId)).attempt.unsafeRunSync.value
       removeMembersResult.succeeded.length shouldBe 1
@@ -134,7 +137,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "Group Add Members again" should {
     "succeed for valid UserId" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val addMembersResult = sdk.groupAddMembers(validGroupId, List(primaryTestUserId)).attempt.unsafeRunSync.value
       addMembersResult.succeeded.length shouldBe 1
       addMembersResult.succeeded.head shouldBe primaryTestUserId
@@ -143,18 +145,15 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "Group Add Admins" should {
     "Fail for nonexistent GroupId" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val maybeAddAdminsResult = sdk.groupAddAdmins(GroupId("tony"), Nil).attempt.unsafeRunSync
       maybeAddAdminsResult.isLeft shouldBe true
     }
     "Succeed in the call, but fail to add an existing member" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val addAdminsResult = sdk.groupAddAdmins(validGroupId, List(primaryTestUserId)).attempt.unsafeRunSync.value
       addAdminsResult.failed.length shouldBe 1
       addAdminsResult.failed.head.error should include("User was already an admin")
     }
     "Fail for nonexistent UserId" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val maybeAddAdminsResult = sdk.groupAddAdmins(validGroupId, List(UserId("steve"))).attempt.unsafeRunSync
       maybeAddAdminsResult.isLeft shouldBe true
     }
@@ -162,19 +161,16 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "Group Remove Admins" should {
     "fail for nonexistent GroupId" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val maybeRemoveAdminsResult = sdk.groupRemoveAdmins(GroupId("notarealgroup"), Nil).attempt.unsafeRunSync
       maybeRemoveAdminsResult.isLeft shouldBe true
     }
     "Succeed in the call, but fail to remove a nonexistent UserId" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val removeAdminsResult =
         sdk.groupRemoveAdmins(validGroupId, List(UserId("tony"))).attempt.unsafeRunSync.value
       removeAdminsResult.failed.length shouldBe 1
       removeAdminsResult.failed.head.error should include("could not be removed")
     }
     "fail to remove sole group admin" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val removeAdminsResult =
         sdk.groupRemoveAdmins(validGroupId, List(primaryTestUserId)).attempt.unsafeRunSync.value
       removeAdminsResult.failed.length shouldBe 1
@@ -184,7 +180,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "Group Get" should {
     "Return data for valid group admin" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val groupGetResult = sdk.groupGetMetadata(validGroupId).attempt.unsafeRunSync.value
 
       groupGetResult.id.id shouldBe validGroupId.id
@@ -198,7 +193,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       groupGetResult.needsRotation.value shouldBe false
     }
     "Fail for invalid group id" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val maybeGroupGetResult = sdk.groupGetMetadata(GroupId("tsp")).attempt.unsafeRunSync
       maybeGroupGetResult.isLeft shouldBe true
     }
@@ -231,7 +225,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "Document encrypt/decrypt" should {
     "succeed for good name and data" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
       val result = sdk.documentEncrypt(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
 
@@ -240,7 +233,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
 
     "roundtrip for single level transform for no name and good data" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(10, 2, 3).map(_.toByte))
       val result = sdk.documentEncrypt(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
 
@@ -258,7 +250,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
 
     "grant to specified groups" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
 
       val name = GroupName("a name")
@@ -277,7 +268,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
 
     "return failures for bad groups" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
       val notAUser = UserId("also-definitely-not-a-user")
       val notAGroup = GroupId("definitely-not-generated")
@@ -293,7 +283,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
 
     "return expected success/failures for policy grant" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
       val result =
         sdk
@@ -315,7 +304,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "Document unmanaged encrypt/decrypt" should {
     "roundtrip through a user" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
       val encryptResult = sdk.advanced.documentEncryptUnmanaged(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
 
@@ -346,7 +334,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
 
     "roundtrip through a group" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
 
       val name = GroupName("a name")
@@ -378,7 +365,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
 
     "return failures for bad groups" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
       val notAUser = UserId("also-definitely-not-a-user")
       val notAGroup = GroupId("definitely-not-generated")
@@ -398,7 +384,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
 
     "return expected success/failures for policy grant" in {
-      val sdk = IronSdkSync[IO](deviceContext)
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
       val result =
         sdk.advanced

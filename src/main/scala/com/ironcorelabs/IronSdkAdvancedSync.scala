@@ -3,26 +3,22 @@ package com.ironcorelabs.scala.sdk
 import cats.effect.Sync
 import cats.implicits._
 import scodec.bits.ByteVector
+import com.ironcorelabs.{sdk => jsdk}
 
-case class IronSdkAdvancedSync[F[_]](deviceContext: DeviceContext)(implicit syncF: Sync[F]) extends IronSdkAdvanced[F] {
-  val underlying = deviceContext.toJava.map(d => com.ironcorelabs.sdk.IronSdk.initialize(d).advanced)
+case class IronSdkAdvancedSync[F[_]](underlying: jsdk.IronSdkAdvanced)(implicit syncF: Sync[F])
+    extends IronSdkAdvanced[F] {
 
   def documentEncryptUnmanaged(data: ByteVector, options: DocumentEncryptOpts): F[DocumentEncryptUnmanagedResult] =
     for {
       javaOpts <- options.toJava
-      result <- underlying.map(
-        _.documentEncryptUnmanaged(
-          data.toArray,
-          javaOpts
-        )
-      )
+      result   <- syncF.delay(underlying.documentEncryptUnmanaged(data.toArray, javaOpts))
     } yield DocumentEncryptUnmanagedResult(result)
 
   def documentDecryptUnmanaged(
     encryptedData: EncryptedData,
     encryptedDeks: EncryptedDeks
   ): F[DocumentDecryptUnmanagedResult] =
-    underlying
-      .map(_.documentDecryptUnmanaged(encryptedData.underlyingBytes, encryptedDeks.underlyingBytes))
+    syncF
+      .delay(underlying.documentDecryptUnmanaged(encryptedData.underlyingBytes, encryptedDeks.underlyingBytes))
       .map(DocumentDecryptUnmanagedResult.apply)
 }

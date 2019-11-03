@@ -3,6 +3,9 @@
 ## 0.5.3
 
 - Update to ironoxide-java 0.7.0
+- Add `IronSdk.initialize()` to initialize IronSdk with a device.
+- Add `IronSdk.initializeAndRotate()` to initialize IronSdk with a device, then rotate the user's private key if needed.
+- Add `userRotatePrivateKey()` to rotate the user's private key.
 - Add `groupAddMembers()` and `groupRemoveMembers()` to add/remove group members.
 - Add `groupAddAdmins()` and `groupRemoveAdmins()` to add/remove group admins.
 - Add `generateNewDevice()` to generate a new device for the user.

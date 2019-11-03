@@ -3,45 +3,48 @@ package com.ironcorelabs.scala.sdk
 import cats.effect.Sync
 import cats.implicits._
 import scodec.bits.ByteVector
+import com.ironcorelabs.{sdk => jsdk}
 
-case class IronSdkSync[F[_]](deviceContext: DeviceContext)(implicit syncF: Sync[F]) extends IronSdk[F] {
-  val underlying = deviceContext.toJava.map(com.ironcorelabs.sdk.IronSdk.initialize)
+case class IronSdkSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: Sync[F]) extends IronSdk[F] {
 
   def groupCreate(options: GroupCreateOpts): F[GroupMetaResult] =
     for {
       javaOpts <- options.toJava
-      result   <- underlying.map(_.groupCreate(javaOpts))
+      result   <- syncF.delay(underlying.groupCreate(javaOpts))
     } yield GroupMetaResult(result)
 
   def groupAddMembers(id: GroupId, users: List[UserId]): F[GroupAccessEditResult] =
-    underlying.flatMap(sdk => GroupAccessEditResult(id, users, sdk.groupAddMembers))
+    GroupAccessEditResult(id, users, underlying.groupAddMembers)
 
   def groupRemoveMembers(id: GroupId, userRevokes: List[UserId]): F[GroupAccessEditResult] =
-    underlying.flatMap(sdk => GroupAccessEditResult(id, userRevokes, sdk.groupRemoveMembers))
+    GroupAccessEditResult(id, userRevokes, underlying.groupRemoveMembers)
 
   def groupAddAdmins(id: GroupId, users: List[UserId]): F[GroupAccessEditResult] =
-    underlying.flatMap(sdk => GroupAccessEditResult(id, users, sdk.groupAddAdmins))
+    GroupAccessEditResult(id, users, underlying.groupAddAdmins)
 
   def groupRemoveAdmins(id: GroupId, userRevokes: List[UserId]): F[GroupAccessEditResult] =
-    underlying.flatMap(sdk => GroupAccessEditResult(id, userRevokes, sdk.groupRemoveAdmins))
+    GroupAccessEditResult(id, userRevokes, underlying.groupRemoveAdmins)
 
   def groupGetMetadata(id: GroupId): F[GroupGetResult] =
     for {
       javaId <- id.toJava
-      result <- underlying.map(_.groupGetMetadata(javaId))
+      result <- syncF.delay(underlying.groupGetMetadata(javaId))
     } yield GroupGetResult(result)
 
   def documentEncrypt(data: ByteVector, options: DocumentEncryptOpts): F[DocumentEncryptResult] =
     for {
       javaOpts <- options.toJava
-      result   <- underlying.map(_.documentEncrypt(data.toArray, javaOpts))
+      result   <- syncF.delay(underlying.documentEncrypt(data.toArray, javaOpts))
     } yield DocumentEncryptResult(result)
 
   def documentDecrypt(encryptedBytes: ByteVector): F[DocumentDecryptResult] =
-    underlying.map(_.documentDecrypt(encryptedBytes.toArray)).map(DocumentDecryptResult.apply)
+    syncF.delay(underlying.documentDecrypt(encryptedBytes.toArray)).map(DocumentDecryptResult.apply)
 
   def userCreate(jwt: String, password: String, options: UserCreateOpts): F[UserCreateResult] =
     IronSdk.userCreate(jwt, password, options)
 
-  def advanced: IronSdkAdvanced[F] = IronSdkAdvancedSync(deviceContext)
+  def userRotatePrivateKey(password: String): F[UserUpdatePrivateKeyResult] =
+    syncF.delay(underlying.userRotatePrivateKey(password)).map(UserUpdatePrivateKeyResult.apply)
+
+  def advanced: IronSdkAdvanced[F] = IronSdkAdvancedSync(underlying.advanced)
 }

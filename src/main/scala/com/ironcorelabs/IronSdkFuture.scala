@@ -4,8 +4,7 @@ import scala.concurrent.Future
 import scodec.bits.ByteVector
 import cats.effect.IO
 
-case class IronSdkFuture(deviceContext: DeviceContext) extends IronSdk[Future] {
-  val underlying = IronSdkSync[IO](deviceContext)
+case class IronSdkFuture(underlying: IronSdk[IO]) extends IronSdk[Future] {
 
   def groupCreate(options: GroupCreateOpts): Future[GroupMetaResult] =
     underlying.groupCreate(options).unsafeToFuture
@@ -30,8 +29,23 @@ case class IronSdkFuture(deviceContext: DeviceContext) extends IronSdk[Future] {
   def documentDecrypt(encryptedBytes: ByteVector): Future[DocumentDecryptResult] =
     underlying.documentDecrypt(encryptedBytes).unsafeToFuture
 
-  def advanced: IronSdkAdvanced[Future] = IronSdkAdvancedFuture(deviceContext)
+  def advanced: IronSdkAdvanced[Future] = IronSdkAdvancedFuture(underlying.advanced)
 
   def userCreate(jwt: String, password: String, options: UserCreateOpts): Future[UserCreateResult] =
     underlying.userCreate(jwt, password, options).unsafeToFuture
+
+  def userRotatePrivateKey(password: String): Future[UserUpdatePrivateKeyResult] =
+    underlying.userRotatePrivateKey(password).unsafeToFuture
+
+}
+
+object IronSdkFuture {
+  def initialize(deviceContext: DeviceContext): Future[IronSdk[Future]] =
+    IronSdk.initialize[IO](deviceContext).map(IronSdkFuture(_)).unsafeToFuture
+
+  def initializeAndRotate(deviceContext: DeviceContext, password: String): Future[IronSdk[Future]] =
+    IronSdk.initializeAndRotate[IO](deviceContext, password).map(IronSdkFuture(_)).unsafeToFuture
+
+  def userCreate[F[_]](jwt: String, password: String, options: UserCreateOpts): Future[UserCreateResult] =
+    IronSdk.userCreate[IO](jwt, password, options).unsafeToFuture
 }
