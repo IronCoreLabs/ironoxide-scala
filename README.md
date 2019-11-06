@@ -10,7 +10,7 @@ with more Scala friendly interfaces and types. It presents two top level APIs:
 
 ## Installation
 
-This project is [published to Maven central](https://search.maven.org/artifact/com.ironcorelabs/ironoxide-scala).
+This project is [published to Maven central](https://search.maven.org/artifact/com.ironcorelabs/ironoxide-scala_2.12).
 
 You'll also need to follow the library setup instructions in [ironoxide-java](https://github.com/IronCoreLabs/ironoxide-java#library) to ensure
 you have the proper binary compiled and loaded.
@@ -21,6 +21,6 @@ All the SDK classes can be imported from the `com.ironcorelabs.scala.sdk` namesp
 
 ## Documentation
 
-Further documentation is available on our [docs site](https://docs.ironcorelabs.com).
+Further documentation is available on our [docs site](https://ironcorelabs.com/docs).
 
 Copyright (c) 2019 IronCore Labs, Inc. All rights reserved.
