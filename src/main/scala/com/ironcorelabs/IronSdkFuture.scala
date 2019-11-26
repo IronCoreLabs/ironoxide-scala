@@ -6,7 +6,7 @@ import cats.effect.IO
 
 case class IronSdkFuture(underlying: IronSdk[IO]) extends IronSdk[Future] {
 
-  def groupCreate(options: GroupCreateOpts): Future[GroupMetaResult] =
+  def groupCreate(options: GroupCreateOpts): Future[GroupCreateResult] =
     underlying.groupCreate(options).unsafeToFuture
 
   def groupAddMembers(id: GroupId, users: List[UserId]): Future[GroupAccessEditResult] =

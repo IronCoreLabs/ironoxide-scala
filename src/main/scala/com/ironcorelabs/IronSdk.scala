@@ -49,7 +49,7 @@ trait IronSdk[F[_]] {
    *
    * @param options group creation options. Use `new GroupCreateOpts()` for defaults
    */
-  def groupCreate(options: GroupCreateOpts): F[GroupMetaResult]
+  def groupCreate(options: GroupCreateOpts): F[GroupCreateResult]
 
   /**
    * Add a list of users as members of a group.
