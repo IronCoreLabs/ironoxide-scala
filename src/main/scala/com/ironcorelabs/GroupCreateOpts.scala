@@ -47,4 +47,8 @@ case class GroupCreateOpts(
 
 object GroupCreateOpts {
   def apply(): GroupCreateOpts = GroupCreateOpts(None, None, true, true, None, Nil, Nil, false)
+  def apply(name: GroupName): GroupCreateOpts = GroupCreateOpts(None, Some(name), true, true, None, Nil, Nil, false)
+  def apply(id: GroupId): GroupCreateOpts = GroupCreateOpts(Some(id), None, true, true, None, Nil, Nil, false)
+  def apply(id: GroupId, name: GroupName): GroupCreateOpts =
+    GroupCreateOpts(Some(id), Some(name), true, true, None, Nil, Nil, false)
 }
