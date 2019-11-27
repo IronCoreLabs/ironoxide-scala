@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.6.0
+
+- Update to ironoxide-java 0.8.0
+- Add `needsRotation` to `GroupCreateOpts` to specify whether a group needs its private key rotated on creation.
+
 ## 0.5.3
 
 - Update to ironoxide-java 0.7.0
