@@ -11,6 +11,7 @@ import java.{util => ju}
  * @param groupMasterPublicKey public key for encrypting to the group
  * @param isAdmin true if the calling user is a group administrator
  * @param isMember true if the calling user is a group member
+ * @param owner owner of the group
  * @param adminList list of group admin UserIds. Group admins can change group membership.
  * @param memberList: list of group member UserIds. Members of a group can decrypt values encrypted to the group.
  * @param created date and time when the group was created
