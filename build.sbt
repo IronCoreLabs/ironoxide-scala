@@ -25,7 +25,7 @@ lazy val root = (project in file(".")).settings(
   ),
   libraryDependencies ++= Seq(
     "org.scodec"       %% "scodec-bits"    % "1.1.12",
-    "com.ironcorelabs" % "ironoxide-java"  % "0.7.2",
+    "com.ironcorelabs" % "ironoxide-java"  % "0.7.3-SNAPSHOT",
     "org.typelevel"    %% "cats-effect"    % "2.0.0",
     "com.ironcorelabs" %% "cats-scalatest" % "3.0.0" % Test,
     "org.scalatest"    %% "scalatest"      % "3.0.8" % Test
@@ -41,6 +41,7 @@ scalacOptions in (Compile, console) ~= {
 scalacOptions in (Test, console) := (scalacOptions in (Compile, console)).value
 
 fork in Test := true
+envVars in Test := Map("IRONCORE_ENV" -> "stage")
 
 licenses := Seq("AGPL-3.0" -> url("https://www.gnu.org/licenses/agpl-3.0.txt"))
 // Add the default sonatype repository setting
