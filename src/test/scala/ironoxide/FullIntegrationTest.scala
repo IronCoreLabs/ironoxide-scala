@@ -88,15 +88,23 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
   "Group Create" should {
     "Create valid group" in {
       val name = GroupName("a name")
-      val groupCreateResult = sdk.groupCreate(GroupCreateOpts(validGroupId, name)).attempt.unsafeRunSync.value
+      val groupCreateResult =
+        sdk
+          .groupCreate(GroupCreateOpts(Some(validGroupId), Some(name), true, true, None, Nil, Nil, true))
+          .attempt
+          .unsafeRunSync
+          .value
 
       groupCreateResult.id.id shouldBe validGroupId.id
       groupCreateResult.name.get.name shouldBe name.name
       groupCreateResult.isAdmin shouldBe true
       groupCreateResult.isMember shouldBe true
+      groupCreateResult.owner shouldBe primaryTestUserId
+      groupCreateResult.adminList shouldBe List(primaryTestUserId)
+      groupCreateResult.memberList shouldBe List(primaryTestUserId)
       groupCreateResult.created should not be null
       groupCreateResult.lastUpdated shouldBe groupCreateResult.created
-      groupCreateResult.needsRotation.value shouldBe false
+      groupCreateResult.needsRotation.value shouldBe true
     }
   }
 
@@ -190,7 +198,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       groupGetResult.memberList.value shouldBe List(primaryTestUserId)
       groupGetResult.created should not be null
       groupGetResult.lastUpdated should be > groupGetResult.created
-      groupGetResult.needsRotation.value shouldBe false
+      groupGetResult.needsRotation.value shouldBe true
     }
     "Fail for invalid group id" in {
       val maybeGroupGetResult = sdk.groupGetMetadata(GroupId("tsp")).attempt.unsafeRunSync

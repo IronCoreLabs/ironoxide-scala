@@ -7,11 +7,11 @@ import com.ironcorelabs.{sdk => jsdk}
 
 case class IronSdkSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: Sync[F]) extends IronSdk[F] {
 
-  def groupCreate(options: GroupCreateOpts): F[GroupMetaResult] =
+  def groupCreate(options: GroupCreateOpts): F[GroupCreateResult] =
     for {
       javaOpts <- options.toJava
       result   <- syncF.delay(underlying.groupCreate(javaOpts))
-    } yield GroupMetaResult(result)
+    } yield GroupCreateResult(result)
 
   def groupAddMembers(id: GroupId, users: List[UserId]): F[GroupAccessEditResult] =
     GroupAccessEditResult(id, users, underlying.groupAddMembers)
