@@ -16,16 +16,17 @@ lazy val root = (project in file(".")).settings(
     "-Ywarn-value-discard",
     "-Xfuture",
     "-language:higherKinds",
-    "-Ypartial-unification"
+    "-Ypartial-unification",
+    "-target:jvm-1.8"
   ),
   resolvers ++= Seq(
-    Resolver.sonatypeRepo("releases"),
+    Resolver.sonatypeRepo("public"),
     Resolver.sonatypeRepo("snapshots"),
     "Typesafe repository".at("https://repo.typesafe.com/typesafe/release/")
   ),
   libraryDependencies ++= Seq(
     "org.scodec"       %% "scodec-bits"    % "1.1.12",
-    "com.ironcorelabs" % "ironoxide-java"  % "0.8.0",
+    "com.ironcorelabs" % "ironoxide-java"  % "0.8.1",
     "org.typelevel"    %% "cats-effect"    % "2.0.0",
     "com.ironcorelabs" %% "cats-scalatest" % "3.0.0" % Test,
     "org.scalatest"    %% "scalatest"      % "3.0.8" % Test
