@@ -23,6 +23,9 @@ case class IronSdkFuture(underlying: IronSdk[IO]) extends IronSdk[Future] {
 
   def groupGetMetadata(id: GroupId): Future[GroupGetResult] = underlying.groupGetMetadata(id).unsafeToFuture
 
+  def groupRotatePrivateKey(id: GroupId): Future[GroupUpdatePrivateKeyResult] =
+    underlying.groupRotatePrivateKey(id).unsafeToFuture
+
   def documentEncrypt(data: ByteVector, options: DocumentEncryptOpts): Future[DocumentEncryptResult] =
     underlying.documentEncrypt(data, options).unsafeToFuture
 

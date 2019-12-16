@@ -95,6 +95,16 @@ trait IronSdk[F[_]] {
    */
   def groupGetMetadata(id: GroupId): F[GroupGetResult]
 
+  /** Rotate the provided group's private key, but leave the public key the same.
+   * There's no black magic here! This is accomplished via multi-party computation with the
+   * IronCore webservice.
+   * Note: You must be an admin of the group in order to rotate its private key.
+   *
+   * @param id ID of the group you wish to rotate the private key of
+   * @return id of the group and associated metadata
+   */
+  def groupRotatePrivateKey(id: GroupId): F[GroupUpdatePrivateKeyResult]
+
   /**
    * Creates a new user within the IronCore system.
    *
@@ -142,7 +152,7 @@ object IronSdk {
    * Initialize IronSdk with a device. Verifies that the provided user/segment exists and the provided device
    * keys are valid and exist for the provided account.
    * After initialization, checks whether the calling user's private key needs rotation and rotates it
-   * if necessary.
+   * if necessary, then does the same for each group the user is an admin of.
    *
    * @param deviceContext device context used to initialize the IronSdk with a set of device keys
    * @param password password used to encrypt and escrow the user's private master key

@@ -108,6 +108,22 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
   }
 
+  "Group Rotate Private Key" should {
+    "succeed for valid group id" in {
+      val groupRotateResult = sdk.groupRotatePrivateKey(validGroupId).attempt.unsafeRunSync.value
+      groupRotateResult.id shouldBe validGroupId
+      groupRotateResult.needsRotation shouldBe false
+
+      val groupGetResult = sdk.groupGetMetadata(validGroupId).attempt.unsafeRunSync.value
+      groupGetResult.needsRotation.value shouldBe false
+    }
+    "fail for invalid group id" in {
+      val id = GroupId("thisbetternotexist")
+      val groupRotateResult = sdk.groupRotatePrivateKey(id).attempt.unsafeRunSync
+      groupRotateResult shouldBe 'left
+    }
+  }
+
   "Group Add Members" should {
     "Fail for nonexistent GroupId" in {
       val maybeAddMembersResult = sdk.groupAddMembers(GroupId("kumquat"), Nil).attempt.unsafeRunSync
@@ -198,7 +214,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       groupGetResult.memberList.value shouldBe List(primaryTestUserId)
       groupGetResult.created should not be null
       groupGetResult.lastUpdated should be > groupGetResult.created
-      groupGetResult.needsRotation.value shouldBe true
+      groupGetResult.needsRotation.value shouldBe false
     }
     "Fail for invalid group id" in {
       val maybeGroupGetResult = sdk.groupGetMetadata(GroupId("tsp")).attempt.unsafeRunSync
