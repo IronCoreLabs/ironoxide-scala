@@ -16,10 +16,11 @@ lazy val root = (project in file(".")).settings(
     "-Ywarn-value-discard",
     "-Xfuture",
     "-language:higherKinds",
-    "-Ypartial-unification"
+    "-Ypartial-unification",
+    "-target:jvm-1.8"
   ),
   resolvers ++= Seq(
-    Resolver.sonatypeRepo("releases"),
+    Resolver.sonatypeRepo("public"),
     Resolver.sonatypeRepo("snapshots"),
     "Typesafe repository".at("https://repo.typesafe.com/typesafe/release/")
   ),
