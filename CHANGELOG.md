@@ -1,20 +1,32 @@
 # Changelog
 
-## 0.6.0
+## 0.7.2
+
+- Add `groupRotatePrivateKey()` to rotate a group's private key.
+- Change `IronSdk.initializeAndRotate()` to also rotate the private keys of all necessary groups that the calling user is an admin of.
+
+## 0.7.1
+
+- Make compatible with Java 8
+
+## 0.7.0
 
 - Update to ironoxide-java 0.8.0
 - Add `needsRotation` to `GroupCreateOpts` to specify whether a group needs its private key rotated on creation.
 - Add `addAsAdmin`, `owner`, `admins`, and `members` to `GroupCreateOpts` to allow adding users to a group on creation.
 
-## 0.5.3
+## 0.6.0
 
-- Update to ironoxide-java 0.7.0
 - Add `IronSdk.initialize()` to initialize IronSdk with a device.
 - Add `IronSdk.initializeAndRotate()` to initialize IronSdk with a device, then rotate the user's private key if needed.
 - Add `userRotatePrivateKey()` to rotate the user's private key.
-- Add `groupAddMembers()` and `groupRemoveMembers()` to add/remove group members.
 - Add `groupAddAdmins()` and `groupRemoveAdmins()` to add/remove group admins.
 - Add `generateNewDevice()` to generate a new device for the user.
+
+## 0.5.3
+
+- Update to ironoxide-java 0.7.1
+- Add `groupAddMembers()` and `groupRemoveMembers()` to add/remove group members.
 
 ## 0.5.2
 
