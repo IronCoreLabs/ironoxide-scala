@@ -31,6 +31,12 @@ case class IronSdkSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: Sync[F]) 
       result <- syncF.delay(underlying.groupGetMetadata(javaId))
     } yield GroupGetResult(result)
 
+  def groupRotatePrivateKey(id: GroupId): F[GroupUpdatePrivateKeyResult] =
+    for {
+      javaId <- id.toJava
+      result <- syncF.delay(underlying.groupRotatePrivateKey(javaId))
+    } yield GroupUpdatePrivateKeyResult(result)
+
   def documentEncrypt(data: ByteVector, options: DocumentEncryptOpts): F[DocumentEncryptResult] =
     for {
       javaOpts <- options.toJava
