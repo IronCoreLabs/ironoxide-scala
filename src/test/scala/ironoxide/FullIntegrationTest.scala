@@ -33,7 +33,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     java.util.Base64.getDecoder
       .decode("1crhZ4PELDOkzEqX9QbcMQzEDH6dOAr6zybHWryp2pwFhmxRx2EcYD6nUtgVm3OwfaJvGhmIViuj88wV/+duEg==")
   )
-  val validDeviceId = DeviceId(1)
   val validGroupId = GroupId(java.util.UUID.randomUUID.toString)
 
   def clearBytes(a: Array[Byte]) =
@@ -43,7 +42,6 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   val deviceContext =
     DeviceContext(
-      validDeviceId,
       primaryTestUserId,
       primaryTestUserSegmentId,
       primaryTestUserDevicePrivateKeyBytes,
@@ -226,16 +224,14 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     "succeed roundtrip serialize/deserialize" in {
       val jsonString = deviceContext.toJsonString[IO].unsafeRunSync
       val deserialized = DeviceContext.fromJsonString[IO](jsonString).unsafeRunSync
-      val deviceId = deviceContext.deviceId.id
       val accountId = deviceContext.userId.id
       val segmentId = deviceContext.segmentId
       val signingPrivateKeyBase64 = deviceContext.signingPrivateKey.bytes.toBase64
       val devicePrivateKeyBase64 = deviceContext.devicePrivateKey.bytes.toBase64
       val expectJson =
-        s"""{"deviceId":$deviceId,"accountId":"$accountId","segmentId":$segmentId,"signingPrivateKey":"$signingPrivateKeyBase64","devicePrivateKey":"$devicePrivateKeyBase64"}"""
+        s"""{"accountId":"$accountId","segmentId":$segmentId,"signingPrivateKey":"$signingPrivateKeyBase64","devicePrivateKey":"$devicePrivateKeyBase64"}"""
 
       jsonString shouldBe expectJson
-      deviceContext.deviceId.id shouldBe deserialized.deviceId.id
       deviceContext.devicePrivateKey.bytes shouldBe deserialized.devicePrivateKey.bytes
       deviceContext.segmentId shouldBe deserialized.segmentId
       deviceContext.signingPrivateKey.bytes shouldBe deserialized.signingPrivateKey.bytes
