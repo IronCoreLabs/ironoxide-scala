@@ -34,14 +34,13 @@ case class GroupCreateResult(
 
 object GroupCreateResult {
   def apply(gcr: jsdk.GroupCreateResult): GroupCreateResult = {
-    val optName = gcr.getName.toScala.map(GroupName(_))
     val optRotation = gcr.getNeedsRotation.toScala.map(_.getBoolean)
     val scalaAdminList = gcr.getAdminList.getList.map(UserId(_)).toList
     val scalaMemberList = gcr.getMemberList.getList.map(UserId(_)).toList
 
     GroupCreateResult(
       GroupId(gcr.getId),
-      optName,
+      GroupName(gcr.getName),
       PublicKey(gcr.getGroupMasterPublicKey),
       gcr.isAdmin,
       gcr.isMember,

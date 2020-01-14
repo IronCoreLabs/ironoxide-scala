@@ -2,6 +2,7 @@ package com.ironcorelabs.scala.sdk
 
 import cats.effect.Sync
 import com.ironcorelabs.{sdk => jsdk}
+import java.{util => ju}
 
 /**
  * ID of a user or a group.
@@ -49,5 +50,6 @@ case class GroupName(name: String) {
 }
 
 object GroupName {
-  def apply(name: jsdk.GroupName): GroupName = GroupName(name.getName)
+  def apply(name: ju.Optional[jsdk.GroupName]): Option[GroupName] =
+    name.toScala.map(n => GroupName(n.getName))
 }

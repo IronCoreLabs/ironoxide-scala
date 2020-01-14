@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.0
+
+- Change `generate_new_device()` to return a `DeviceAddResult`
+
+## 0.8.0
+
+- Remove `deviceId` from `DeviceContext`
+
 ## 0.7.2
 
 - Add `groupRotatePrivateKey()` to rotate a group's private key.

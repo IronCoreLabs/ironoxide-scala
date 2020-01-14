@@ -2,6 +2,7 @@ package com.ironcorelabs.scala.sdk
 
 import cats.effect.Sync
 import com.ironcorelabs.{sdk => jsdk}
+import java.{util => ju}
 
 /**
  * Device name type. Validates that the provided name isn't an empty string
@@ -12,7 +13,6 @@ case class DeviceName(name: String) {
 }
 
 object DeviceName {
-  def apply(name: jsdk.DeviceName): Option[DeviceName] =
-    Option(name).map(n => DeviceName(n.getName))
-  // def apply(name: String): DeviceName = DeviceName(Some(name))
+  def apply(name: ju.Optional[jsdk.DeviceName]): Option[DeviceName] =
+    name.toScala.map(n => DeviceName(n.getName))
 }

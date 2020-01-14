@@ -5,6 +5,7 @@ import org.scalatest.{AsyncWordSpec, Matchers, OptionValues}
 import cats.scalatest.EitherValues
 import cats.effect.IO
 import com.ironcorelabs.{sdk => jsdk}
+import java.{util => ju}
 
 class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues with OptionValues {
   try {
@@ -17,7 +18,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
              .getProperty("java.library.path")}'.
            |Note that the path should be to the directory where ironoxide_java is, not the actual path. If you build ironoxide_java with
            |`cargo build` then there should be libironoxide_java.* in ../target/debug.""".stripMargin
-      );
+      )
       //There is no way we can actually continue, so I'm going to do the dirty thing to prevent misleading errors from spewing.
       System.exit(1)
   }
@@ -52,8 +53,8 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "DeviceCreateOpts" should {
     "create with DeviceName of null" in {
-      val deviceName: com.ironcorelabs.sdk.DeviceName = null
-      DeviceCreateOpts(DeviceName.apply(deviceName)).name shouldBe None
+      val deviceName = ju.Optional.empty[jsdk.DeviceName]
+      DeviceCreateOpts(DeviceName(deviceName)).name shouldBe None
     }
   }
 

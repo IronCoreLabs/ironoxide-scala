@@ -175,9 +175,9 @@ object IronSdk {
    */
   def generateNewDevice[F[_]](jwt: String, password: String, deviceCreateOptions: DeviceCreateOpts)(
     implicit syncF: Sync[F]
-  ): F[DeviceContext] =
+  ): F[DeviceAddResult] =
     deviceCreateOptions.toJava.map { javaOpts =>
-      DeviceContext(jsdk.IronSdk.generateNewDevice(jwt, password, javaOpts))
+      DeviceAddResult(jsdk.IronSdk.generateNewDevice(jwt, password, javaOpts))
     }
 
   /**

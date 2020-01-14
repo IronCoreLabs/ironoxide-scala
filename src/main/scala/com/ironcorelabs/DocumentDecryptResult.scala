@@ -26,7 +26,7 @@ object DocumentDecryptResult {
 
     DocumentDecryptResult(
       DocumentId(ddr.getId),
-      DocumentName.fromJava(ddr.getName),
+      DocumentName(ddr.getName),
       ByteVector.view(underlyingBytes),
       ddr.getCreated,
       ddr.getLastUpdated
