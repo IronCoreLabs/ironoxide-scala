@@ -38,6 +38,14 @@ object DeviceContext {
       DeviceSigningPrivateKey(context.getSigningPrivateKey)
     )
 
+  def apply(dar: DeviceAddResult): DeviceContext =
+    DeviceContext(
+      dar.userId,
+      dar.segmentId,
+      dar.devicePrivateKey,
+      dar.signingPrivateKey
+    )
+
   def fromJsonString[F[_]](jsonString: String)(implicit syncF: Sync[F]): F[DeviceContext] =
     syncF.delay(jsdk.DeviceContext.fromJsonString(jsonString)).map { javaContext =>
       DeviceContext(

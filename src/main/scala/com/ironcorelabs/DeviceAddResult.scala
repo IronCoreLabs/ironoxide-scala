@@ -4,7 +4,7 @@ import com.ironcorelabs.{sdk => jsdk}
 import java.{util => ju}
 
 /**
- * Account's device context. Needed to initialize the SDK with a set of device keys.
+ * Result from adding a new device. Can be turned into a DeviceContext for initialization.
  *
  * @param userId ID of a user
  * @param segmentId ID of a segment
@@ -24,7 +24,10 @@ case class DeviceAddResult(
   name: Option[DeviceName],
   created: ju.Date,
   lastUpdated: ju.Date
-)
+) {
+  def toDeviceContext(): DeviceContext =
+    DeviceContext(userId, segmentId, devicePrivateKey, signingPrivateKey)
+}
 
 object DeviceAddResult {
   def apply(dar: jsdk.DeviceAddResult): DeviceAddResult =
