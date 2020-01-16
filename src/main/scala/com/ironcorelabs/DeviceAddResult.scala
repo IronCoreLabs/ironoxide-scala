@@ -25,7 +25,7 @@ case class DeviceAddResult(
   created: ju.Date,
   lastUpdated: ju.Date
 ) {
-  def toDeviceContext(): DeviceContext =
+  def toDeviceContext: DeviceContext =
     DeviceContext(userId, segmentId, devicePrivateKey, signingPrivateKey)
 }
 

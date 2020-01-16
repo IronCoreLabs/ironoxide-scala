@@ -52,7 +52,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
   val sdk = deviceContext.toJava[IO].map(d => IronSdkSync[IO](jsdk.IronSdk.initialize(d))).unsafeRunSync
 
   "DeviceCreateOpts" should {
-    "create with DeviceName of null" in {
+    "create with empty DeviceName" in {
       val deviceName = ju.Optional.empty[jsdk.DeviceName]
       DeviceCreateOpts(DeviceName(deviceName)).name shouldBe None
     }
