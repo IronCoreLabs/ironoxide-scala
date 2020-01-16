@@ -30,7 +30,7 @@ object GroupAccessEditResult {
     for {
       javaId        <- id.toJava
       javaUsersList <- users.traverse(_.toJava)
-      javaUsersArray = javaUsersList.toArray[com.ironcorelabs.sdk.UserId]
+      javaUsersArray = javaUsersList.toArray[jsdk.UserId]
       result <- syncF.delay(fn(javaId, javaUsersArray))
     } yield GroupAccessEditResult(result)
 }

@@ -2,6 +2,7 @@ package com.ironcorelabs.scala.sdk
 
 import scodec.bits.ByteVector
 import java.{util => ju}
+import com.ironcorelabs.{sdk => jsdk}
 
 /**
  * Result of decrypting a document. Includes minimal metadata as well as the decrypted bytes.
@@ -21,7 +22,7 @@ case class DocumentDecryptResult(
 )(val underlyingBytes: Array[Byte])
 
 object DocumentDecryptResult {
-  def apply(ddr: com.ironcorelabs.sdk.DocumentDecryptResult): DocumentDecryptResult = {
+  def apply(ddr: jsdk.DocumentDecryptResult): DocumentDecryptResult = {
     val underlyingBytes = ddr.getDecryptedData
 
     DocumentDecryptResult(

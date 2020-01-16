@@ -1,6 +1,7 @@
 package com.ironcorelabs.scala.sdk
 
 import scodec.bits.ByteVector
+import com.ironcorelabs.{sdk => jsdk}
 
 /**
  * Result of decrypting an unmanaged document. Includes the document's ID, the decrypted bytes, and the ID of the user or group that granted access to the encrypted data.
@@ -16,7 +17,7 @@ case class DocumentDecryptUnmanagedResult(
 )(val underlyingBytes: Array[Byte])
 
 object DocumentDecryptUnmanagedResult {
-  def apply(ddr: com.ironcorelabs.sdk.DocumentDecryptUnmanagedResult): DocumentDecryptUnmanagedResult = {
+  def apply(ddr: jsdk.DocumentDecryptUnmanagedResult): DocumentDecryptUnmanagedResult = {
     val underlyingBytes = ddr.getDecryptedData
 
     DocumentDecryptUnmanagedResult(

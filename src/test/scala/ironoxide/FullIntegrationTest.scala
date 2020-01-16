@@ -5,6 +5,7 @@ import org.scalatest.{AsyncWordSpec, Matchers, OptionValues}
 import cats.scalatest.EitherValues
 import cats.effect.IO
 import com.ironcorelabs.{sdk => jsdk}
+import java.{util => ju}
 
 class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues with OptionValues {
   try {
@@ -27,13 +28,13 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
   val primaryTestUserId = UserId("b29c1ee7-ede9-4401-855a-3a78a34a2759")
   val primaryTestUserSegmentId = 2013L
   val primaryTestUserDevicePrivateKeyBytes = PrivateKey(
-    java.util.Base64.getDecoder.decode("Svt+Z8lfQ8g3FwqeduMyf7X0R1Pbyt9PJXkked7pwuU=")
+    ju.Base64.getDecoder.decode("Svt+Z8lfQ8g3FwqeduMyf7X0R1Pbyt9PJXkked7pwuU=")
   )
   val primaryTestUserSigningPrivateKeyBytes = DeviceSigningPrivateKey(
-    java.util.Base64.getDecoder
+    ju.Base64.getDecoder
       .decode("1crhZ4PELDOkzEqX9QbcMQzEDH6dOAr6zybHWryp2pwFhmxRx2EcYD6nUtgVm3OwfaJvGhmIViuj88wV/+duEg==")
   )
-  val validGroupId = GroupId(java.util.UUID.randomUUID.toString)
+  val validGroupId = GroupId(ju.UUID.randomUUID.toString)
 
   def clearBytes(a: Array[Byte]) =
     for (i <- 0.until(a.length)) {
@@ -52,7 +53,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "DeviceCreateOpts" should {
     "create with DeviceName of null" in {
-      val deviceName = java.util.Optional.empty[jsdk.DeviceName]()
+      val deviceName = ju.Optional.empty[jsdk.DeviceName]()
       DeviceCreateOpts(DeviceName.apply(deviceName)).name shouldBe None
     }
   }
@@ -273,7 +274,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
 
       val name = GroupName("a name")
-      val validGroupUUID = java.util.UUID.randomUUID.toString
+      val validGroupUUID = ju.UUID.randomUUID.toString
       val id = GroupId(validGroupUUID)
 
       // create a valid group then immediately encrypt to it
@@ -357,7 +358,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
 
       val name = GroupName("a name")
-      val validGroupUUID = java.util.UUID.randomUUID.toString
+      val validGroupUUID = ju.UUID.randomUUID.toString
       val id = GroupId(validGroupUUID)
 
       // create a valid group then immediately encrypt to it

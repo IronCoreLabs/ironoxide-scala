@@ -11,7 +11,7 @@ sealed trait UserOrGroupId {
 }
 
 object UserOrGroupId {
-  def apply(uid: com.ironcorelabs.sdk.UserOrGroupId): UserOrGroupId =
+  def apply(uid: jsdk.UserOrGroupId): UserOrGroupId =
     if (uid.isUser())
       UserId(uid.getId())
     else
@@ -26,7 +26,7 @@ case class UserId(id: String) extends UserOrGroupId {
 }
 
 object UserId {
-  def apply(uid: com.ironcorelabs.sdk.UserId): UserId = UserId(uid.getId)
+  def apply(uid: jsdk.UserId): UserId = UserId(uid.getId)
 }
 
 /**
