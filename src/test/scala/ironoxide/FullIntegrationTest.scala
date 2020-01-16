@@ -10,7 +10,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
   try {
     java.lang.System.loadLibrary("ironoxide_java")
   } catch {
-    case e: UnsatisfiedLinkError =>
+    case _: UnsatisfiedLinkError =>
       println("Failed to load ironoxide_java")
       println(
         s"""The value was not found in java.library.path. Path was '${System
@@ -52,7 +52,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "DeviceCreateOpts" should {
     "create with DeviceName of null" in {
-      val deviceName: com.ironcorelabs.sdk.DeviceName = null
+      val deviceName = java.util.Optional.empty[jsdk.DeviceName]()
       DeviceCreateOpts(DeviceName.apply(deviceName)).name shouldBe None
     }
   }

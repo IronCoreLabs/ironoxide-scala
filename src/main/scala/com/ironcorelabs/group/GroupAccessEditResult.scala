@@ -6,6 +6,9 @@ import cats.effect.Sync
 
 /**
  * Result from requesting changes to a group's membership or administrators. Partial success is supported.
+ *
+ * @param succeeded a list of users whose access was modified
+ * @param failed a list of users whose access could not be modified
  */
 case class GroupAccessEditResult(
   succeeded: List[UserId],
@@ -15,8 +18,8 @@ case class GroupAccessEditResult(
 object GroupAccessEditResult {
   def apply(gaer: jsdk.GroupAccessEditResult): GroupAccessEditResult =
     GroupAccessEditResult(
-      gaer.getSucceeded.map(UserId(_)).toList,
-      gaer.getFailed.map(GroupAccessEditErr(_)).toList
+      gaer.getSucceeded.toList.map(UserId(_)),
+      gaer.getFailed.toList.map(GroupAccessEditErr(_))
     )
 
   def apply[F[_]](

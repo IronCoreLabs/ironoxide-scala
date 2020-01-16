@@ -39,15 +39,3 @@ case class GroupId(id: String) extends UserOrGroupId {
 object GroupId {
   def apply(gid: jsdk.GroupId): GroupId = GroupId(gid.getId)
 }
-
-/**
- * Group's user-assigned name (non-unique).
- */
-case class GroupName(name: String) {
-  private[sdk] def toJava[F[_]](implicit syncF: Sync[F]): F[jsdk.GroupName] =
-    syncF.delay(jsdk.GroupName.validate(name))
-}
-
-object GroupName {
-  def apply(name: jsdk.GroupName): GroupName = GroupName(name.getName)
-}

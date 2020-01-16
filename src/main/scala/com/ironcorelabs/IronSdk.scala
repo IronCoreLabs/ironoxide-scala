@@ -45,11 +45,121 @@ trait IronSdk[F[_]] {
     documentDecrypt(ByteVector.view(encryptedBytes))
 
   /**
-   * Creates a group. The creating user will become a group admin.
+   * List all of the documents that the current user is able to decrypt.
    *
-   * @param options group creation options. Use `new GroupCreateOpts()` for defaults
+   * @return a List of [[DocumentListMeta]] with metadata about each document the user can decrypt.
+   */
+  def documentList(): F[List[DocumentListMeta]]
+
+  /**
+   * Get the metadata for a specific document given its id.
+   *
+   * @param id unique id of the document to retrieve
+   * @return [[DocumentMetadataResult]] with details about the requested document.
+   */
+  def documentGetMetadata(id: DocumentId): F[DocumentMetadataResult]
+
+  /**
+   * Attempt to parse the document id out of an encrypted document.
+   *
+   * @param encryptedDocument encrypted document bytes
+   * @return extracted id
+   */
+  def documentGetIdFromBytes(encryptedDocument: ByteVector): F[DocumentId]
+
+  /**
+   * Attempt to parse the document id out of an encrypted document.
+   *
+   * @param encryptedDocument encrypted document bytes
+   * @return extracted id
+   */
+  def documentGetIdFromBytes(encryptedDocument: Array[Byte]): F[DocumentId] =
+    documentGetIdFromBytes(ByteVector.view(encryptedDocument))
+
+  /**
+   * Update a document name to a new value or clear its value.
+   *
+   * @param id      id of the document to update
+   * @param name    new name for the document. Provide a Some([[DocumentName]]) to update to a new name or None to clear the name field.
+   * @return metadata about the document that was updated.
+   */
+  def documentUpdateName(id: DocumentId, name: Option[DocumentName]): F[DocumentMetadataResult]
+
+  /**
+   * Update the encrypted content of an existing document. Persists any existing access to other users and groups.
+   *
+   * @param id               id of document to update
+   * @param newDocumentData  updated document content to encrypt
+   */
+  def documentUpdateBytes(id: DocumentId, newDocumentData: ByteVector): F[DocumentEncryptResult]
+
+  /**
+   * Update the encrypted content of an existing document. Persists any existing access to other users and groups.
+   *
+   * @param id               id of document to update
+   * @param newDocumentData  updated document content to encrypt
+   */
+  def documentUpdateBytes(id: DocumentId, newDocumentData: Array[Byte]): F[DocumentEncryptResult] =
+    documentUpdateBytes(id, ByteVector.view(newDocumentData))
+
+  /**
+   * Grant access to a document. Recipients of document access can be either users or groups.
+   *
+   * @param documentId id of the document whose access is is being modified
+   * @param userGrants list of user grants
+   * @param groupGrants list of group grants
+   * @return each individual grant to a user/group succeeded or failed
+   */
+  def documentGrantAccess(
+    documentId: DocumentId,
+    userGrants: List[UserId],
+    groupGrants: List[GroupId]
+  ): F[DocumentAccessResult]
+
+  /**
+   * Revoke access from a document. Revocation of document access can be either users or groups.
+   *
+   * @param documentId     id of the document whose access is is being modified
+   * @param userRevokes    list of user revokes
+   * @param groupRevokes   list of group revokes
+   * @return each individual revoke from a user/group either succeeded or failed
+   */
+  def documentRevokeAccess(
+    documentId: DocumentId,
+    userRevokes: List[UserId],
+    groupRevokes: List[GroupId]
+  ): F[DocumentAccessResult]
+
+  /**
+   * Creates a group
+   *
+   * @param options group creation options. Use `GroupCreateOpts$.apply()` for defaults
    */
   def groupCreate(options: GroupCreateOpts): F[GroupCreateResult]
+
+  /**
+   * Update a group name to a new value or clear its value.
+   *
+   * @param id      id of the group to update
+   * @param name    new name for the group. Provide a Some([[GroupName]]) to update to a new name or None to clear the name field
+   * @return metadata about the group that was updated
+   */
+  def groupUpdateName(id: GroupId, name: Option[GroupName]): F[GroupMetaResult]
+
+  /**
+   * List all of the groups that the current user is either an admin or member of.
+   *
+   * @return list of (abbreviated) metadata about each group the user is a part of
+   */
+  def groupList(): F[List[GroupMetaResult]]
+
+  /**
+   * Delete the identified group.
+   *
+   * @param id unique id of group
+   * @return the deleted group id
+   */
+  def groupDelete(id: GroupId): F[GroupId]
 
   /**
    * Add a list of users as members of a group.
@@ -95,12 +205,13 @@ trait IronSdk[F[_]] {
    */
   def groupGetMetadata(id: GroupId): F[GroupGetResult]
 
-  /** Rotate the provided group's private key, but leave the public key the same.
+  /**
+   * Rotate the provided group's private key, but leave the public key the same.
    * There's no black magic here! This is accomplished via multi-party computation with the
    * IronCore webservice.
    * Note: You must be an admin of the group in order to rotate its private key.
    *
-   * @param id ID of the group you wish to rotate the private key of
+   * @param id id of the group you wish to rotate the private key of
    * @return id of the group and associated metadata
    */
   def groupRotatePrivateKey(id: GroupId): F[GroupUpdatePrivateKeyResult]
@@ -116,12 +227,46 @@ trait IronSdk[F[_]] {
   def userCreate(jwt: String, password: String, options: UserCreateOpts): F[UserCreateResult]
 
   /**
+   * Verify a user given a JWT for their user record.
+   *
+   * @param jwt valid IronCore JWT
+   * @return Option of whether the user's account record exists in the IronCore system or not
+   */
+  def userVerify(jwt: String): F[Option[UserResult]]
+
+  /**
+   * Get a list of user public keys given their IDs. Allows discovery of which user IDs have keys in the
+   * IronCore system to determine if they can be added to groups or have documents shared with them.
+   *
+   * @param users list of user IDs to check
+   * @return List of users and their public keys. Only users who have public keys will be returned in the map
+   */
+  def userGetPublicKey(users: List[UserId]): F[List[UserWithKey]]
+
+  /**
+   * Get all the devices for the current user
+   *
+   * @return all devices for the current user, sorted by the device id
+   */
+  def userListDevices(): F[List[UserDevice]]
+
+  /**
+   * Delete a user device.
+   *
+   * If deleting the currently signed in device (None for `deviceId`), the sdk will need to be
+   * reinitialized with `IronSdk.initialize()` before further use.
+   *
+   * @param deviceId id of the device to delete. If None, delete the currently signed in device. Use [[userListDevices]] to get ids.
+   * @return id of deleted device
+   */
+  def userDeleteDevice(deviceId: Option[DeviceId]): F[DeviceId]
+
+  /**
    * Rotate the current user's private key, but leave the public key the same.
    * There's no black magic here! This is accomplished via multi-party computation with the
    * IronCore webservice.
    *
    * @param password password to unlock the current user's master private key
-   *
    * @return The (encrypted) updated private key and associated metadata
    */
   def userRotatePrivateKey(password: String): F[UserUpdatePrivateKeyResult]
@@ -146,7 +291,7 @@ object IronSdk {
    * @return an instance of the IronSdk
    */
   def initialize[F[_]](deviceContext: DeviceContext)(implicit syncF: Sync[F]): F[IronSdk[F]] =
-    deviceContext.toJava.map(com.ironcorelabs.sdk.IronSdk.initialize).map(IronSdkSync(_))
+    deviceContext.toJava.map(jsdk.IronSdk.initialize).map(IronSdkSync(_))
 
   /**
    * Initialize IronSdk with a device. Verifies that the provided user/segment exists and the provided device
@@ -161,7 +306,7 @@ object IronSdk {
   def initializeAndRotate[F[_]](deviceContext: DeviceContext, password: String)(
     implicit syncF: Sync[F]
   ): F[IronSdk[F]] =
-    deviceContext.toJava.map(com.ironcorelabs.sdk.IronSdk.initializeAndRotate(_, password)).map(IronSdkSync(_))
+    deviceContext.toJava.map(jsdk.IronSdk.initializeAndRotate(_, password)).map(IronSdkSync(_))
 
   /**
    * Generate a new device for the user specified in the signed JWT.
@@ -194,4 +339,13 @@ object IronSdk {
     options.toJava.map { javaOpts =>
       UserCreateResult(jsdk.IronSdk.userCreate(jwt, password, javaOpts))
     }
+
+  /**
+   * Verify a user given a JWT for their user record.
+   *
+   * @param jwt valid IronCore JWT
+   * @return option of whether the user's account record exists in the IronCore system or not
+   */
+  def userVerify[F[_]](jwt: String)(implicit syncF: Sync[F]): F[Option[UserResult]] =
+    syncF.delay(UserResult(jsdk.IronSdk.userVerify(jwt)))
 }
