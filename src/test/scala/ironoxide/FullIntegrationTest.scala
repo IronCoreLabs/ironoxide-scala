@@ -364,10 +364,9 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       // create a valid group then immediately encrypt to it
       val result = sdk
         .groupCreate(GroupCreateOpts(id, name))
-        .flatMap(
-          groupResult =>
-            sdk.advanced
-              .documentEncryptUnmanaged(data, DocumentEncryptOpts.withExplicitGrants(false, Nil, List(groupResult.id)))
+        .flatMap(groupResult =>
+          sdk.advanced
+            .documentEncryptUnmanaged(data, DocumentEncryptOpts.withExplicitGrants(false, Nil, List(groupResult.id)))
         )
         .attempt
         .unsafeRunSync
