@@ -16,7 +16,7 @@ case class SucceededResult(
 object SucceededResult {
   def apply(sr: jsdk.SucceededResult): SucceededResult =
     SucceededResult(
-      sr.getUsers.map(UserId(_)).toList,
-      sr.getGroups.map(GroupId(_)).toList
+      sr.getUsers.toList.map(UserId(_)),
+      sr.getGroups.toList.map(GroupId(_))
     )
 }

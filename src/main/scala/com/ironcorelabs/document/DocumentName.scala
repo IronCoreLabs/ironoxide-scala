@@ -4,9 +4,7 @@ import cats.effect.Sync
 import com.ironcorelabs.{sdk => jsdk}
 import java.{util => ju}
 
-/**
- * Name of a document. Inner value is validated when calling `toJava`.
- */
+/** Name of a document. Inner value is validated when calling `toJava`. */
 case class DocumentName(name: String) {
   private[sdk] def toJava[F[_]](implicit syncF: Sync[F]): F[jsdk.DocumentName] =
     syncF.delay(jsdk.DocumentName.validate(name))

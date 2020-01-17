@@ -1,5 +1,5 @@
 addSbtPlugin("org.xerial.sbt"    % "sbt-sonatype"           % "2.5")
 addSbtPlugin("com.jsuereth"      % "sbt-pgp"                % "1.1.2")
 addSbtPlugin("com.github.gseitz" % "sbt-release"            % "1.0.12")
-addSbtPlugin("org.scalameta"     % "sbt-scalafmt"           % "2.0.7")
+addSbtPlugin("org.scalameta"     % "sbt-scalafmt"           % "2.3.0")
 addSbtPlugin("org.scalastyle"    %% "scalastyle-sbt-plugin" % "1.0.0")

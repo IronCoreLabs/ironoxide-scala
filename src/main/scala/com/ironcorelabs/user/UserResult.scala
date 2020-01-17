@@ -20,13 +20,12 @@ case class UserResult(
 
 object UserResult {
   def apply(maybe_result: ju.Optional[jsdk.UserResult]): Option[UserResult] =
-    maybe_result.toScala.map(
-      result =>
-        UserResult(
-          UserId(result.getAccountId),
-          result.getSegmentId,
-          PublicKey(result.getUserPublicKey.asBytes),
-          result.getNeedsRotation
-        )
+    maybe_result.toScala.map(result =>
+      UserResult(
+        UserId(result.getAccountId),
+        result.getSegmentId,
+        PublicKey(result.getUserPublicKey.asBytes),
+        result.getNeedsRotation
+      )
     )
 }

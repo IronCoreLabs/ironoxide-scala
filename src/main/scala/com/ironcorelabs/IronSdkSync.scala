@@ -22,7 +22,7 @@ case class IronSdkSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: Sync[F]) 
 
   def groupList(): F[List[GroupMetaResult]] =
     for {
-      result <- syncF.delay(underlying.groupList).map(_.getResult.toList)
+      result <- syncF.delay(underlying.groupList.getResult.toList)
     } yield result.map(GroupMetaResult(_))
 
   def groupDelete(id: GroupId): F[GroupId] =

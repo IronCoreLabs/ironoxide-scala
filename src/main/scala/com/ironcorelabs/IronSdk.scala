@@ -105,10 +105,10 @@ trait IronSdk[F[_]] {
   /**
    * Grant access to a document. Recipients of document access can be either users or groups.
    *
-   * @param documentId id of the document whose access is is being modified
+   * @param documentId id of the document whose access is being modified
    * @param userGrants list of user grants
    * @param groupGrants list of group grants
-   * @return each individual grant to a user/group succeeded or failed
+   * @return information about which grants succeeded/failed
    */
   def documentGrantAccess(
     documentId: DocumentId,
@@ -122,7 +122,7 @@ trait IronSdk[F[_]] {
    * @param documentId     id of the document whose access is is being modified
    * @param userRevokes    list of user revokes
    * @param groupRevokes   list of group revokes
-   * @return each individual revoke from a user/group either succeeded or failed
+   * @return information about which revokations succeeded/failed
    */
   def documentRevokeAccess(
     documentId: DocumentId,
@@ -131,9 +131,9 @@ trait IronSdk[F[_]] {
   ): F[DocumentAccessResult]
 
   /**
-   * Creates a group
+   * Create a group
    *
-   * @param options group creation options. Use `GroupCreateOpts$.apply()` for defaults
+   * @param options group creation options. Use `GroupCreateOpts.apply()` for defaults
    */
   def groupCreate(options: GroupCreateOpts): F[GroupCreateResult]
 
@@ -164,8 +164,8 @@ trait IronSdk[F[_]] {
   /**
    * Add a list of users as members of a group.
    *
-   * @param id      id of the group to add members to
-   * @param users   the list of users thet will be added to the group as members
+   * @param id id of the group to add members to
+   * @param users the list of users thet will be added to the group as members
    * @return all the users that were added and all the users that were not added with the reason they were not
    */
   def groupAddMembers(id: GroupId, users: List[UserId]): F[GroupAccessEditResult]
@@ -173,7 +173,7 @@ trait IronSdk[F[_]] {
   /**
    * Remove a list of users as members from the group.
    *
-   * @param id          id of the group to remove members from
+   * @param id id of the group to remove members from
    * @param userRevokes list of user ids to remove as members
    * @return list of users that were removed and the users that failed to be removed with the reason they were not
    */
@@ -182,8 +182,8 @@ trait IronSdk[F[_]] {
   /**
    * Add a list of users as admins of a group.
    *
-   * @param id      id of the group to add admins to
-   * @param users   the list of users that will be added to the group as admins
+   * @param id id of the group to add admins to
+   * @param users the list of users that will be added to the group as admins
    * @return all the users that were added and all the users that were not added with the reason they were not
    */
   def groupAddAdmins(id: GroupId, users: List[UserId]): F[GroupAccessEditResult]
@@ -191,7 +191,7 @@ trait IronSdk[F[_]] {
   /**
    * Remove a list of users as admins from the group.
    *
-   * @param id          id of the group to remove admins from
+   * @param id id of the group to remove admins from
    * @param userRevokes list of user ids to remove as admins
    * @return list of users that were removed and the users that failed to be removed with the reason they were not
    */
@@ -221,7 +221,7 @@ trait IronSdk[F[_]] {
    *
    * @param jwt valid IronCore or Auth0 JWT
    * @param password password used to encrypt and escrow the user's private master key
-   * @param options user creation options. Use `new UserCreateOpts()` for defaults
+   * @param options user creation options. Use `UserCreateOpts.apply()` for defaults
    * @return Newly generated [[UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys. The escrowed keys are unlocked by the provided password.
    */
   def userCreate(jwt: String, password: String, options: UserCreateOpts): F[UserCreateResult]
@@ -239,7 +239,7 @@ trait IronSdk[F[_]] {
    * IronCore system to determine if they can be added to groups or have documents shared with them.
    *
    * @param users list of user IDs to check
-   * @return List of users and their public keys. Only users who have public keys will be returned in the map
+   * @return List of users and their public keys. Only users who have public keys will be returned
    */
   def userGetPublicKey(users: List[UserId]): F[List[UserWithKey]]
 
@@ -254,7 +254,7 @@ trait IronSdk[F[_]] {
    * Delete a user device.
    *
    * If deleting the currently signed in device (None for `deviceId`), the sdk will need to be
-   * reinitialized with `IronSdk.initialize()` before further use.
+   * reinitialized with [[IronSdk.initialize]] before further use.
    *
    * @param deviceId id of the device to delete. If None, delete the currently signed in device. Use [[userListDevices]] to get ids.
    * @return id of deleted device
@@ -272,7 +272,7 @@ trait IronSdk[F[_]] {
   def userRotatePrivateKey(password: String): F[UserUpdatePrivateKeyResult]
 
   /**
-   * Accesses advanced SDK operations.
+   * Access advanced SDK operations
    *
    * @return an instance of the [[IronSdkAdvanced]]
    */
@@ -313,8 +313,8 @@ object IronSdk {
    * This will result in a new transform key (from the user's master private key to the new device's public key)
    * being generated and stored with the IronCore Service.
    *
-   * @param jwt                 valid IronCore JWT
-   * @param password            password used to encrypt and escrow the user's private key
+   * @param jwt valid IronCore JWT
+   * @param password password used to encrypt and escrow the user's private key
    * @param deviceCreateOptions optional values, like device name
    * @return details about the newly created device
    */
@@ -330,7 +330,7 @@ object IronSdk {
    *
    * @param jwt Valid IronCore or Auth0 JWT
    * @param password Password used to encrypt and escrow the user's private master key
-   * @param options user creation options. Use `new UserCreateOpts()` for defaults
+   * @param options user creation options. Use `UserCreateOpts.apply()` for defaults
    * @return Newly generated [[UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys. The escrowed keys are unlocked by the provided password.
    */
   def userCreate[F[_]](jwt: String, password: String, options: UserCreateOpts)(

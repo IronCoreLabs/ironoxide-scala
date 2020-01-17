@@ -19,7 +19,7 @@ case class FailedResult(
 object FailedResult {
   def apply(sr: jsdk.FailedResult): FailedResult =
     FailedResult(
-      sr.getUsers.map(UserAccessErr(_)).toList,
-      sr.getGroups.map(GroupAccessErr(_)).toList
+      sr.getUsers.toList.map(UserAccessErr(_)),
+      sr.getGroups.toList.map(GroupAccessErr(_))
     )
 }
