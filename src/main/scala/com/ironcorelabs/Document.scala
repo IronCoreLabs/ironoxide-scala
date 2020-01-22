@@ -24,6 +24,6 @@ case class DocumentName(name: String) {
 }
 
 object DocumentName {
-  private[sdk] def fromJava(name: ju.Optional[jsdk.DocumentName]): Option[DocumentName] =
-    name.toScala.map(d => DocumentName(d.getName))
+  def apply(name: ju.Optional[jsdk.DocumentName]): Option[DocumentName] =
+    name.toScala.map(n => DocumentName(n.getName))
 }
