@@ -52,5 +52,5 @@ case class IronSdkSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: Sync[F]) 
   def userRotatePrivateKey(password: String): F[UserUpdatePrivateKeyResult] =
     syncF.delay(underlying.userRotatePrivateKey(password)).map(UserUpdatePrivateKeyResult.apply)
 
-  def advanced: IronSdkAdvanced[F] = IronSdkAdvancedSync(underlying.advanced)
+  def advanced: IronSdkAdvanced[F] = IronSdkAdvancedSync(underlying)
 }

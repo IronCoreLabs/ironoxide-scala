@@ -26,7 +26,7 @@ lazy val root = (project in file(".")).settings(
   ),
   libraryDependencies ++= Seq(
     "org.scodec"       %% "scodec-bits"    % "1.1.12",
-    "com.ironcorelabs" % "ironoxide-java"  % "0.10.0",
+    "com.ironcorelabs" % "ironoxide-java"  % "0.11.0",
     "org.typelevel"    %% "cats-effect"    % "2.0.0",
     "com.ironcorelabs" %% "cats-scalatest" % "3.0.0" % Test,
     "org.scalatest"    %% "scalatest"      % "3.0.8" % Test
@@ -64,8 +64,8 @@ usePgpKeyHex("E84BBF42")
 
 pomExtra := (
   <scm>
-      <url>git@github.com:IronCoreLabs/ironoxide-java.git</url>
-      <connection>scm:git@github.com:IronCoreLabs/ironoxide-java.git</connection>
+      <url>git@github.com:IronCoreLabs/ironoxide-scala.git</url>
+      <connection>scm:git@github.com:IronCoreLabs/ironoxide-scala.git</connection>
     </scm>
     <developers>
       {

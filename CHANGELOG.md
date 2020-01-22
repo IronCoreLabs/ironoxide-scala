@@ -3,6 +3,7 @@
 ## 0.9.0
 
 - Change `generate_new_device()` to return a `DeviceAddResult`
+- Fix issue with core dump when only using advanced sdk object.
 
 ## 0.8.0
 
