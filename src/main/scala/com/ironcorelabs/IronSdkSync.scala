@@ -147,5 +147,5 @@ case class IronSdkSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: Sync[F]) 
       result <- syncF.delay(underlying.userRotatePrivateKey(password))
     } yield UserUpdatePrivateKeyResult(result)
 
-  def advanced: IronSdkAdvanced[F] = IronSdkAdvancedSync(underlying.advanced)
+  def advanced: IronSdkAdvanced[F] = IronSdkAdvancedSync(underlying)
 }

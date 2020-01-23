@@ -26,12 +26,11 @@ case class GroupMetaResult(
 
 object GroupMetaResult {
   def apply(gmr: jsdk.GroupMetaResult): GroupMetaResult = {
-    val optName = gmr.getName.toScala.map(GroupName(_))
     val optRotation = gmr.getNeedsRotation.toScala.map(_.getBoolean)
 
     GroupMetaResult(
       GroupId(gmr.getId),
-      optName,
+      GroupName(gmr.getName),
       gmr.isAdmin,
       gmr.isMember,
       gmr.getCreated,
