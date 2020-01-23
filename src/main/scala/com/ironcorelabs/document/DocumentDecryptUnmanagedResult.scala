@@ -22,7 +22,7 @@ object DocumentDecryptUnmanagedResult {
 
     DocumentDecryptUnmanagedResult(
       DocumentId(ddr.getId),
-      UserOrGroupId(ddr.getAccessViaUserOrGroup()),
+      UserOrGroupId(ddr.getAccessViaUserOrGroup),
       underlyingBytes
     )
   }

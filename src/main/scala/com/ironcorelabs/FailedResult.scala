@@ -12,7 +12,7 @@ case class FailedResult(
   users: List[UserAccessErr],
   groups: List[GroupAccessErr]
 ) {
-  def isEmpty(): Boolean =
+  def isEmpty: Boolean =
     users.isEmpty && groups.isEmpty
 }
 

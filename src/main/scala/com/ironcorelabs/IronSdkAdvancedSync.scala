@@ -19,5 +19,5 @@ case class IronSdkAdvancedSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: S
   ): F[DocumentDecryptUnmanagedResult] =
     syncF
       .delay(underlying.advancedDocumentDecryptUnmanaged(encryptedData.underlyingBytes, encryptedDeks.underlyingBytes))
-      .map(DocumentDecryptUnmanagedResult.apply)
+      .map(DocumentDecryptUnmanagedResult(_))
 }

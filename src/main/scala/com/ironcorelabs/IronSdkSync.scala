@@ -20,10 +20,8 @@ case class IronSdkSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: Sync[F]) 
       result   <- syncF.delay(underlying.groupUpdateName(javaId, javaName))
     } yield GroupMetaResult(result)
 
-  def groupList(): F[List[GroupMetaResult]] =
-    for {
-      result <- syncF.delay(underlying.groupList.getResult.toList)
-    } yield result.map(GroupMetaResult(_))
+  def groupList: F[List[GroupMetaResult]] =
+    syncF.delay(underlying.groupList.getResult.toList.map(GroupMetaResult(_)))
 
   def groupDelete(id: GroupId): F[GroupId] =
     for {
@@ -62,14 +60,10 @@ case class IronSdkSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: Sync[F]) 
     } yield DocumentEncryptResult(result)
 
   def documentDecrypt(encryptedBytes: ByteVector): F[DocumentDecryptResult] =
-    for {
-      result <- syncF.delay(underlying.documentDecrypt(encryptedBytes.toArray))
-    } yield DocumentDecryptResult(result)
+    syncF.delay(DocumentDecryptResult(underlying.documentDecrypt(encryptedBytes.toArray)))
 
-  def documentList(): F[List[DocumentListMeta]] =
-    for {
-      result <- syncF.delay(underlying.documentList.getResult.toList)
-    } yield result.map(DocumentListMeta(_))
+  def documentList: F[List[DocumentListMeta]] =
+    syncF.delay(underlying.documentList.getResult.toList.map(DocumentListMeta(_)))
 
   def documentGetMetadata(id: DocumentId): F[DocumentMetadataResult] =
     for {
@@ -78,9 +72,7 @@ case class IronSdkSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: Sync[F]) 
     } yield DocumentMetadataResult(result)
 
   def documentGetIdFromBytes(encryptedDocument: ByteVector): F[DocumentId] =
-    for {
-      result <- syncF.delay(underlying.documentGetIdFromBytes(encryptedDocument.toArray))
-    } yield DocumentId(result)
+    syncF.delay(DocumentId(underlying.documentGetIdFromBytes(encryptedDocument.toArray)))
 
   def documentUpdateName(id: DocumentId, name: Option[DocumentName]): F[DocumentMetadataResult] =
     for {
@@ -131,10 +123,8 @@ case class IronSdkSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: Sync[F]) 
       result    <- syncF.delay(underlying.userGetPublicKey(javaUsers).toList)
     } yield result.map(UserWithKey(_))
 
-  def userListDevices(): F[List[UserDevice]] =
-    for {
-      result <- syncF.delay(underlying.userListDevices.getResult.toList)
-    } yield result.map(UserDevice(_))
+  def userListDevices: F[List[UserDevice]] =
+    syncF.delay(underlying.userListDevices.getResult.toList.map(UserDevice(_)))
 
   def userDeleteDevice(deviceId: Option[DeviceId]): F[DeviceId] =
     for {
@@ -143,9 +133,7 @@ case class IronSdkSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: Sync[F]) 
     } yield DeviceId(result)
 
   def userRotatePrivateKey(password: String): F[UserUpdatePrivateKeyResult] =
-    for {
-      result <- syncF.delay(underlying.userRotatePrivateKey(password))
-    } yield UserUpdatePrivateKeyResult(result)
+    syncF.delay(UserUpdatePrivateKeyResult(underlying.userRotatePrivateKey(password)))
 
   def advanced: IronSdkAdvanced[F] = IronSdkAdvancedSync(underlying)
 }

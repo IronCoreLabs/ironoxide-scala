@@ -3,7 +3,7 @@ package com.ironcorelabs.scala.sdk
 import com.ironcorelabs.{sdk => jsdk}
 
 /** Represents the reason a document can be viewed by the requesting user. */
-sealed trait AssociationType
+sealed trait AssociationType extends Product with Serializable
 
 /** User created the document */
 case object Owner extends AssociationType

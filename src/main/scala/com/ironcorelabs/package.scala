@@ -17,6 +17,6 @@ package object sdk {
       .map(GroupOrUserAccessError.fromUserError)
 
   private[sdk] def succeededResultToScala(fromJava: jsdk.SucceededResult): List[UserOrGroupId] =
-    fromJava.getUsers().toList.map(UserId(_)) ++ fromJava.getGroups().toList.map(GroupId(_))
+    fromJava.getUsers.toList.map(UserId(_)) ++ fromJava.getGroups.toList.map(GroupId(_))
 
 }

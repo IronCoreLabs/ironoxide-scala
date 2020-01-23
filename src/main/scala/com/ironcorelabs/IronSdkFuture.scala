@@ -12,7 +12,7 @@ case class IronSdkFuture(underlying: IronSdk[IO]) extends IronSdk[Future] {
   def groupUpdateName(id: GroupId, name: Option[GroupName]): Future[GroupMetaResult] =
     underlying.groupUpdateName(id, name).unsafeToFuture
 
-  def groupList(): Future[List[GroupMetaResult]] =
+  def groupList: Future[List[GroupMetaResult]] =
     underlying.groupList.unsafeToFuture
 
   def groupDelete(id: GroupId): Future[GroupId] =
@@ -61,7 +61,7 @@ case class IronSdkFuture(underlying: IronSdk[IO]) extends IronSdk[Future] {
   def documentDecrypt(encryptedBytes: ByteVector): Future[DocumentDecryptResult] =
     underlying.documentDecrypt(encryptedBytes).unsafeToFuture
 
-  def documentList(): Future[List[DocumentListMeta]] =
+  def documentList: Future[List[DocumentListMeta]] =
     underlying.documentList.unsafeToFuture
 
   def documentGetMetadata(id: DocumentId): Future[DocumentMetadataResult] =
@@ -81,7 +81,7 @@ case class IronSdkFuture(underlying: IronSdk[IO]) extends IronSdk[Future] {
   def userGetPublicKey(users: List[UserId]): Future[List[UserWithKey]] =
     underlying.userGetPublicKey(users).unsafeToFuture
 
-  def userListDevices(): Future[List[UserDevice]] =
+  def userListDevices: Future[List[UserDevice]] =
     underlying.userListDevices.unsafeToFuture
 
   def userDeleteDevice(deviceId: Option[DeviceId]): Future[DeviceId] =
@@ -89,7 +89,6 @@ case class IronSdkFuture(underlying: IronSdk[IO]) extends IronSdk[Future] {
 
   def userRotatePrivateKey(password: String): Future[UserUpdatePrivateKeyResult] =
     underlying.userRotatePrivateKey(password).unsafeToFuture
-
 }
 
 object IronSdkFuture {

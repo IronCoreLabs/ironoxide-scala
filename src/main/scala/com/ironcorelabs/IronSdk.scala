@@ -49,7 +49,7 @@ trait IronSdk[F[_]] {
    *
    * @return a List of [[DocumentListMeta]] with metadata about each document the user can decrypt.
    */
-  def documentList(): F[List[DocumentListMeta]]
+  def documentList: F[List[DocumentListMeta]]
 
   /**
    * Get the metadata for a specific document given its id.
@@ -151,7 +151,7 @@ trait IronSdk[F[_]] {
    *
    * @return list of (abbreviated) metadata about each group the user is a part of
    */
-  def groupList(): F[List[GroupMetaResult]]
+  def groupList: F[List[GroupMetaResult]]
 
   /**
    * Delete the identified group.
@@ -248,7 +248,7 @@ trait IronSdk[F[_]] {
    *
    * @return all devices for the current user, sorted by the device id
    */
-  def userListDevices(): F[List[UserDevice]]
+  def userListDevices: F[List[UserDevice]]
 
   /**
    * Delete a user device.
