@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.0 (unreleased)
+
+- Add all functionality from ironoxide-java
+
 ## 0.9.0
 
 - Change `generate_new_device()` to return a `DeviceAddResult`
