@@ -1,10 +1,12 @@
 package com.ironcorelabs.scala.sdk
 
+import com.ironcorelabs.{sdk => jsdk}
+
 case class GroupOrUserAccessError(userOrGroupId: UserOrGroupId, error: String)
 
 object GroupOrUserAccessError {
-  def fromGroupError(e: com.ironcorelabs.sdk.GroupAccessErr): GroupOrUserAccessError =
+  def fromGroupError(e: jsdk.GroupAccessErr): GroupOrUserAccessError =
     GroupOrUserAccessError(GroupId(e.getId), e.getErr)
-  def fromUserError(e: com.ironcorelabs.sdk.UserAccessErr): GroupOrUserAccessError =
+  def fromUserError(e: jsdk.UserAccessErr): GroupOrUserAccessError =
     GroupOrUserAccessError(UserId(e.getId), e.getErr)
 }

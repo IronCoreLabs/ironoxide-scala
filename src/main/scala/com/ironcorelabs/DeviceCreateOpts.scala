@@ -4,9 +4,7 @@ import cats.effect.Sync
 import cats.implicits._
 import com.ironcorelabs.{sdk => jsdk}
 
-/**
- * Optional parameters for creating a new device instance.
- */
+/** Optional parameters for creating a new device instance. */
 case class DeviceCreateOpts(
   name: Option[DeviceName]
 ) {

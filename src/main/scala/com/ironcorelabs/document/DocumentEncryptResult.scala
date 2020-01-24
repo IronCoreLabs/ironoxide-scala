@@ -1,9 +1,9 @@
 package com.ironcorelabs.scala.sdk
 
 import scodec.bits.ByteVector
+import com.ironcorelabs.{sdk => jsdk}
 import java.{util => ju}
 
-// unsure about delete/finalize
 /**
  * Result for encrypt operations.
  *
@@ -26,19 +26,16 @@ case class DocumentEncryptResult(
 )(val underlyingBytes: Array[Byte])
 
 object DocumentEncryptResult {
-  def apply(der: com.ironcorelabs.sdk.DocumentEncryptResult): DocumentEncryptResult = {
-    val underlyingBytes = der.getEncryptedData
-
+  def apply(der: jsdk.DocumentEncryptResult): DocumentEncryptResult =
     DocumentEncryptResult(
       DocumentId(der.getId),
       DocumentName(der.getName),
-      underlyingBytes,
+      der.getEncryptedData,
       der.getCreated,
       der.getLastUpdated,
       succeededResultToScala(der.getChanged),
       failedResultToScala(der.getErrors)
     )
-  }
 
   def apply(
     id: DocumentId,

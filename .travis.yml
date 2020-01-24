@@ -8,4 +8,4 @@ cache:
     - "$HOME/.sbt/boot/"
 
 script:
-  - sbt scalafmtCheckAll scalastyle test:compile
+  - sbt ++$TRAVIS_SCALA_VERSION scalafmtCheckAll scalastyle test:compile

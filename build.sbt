@@ -11,7 +11,7 @@ lazy val root = (project in file(".")).settings(
     "-unchecked",
     "-Xfatal-warnings",
     "-Yno-adapted-args",
-    "-Ywarn-unused:imports",
+    "-Ywarn-unused",
     "-Ywarn-numeric-widen",
     "-Ywarn-value-discard",
     "-Xfuture",

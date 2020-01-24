@@ -1,6 +1,7 @@
 package com.ironcorelabs.scala.sdk
 
 import scodec.bits.ByteVector
+import com.ironcorelabs.{sdk => jsdk}
 
 // unsure about delete/finalize
 /**
@@ -21,21 +22,18 @@ case class DocumentEncryptUnmanagedResult(
 )
 
 object DocumentEncryptUnmanagedResult {
-  def apply(dder: com.ironcorelabs.sdk.DocumentEncryptUnmanagedResult): DocumentEncryptUnmanagedResult = {
-    val underlyingDataBytes = dder.getEncryptedData
-    val underlyingDekBytes = dder.getEncryptedDeks
-
+  def apply(dder: jsdk.DocumentEncryptUnmanagedResult): DocumentEncryptUnmanagedResult =
     DocumentEncryptUnmanagedResult(
       DocumentId(dder.getId),
-      EncryptedData(underlyingDataBytes),
-      EncryptedDeks(underlyingDekBytes),
+      EncryptedData(dder.getEncryptedData),
+      EncryptedDeks(dder.getEncryptedDeks),
       succeededResultToScala(dder.getChanged),
       failedResultToScala(dder.getErrors)
     )
-  }
 }
 
-/** Bytes of encrypted document content.
+/**
+ * Bytes of encrypted document content.
  */
 case class EncryptedData(bytes: ByteVector)(val underlyingBytes: Array[Byte])
 
@@ -43,7 +41,8 @@ object EncryptedData {
   def apply(bytes: Array[Byte]): EncryptedData = EncryptedData(ByteVector.view(bytes))(bytes)
 }
 
-/** Bytes of encrypted document encryption keys (EDEKs).
+/**
+ * Bytes of encrypted document encryption keys (EDEKs).
  */
 case class EncryptedDeks(bytes: ByteVector)(val underlyingBytes: Array[Byte])
 
