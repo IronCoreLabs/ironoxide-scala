@@ -23,18 +23,23 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       System.exit(1)
   }
 
+  val invalidJwt =
+    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTA3NzE4MjMsImlhdCI6MTU1MDc3MTcwMywia2lkIjo1NTEsInBpZCI6MTAxMiwic2lkIjoidGVzdC1zZWdtZW50Iiwic3ViIjoiYTAzYjhlNTYtMTVkMi00Y2Y3LTk0MWYtYzYwMWU1NzUxNjNiIn0.vlqt0da5ltA2dYEK9i_pfRxPd3K2uexnkbAbzmbjW65XNcWlBOIbcdmmQLnSIZkRyTORD3DLXOIPYbGlApaTCR5WbaR3oPiSsR9IqdhgMEZxCcarqGg7b_zzwTP98fDcALGZNGsJL1hIrl3EEXdPoYjsOJ5LMF1H57NZiteBDAsm1zfXgOgCtvCdt7PQFSCpM5GyE3und9VnEgjtcQ6HAZYdutqjI79vaTnjt2A1X38pbHcnfvSanzJoeU3szwtBiVlB3cfXbROvBC7Kz8KvbWJzImJcJiRT-KyI4kk3l8wAs2FUjSRco8AQ1nIX21QHlRI0vVr_vdOd_pTXOUU51g"
+
   // Hardcoded user info for these tests because they don't depend on the number of things created for the given user, just
   // the values created.
-  val primaryTestUserId = UserId("b29c1ee7-ede9-4401-855a-3a78a34a2759")
+  val primaryTestUserId = UserId("c29c1ee7-ede9-4401-855a-3a78a34a2759")
   val primaryTestUserSegmentId = 2013L
   val primaryTestUserDevicePrivateKeyBytes = PrivateKey(
-    ju.Base64.getDecoder.decode("Svt+Z8lfQ8g3FwqeduMyf7X0R1Pbyt9PJXkked7pwuU=")
+    ju.Base64.getDecoder.decode("Jx2lHKxvWDrCrpBmpC/B7d6TM/lc91awMLjEsVyrxg0=")
   )
   val primaryTestUserSigningPrivateKeyBytes = DeviceSigningPrivateKey(
     ju.Base64.getDecoder
-      .decode("1crhZ4PELDOkzEqX9QbcMQzEDH6dOAr6zybHWryp2pwFhmxRx2EcYD6nUtgVm3OwfaJvGhmIViuj88wV/+duEg==")
+      .decode("kqq+RkhZn6e6/dwo3nDc9EwfogM/Mvgll7xHZJ3tBplaJhp64D8TBtwiYsI+6PnU1X25wJtf/jyG2K1pete/8Q==")
   )
   val validGroupId = GroupId(ju.UUID.randomUUID.toString)
+  val validDocumentId = DocumentId(ju.UUID.randomUUID.toString)
+  var documentBytes: ByteVector = null
 
   def clearBytes(a: Array[Byte]) =
     for (i <- 0.until(a.length)) {
@@ -60,10 +65,23 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "User Create" should {
     "fail for invalid jwt" in {
-      val jwt =
-        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTA3NzE4MjMsImlhdCI6MTU1MDc3MTcwMywia2lkIjo1NTEsInBpZCI6MTAxMiwic2lkIjoidGVzdC1zZWdtZW50Iiwic3ViIjoiYTAzYjhlNTYtMTVkMi00Y2Y3LTk0MWYtYzYwMWU1NzUxNjNiIn0.vlqt0da5ltA2dYEK9i_pfRxPd3K2uexnkbAbzmbjW65XNcWlBOIbcdmmQLnSIZkRyTORD3DLXOIPYbGlApaTCR5WbaR3oPiSsR9IqdhgMEZxCcarqGg7b_zzwTP98fDcALGZNGsJL1hIrl3EEXdPoYjsOJ5LMF1H57NZiteBDAsm1zfXgOgCtvCdt7PQFSCpM5GyE3und9VnEgjtcQ6HAZYdutqjI79vaTnjt2A1X38pbHcnfvSanzJoeU3szwtBiVlB3cfXbROvBC7Kz8KvbWJzImJcJiRT-KyI4kk3l8wAs2FUjSRco8AQ1nIX21QHlRI0vVr_vdOd_pTXOUU51g"
-      val resp = IronSdk.userCreate[IO](jwt, "foo", UserCreateOpts(true)).attempt.unsafeRunSync
+      val resp = IronSdk.userCreate[IO](invalidJwt, "foo", UserCreateOpts(true)).attempt.unsafeRunSync
       resp shouldBe 'left
+    }
+  }
+
+  "User Verify" should {
+    "fail for invalid jwt" in {
+      val resp = sdk.userVerify(invalidJwt).attempt.unsafeRunSync
+      resp shouldBe 'left
+    }
+  }
+
+  "User Get Public Key" should {
+    "return a user's key" in {
+      val resp = sdk.userGetPublicKey(List(primaryTestUserId)).attempt.unsafeRunSync.value
+      resp.length shouldBe 1
+      resp.head.user shouldBe primaryTestUserId
     }
   }
 
@@ -76,11 +94,16 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "Device Create" should {
     "fail for invalid jwt" in {
-      val jwt =
-        "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTA3NzE4MjMsImlhdCI6MTU1MDc3MTcwMywia2lkIjo1NTEsInBpZCI6MTAxMiwic2lkIjoidGVzdC1zZWdtZW50Iiwic3ViIjoiYTAzYjhlNTYtMTVkMi00Y2Y3LTk0MWYtYzYwMWU1NzUxNjNiIn0.vlqt0da5ltA2dYEK9i_pfRxPd3K2uexnkbAbzmbjW65XNcWlBOIbcdmmQLnSIZkRyTORD3DLXOIPYbGlApaTCR5WbaR3oPiSsR9IqdhgMEZxCcarqGg7b_zzwTP98fDcALGZNGsJL1hIrl3EEXdPoYjsOJ5LMF1H57NZiteBDAsm1zfXgOgCtvCdt7PQFSCpM5GyE3und9VnEgjtcQ6HAZYdutqjI79vaTnjt2A1X38pbHcnfvSanzJoeU3szwtBiVlB3cfXbROvBC7Kz8KvbWJzImJcJiRT-KyI4kk3l8wAs2FUjSRco8AQ1nIX21QHlRI0vVr_vdOd_pTXOUU51g"
       val resp =
-        IronSdk.generateNewDevice[IO](jwt, "foo", DeviceCreateOpts(DeviceName("failure"))).attempt.unsafeRunSync
+        IronSdk.generateNewDevice[IO](invalidJwt, "foo", DeviceCreateOpts(DeviceName("failure"))).attempt.unsafeRunSync
       resp shouldBe 'left
+    }
+  }
+
+  "Device List" should {
+    "return user devices" in {
+      val resp = sdk.userListDevices.attempt.unsafeRunSync.value
+      resp.length shouldBe 1
     }
   }
 
@@ -104,6 +127,21 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       groupCreateResult.created should not be null
       groupCreateResult.lastUpdated shouldBe groupCreateResult.created
       groupCreateResult.needsRotation.value shouldBe true
+    }
+  }
+
+  "Group List" should {
+    "return user's groups" in {
+      val resp = sdk.groupList.attempt.unsafeRunSync.value
+      resp.length should be > 0
+      resp.head.name.value shouldBe GroupName("a name")
+    }
+  }
+
+  "Group Update Name" should {
+    "fail for invalid groupId" in {
+      val resp = sdk.groupUpdateName(validGroupId, Some(GroupName("a new name"))).attempt.unsafeRunSync.value
+      resp.name.value shouldBe GroupName("a new name")
     }
   }
 
@@ -206,7 +244,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       val groupGetResult = sdk.groupGetMetadata(validGroupId).attempt.unsafeRunSync.value
 
       groupGetResult.id.id shouldBe validGroupId.id
-      groupGetResult.name.get.name shouldBe "a name"
+      groupGetResult.name.get.name shouldBe "a new name"
       groupGetResult.isAdmin shouldBe true
       groupGetResult.isMember shouldBe true
       groupGetResult.adminList.value shouldBe List(primaryTestUserId)
@@ -247,10 +285,20 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
   "Document encrypt/decrypt" should {
     "succeed for good name and data" in {
       val data = ByteVector(List(1, 2, 3).map(_.toByte))
-      val result = sdk.documentEncrypt(data, DocumentEncryptOpts()).attempt.unsafeRunSync.value
+      val result = sdk
+        .documentEncrypt(
+          data,
+          DocumentEncryptOpts(Some(validDocumentId), Some(DocumentName("a document")), true, Nil, Nil, None)
+        )
+        .attempt
+        .unsafeRunSync
+        .value
 
-      result.name shouldBe None
-      result.id.id.length shouldBe 32
+      // save the bytes to test extracting the id later
+      documentBytes = result.encryptedData
+
+      result.name.value shouldBe DocumentName("a document")
+      result.id shouldBe validDocumentId
     }
 
     "roundtrip for single level transform for no name and good data" in {
@@ -320,6 +368,61 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
           s"Policy refers to unknown user or group ''$missingGroupId' [group]'"
         )
       )
+    }
+  }
+
+  "Document List" should {
+    "return all user's documents" in {
+      val resp = sdk.documentList.attempt.unsafeRunSync.value
+      resp.length should be > 0
+    }
+  }
+
+  "Document Get Metadata" should {
+    "return document information" in {
+      val resp = sdk.documentGetMetadata(validDocumentId).attempt.unsafeRunSync.value
+      resp.id shouldBe validDocumentId
+      resp.name.value shouldBe DocumentName("a document")
+    }
+  }
+
+  "Document Get Id From Bytes" should {
+    "extract the id from encrypted document's bytes" in {
+      val resp = sdk.documentGetIdFromBytes(documentBytes).attempt.unsafeRunSync.value
+      resp shouldBe validDocumentId
+    }
+  }
+
+  "Document Update Name" should {
+    "update the encrypted document's name" in {
+      val resp =
+        sdk.documentUpdateName(validDocumentId, Some(DocumentName("a new document name"))).attempt.unsafeRunSync.value
+      resp.id shouldBe validDocumentId
+      resp.name.value shouldBe DocumentName("a new document name")
+    }
+  }
+
+  "Document Update Bytes" should {
+    "update encrypted bytes" in {
+      val data = ByteVector(List(11, 22, 33).map(_.toByte))
+      val resp = sdk.documentUpdateBytes(validDocumentId, data).attempt.unsafeRunSync.value
+      resp.id shouldBe validDocumentId
+      val bytes = sdk.documentDecrypt(resp.encryptedData).attempt.unsafeRunSync.value.decryptedData
+      bytes shouldBe data
+    }
+  }
+
+  "Document Grant Access" should {
+    "fail for invalid document id" in {
+      val resp = sdk.documentGrantAccess(DocumentId("nah"), Nil, Nil).attempt.unsafeRunSync
+      resp shouldBe 'left
+    }
+  }
+
+  "Document Revoke Access" should {
+    "fail for invalid document id" in {
+      val resp = sdk.documentRevokeAccess(DocumentId("nope"), Nil, Nil).attempt.unsafeRunSync
+      resp shouldBe 'left
     }
   }
 
@@ -424,6 +527,20 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
         )
       )
       result.encryptedDeks.bytes.isEmpty shouldBe false
+    }
+  }
+
+  "Group Delete" should {
+    "delete the newly created group" in {
+      val resp = sdk.groupDelete(validGroupId).attempt.unsafeRunSync.value
+      resp shouldBe validGroupId
+    }
+  }
+
+  "Device Delete" should {
+    "fail for invalid device id" in {
+      val resp = sdk.userDeleteDevice(Some(DeviceId(1254300000))).attempt.unsafeRunSync
+      resp shouldBe 'left
     }
   }
 }
