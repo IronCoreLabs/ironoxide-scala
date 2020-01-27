@@ -1,11 +1,14 @@
-package com.ironcorelabs.scala.sdk
+package ironoxide.v1
 
-import scodec.bits.ByteVector
-import org.scalatest.{AsyncWordSpec, Matchers, OptionValues}
-import cats.scalatest.EitherValues
 import cats.effect.IO
+import cats.scalatest.EitherValues
 import com.ironcorelabs.{sdk => jsdk}
+import ironoxide.v1.document._
+import ironoxide.v1.group._
+import ironoxide.v1.user._
 import java.{util => ju}
+import org.scalatest.{AsyncWordSpec, Matchers, OptionValues}
+import scodec.bits.ByteVector
 
 class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues with OptionValues {
   try {
@@ -54,7 +57,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       primaryTestUserSigningPrivateKeyBytes
     )
 
-  val sdk = deviceContext.toJava[IO].map(d => IronSdkSync[IO](jsdk.IronSdk.initialize(d))).unsafeRunSync
+  val sdk = deviceContext.toJava[IO].map(d => IronOxideSync[IO](jsdk.IronSdk.initialize(d))).unsafeRunSync
 
   "DeviceCreateOpts" should {
     "create with empty DeviceName" in {
@@ -65,7 +68,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "User Create" should {
     "fail for invalid jwt" in {
-      val resp = IronSdk.userCreate[IO](invalidJwt, "foo", UserCreateOpts(true)).attempt.unsafeRunSync
+      val resp = IronOxide.userCreate[IO](invalidJwt, "foo", UserCreateOpts(true)).attempt.unsafeRunSync
       resp shouldBe 'left
     }
   }
@@ -95,7 +98,10 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
   "Device Create" should {
     "fail for invalid jwt" in {
       val resp =
-        IronSdk.generateNewDevice[IO](invalidJwt, "foo", DeviceCreateOpts(DeviceName("failure"))).attempt.unsafeRunSync
+        IronOxide
+          .generateNewDevice[IO](invalidJwt, "foo", DeviceCreateOpts(DeviceName("failure")))
+          .attempt
+          .unsafeRunSync
       resp shouldBe 'left
     }
   }
