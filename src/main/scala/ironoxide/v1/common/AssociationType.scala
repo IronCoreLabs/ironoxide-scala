@@ -1,4 +1,4 @@
-package ironoxide.v1
+package ironoxide.v1.common
 
 import com.ironcorelabs.{sdk => jsdk}
 

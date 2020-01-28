@@ -1,7 +1,7 @@
 package ironoxide.v1.document
 
 import com.ironcorelabs.{sdk => jsdk}
-import ironoxide.v1.{GroupOrUserAccessError, UserOrGroupId, failedResultToScala, succeededResultToScala}
+import ironoxide.v1.common.{GroupOrUserAccessError, UserOrGroupId, failedResultToScala, succeededResultToScala}
 import scodec.bits.ByteVector
 
 // unsure about delete/finalize

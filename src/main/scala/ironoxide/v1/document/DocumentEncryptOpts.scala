@@ -3,7 +3,7 @@ package ironoxide.v1.document
 import cats.effect.Sync
 import cats.implicits._
 import com.ironcorelabs.{sdk => jsdk}
-import ironoxide.v1.PolicyGrant
+import ironoxide.v1.common.PolicyGrant
 import ironoxide.v1.group.GroupId
 import ironoxide.v1.user.UserId
 

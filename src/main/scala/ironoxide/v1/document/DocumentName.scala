@@ -2,7 +2,7 @@ package ironoxide.v1.document
 
 import cats.effect.Sync
 import com.ironcorelabs.{sdk => jsdk}
-import ironoxide.v1.OptionalOps
+import ironoxide.v1.common.OptionalOps
 import java.{util => ju}
 
 /** Name of a document. Inner value is validated when calling `toJava`. */

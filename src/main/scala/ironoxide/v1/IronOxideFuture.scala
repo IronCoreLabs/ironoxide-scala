@@ -1,6 +1,7 @@
 package ironoxide.v1
 
 import cats.effect.IO
+import ironoxide.v1.common._
 import ironoxide.v1.document._
 import ironoxide.v1.group._
 import ironoxide.v1.user._

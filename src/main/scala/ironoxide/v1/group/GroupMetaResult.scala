@@ -1,7 +1,7 @@
 package ironoxide.v1.group
 
 import com.ironcorelabs.{sdk => jsdk}
-import ironoxide.v1.OptionalOps
+import ironoxide.v1.common.OptionalOps
 import java.{util => ju}
 
 /**

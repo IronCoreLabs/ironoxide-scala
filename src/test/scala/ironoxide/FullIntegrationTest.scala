@@ -1,8 +1,10 @@
-package ironoxide.v1
+package ironoxide
 
 import cats.effect.IO
 import cats.scalatest.EitherValues
 import com.ironcorelabs.{sdk => jsdk}
+import ironoxide.v1._
+import ironoxide.v1.common._
 import ironoxide.v1.document._
 import ironoxide.v1.group._
 import ironoxide.v1.user._

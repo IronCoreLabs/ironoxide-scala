@@ -1,7 +1,7 @@
 package ironoxide.v1.document
 
 import com.ironcorelabs.{sdk => jsdk}
-import ironoxide.v1.UserOrGroupId
+import ironoxide.v1.common.UserOrGroupId
 import scodec.bits.ByteVector
 
 /**

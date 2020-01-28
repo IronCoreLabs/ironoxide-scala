@@ -3,6 +3,7 @@ package ironoxide.v1
 import cats.effect.Sync
 import cats.implicits._
 import com.ironcorelabs.{sdk => jsdk}
+import ironoxide.v1.common._
 import ironoxide.v1.document._
 import ironoxide.v1.group._
 import ironoxide.v1.user._
