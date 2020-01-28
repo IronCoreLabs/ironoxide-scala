@@ -1,7 +1,6 @@
 package ironoxide.v1.common
 
 import com.ironcorelabs.{sdk => jsdk}
-import ironoxide.v1.user.UserId
 import java.{util => ju}
 
 /**

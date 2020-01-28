@@ -3,7 +3,6 @@ package ironoxide.v1.common
 import cats.effect.Sync
 import cats.implicits._
 import com.ironcorelabs.{sdk => jsdk}
-import ironoxide.v1.user.UserId
 
 /**
  * Document access granted by a policy.

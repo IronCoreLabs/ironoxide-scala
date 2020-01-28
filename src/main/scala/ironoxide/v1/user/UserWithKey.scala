@@ -1,7 +1,7 @@
 package ironoxide.v1.user
 
 import com.ironcorelabs.{sdk => jsdk}
-import ironoxide.v1.common.PublicKey
+import ironoxide.v1.common.{PublicKey, UserId}
 
 /**
  * A user's id and public key

@@ -17,6 +17,6 @@ package object common {
       fromJava.getUsers.toList.map(GroupOrUserAccessError.fromUserError)
 
   private[ironoxide] def succeededResultToScala(fromJava: jsdk.SucceededResult): List[UserOrGroupId] =
-    fromJava.getUsers.toList.map(ironoxide.v1.user.UserId(_)) ++
-      fromJava.getGroups.toList.map(ironoxide.v1.group.GroupId(_))
+    fromJava.getUsers.toList.map(UserId(_)) ++
+      fromJava.getGroups.toList.map(GroupId(_))
 }

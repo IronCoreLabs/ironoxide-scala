@@ -1,6 +1,7 @@
 package ironoxide.v1.group
 
 import com.ironcorelabs.{sdk => jsdk}
+import ironoxide.v1.common.GroupId
 
 /**
  * Group information after private key update

@@ -3,7 +3,6 @@ package ironoxide.v1.common
 import cats.effect.Sync
 import cats.implicits._
 import com.ironcorelabs.{sdk => jsdk}
-import ironoxide.v1.user.UserId
 
 /**
  * Account's device context. Needed to initialize the SDK with a set of device keys.

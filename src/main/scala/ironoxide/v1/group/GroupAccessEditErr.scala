@@ -1,7 +1,7 @@
 package ironoxide.v1.group
 
 import com.ironcorelabs.{sdk => jsdk}
-import ironoxide.v1.user.UserId
+import ironoxide.v1.common.UserId
 
 /**
  * Failure to edit a group's administrator or member lists

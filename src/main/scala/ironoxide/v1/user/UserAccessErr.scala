@@ -1,6 +1,7 @@
 package ironoxide.v1.user
 
 import com.ironcorelabs.{sdk => jsdk}
+import ironoxide.v1.common.UserId
 
 /**
  * A single grant/revoke failure for a user

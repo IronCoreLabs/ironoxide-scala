@@ -1,8 +1,6 @@
 package ironoxide.v1.common
 
 import com.ironcorelabs.{sdk => jsdk}
-import ironoxide.v1.group.GroupId
-import ironoxide.v1.user.UserId
 
 case class GroupOrUserAccessError(userOrGroupId: UserOrGroupId, error: String)
 

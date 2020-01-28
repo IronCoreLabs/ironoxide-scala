@@ -1,9 +1,7 @@
 package ironoxide.v1.document
 
 import com.ironcorelabs.{sdk => jsdk}
-import ironoxide.v1.common.AssociationType
-import ironoxide.v1.group.GroupId
-import ironoxide.v1.user.UserId
+import ironoxide.v1.common.{AssociationType, GroupId, UserId}
 import java.{util => ju}
 
 /**

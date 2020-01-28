@@ -3,7 +3,7 @@ package ironoxide.v1.group
 import cats.effect.Sync
 import cats.implicits._
 import com.ironcorelabs.{sdk => jsdk}
-import ironoxide.v1.user.UserId
+import ironoxide.v1.common.{GroupId, UserId}
 
 /**
  * Result from requesting changes to a group's membership or administrators. Partial success is supported.
