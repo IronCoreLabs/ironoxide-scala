@@ -3,6 +3,7 @@ package com.ironcorelabs.scala.sdk
 import scala.concurrent.Future
 import scodec.bits.ByteVector
 import cats.effect.IO
+import scala.util.Try
 
 case class IronSdkFuture(underlying: IronSdk[IO]) extends IronSdk[Future] {
 
@@ -92,10 +93,14 @@ case class IronSdkFuture(underlying: IronSdk[IO]) extends IronSdk[Future] {
 }
 
 object IronSdkFuture {
-  def initialize(deviceContext: DeviceContext): Future[IronSdk[Future]] =
+
+  def tryInitialize(deviceContext: DeviceContext): Try[IronSdkFuture] =
+    IronSdk.tryInitialize[IO](deviceContext).map(IronSdkFuture(_))
+
+  def initialize(deviceContext: DeviceContext): Future[IronSdkFuture] =
     IronSdk.initialize[IO](deviceContext).map(IronSdkFuture(_)).unsafeToFuture
 
-  def initializeAndRotate(deviceContext: DeviceContext, password: String): Future[IronSdk[Future]] =
+  def initializeAndRotate(deviceContext: DeviceContext, password: String): Future[IronSdkFuture] =
     IronSdk.initializeAndRotate[IO](deviceContext, password).map(IronSdkFuture(_)).unsafeToFuture
 
   def userCreate[F[_]](jwt: String, password: String, options: UserCreateOpts): Future[UserCreateResult] =
