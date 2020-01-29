@@ -2,6 +2,8 @@ package com.ironcorelabs.scala.sdk
 
 import scodec.bits.ByteVector
 import com.ironcorelabs.{sdk => jsdk}
+import cats.effect.IO
+import scala.util.Try
 
 /**
  * Ability to make authenticated requests to the IronCore API. Instantiated with the details
@@ -282,6 +284,17 @@ trait IronSdk[F[_]] {
 object IronSdk {
   import cats.effect.Sync
   import cats.implicits._
+
+  /**
+   * This is identitical to [[initialize]], but instead of capturing the errors in `F`, it captures them in a `Try`.
+   *
+   * @param deviceContext device context used to initialize the IronSdk with a set of device keys
+   * @return an instance of the IronSdk
+   */
+  def tryInitialize[F[_]: Sync](deviceContext: DeviceContext): Try[IronSdk[F]] =
+    //This unsafeRunSync does not talk to the network and is safe here because we recatch the exceptions in Try.
+    //This allows for cleaner code in places that use Future as their effect type because they don't have to await the Future.
+    Try((deviceContext.toJava[IO].map(jsdk.IronSdk.initialize)).unsafeRunSync).map(IronSdkSync(_))
 
   /**
    * Initialize IronSdk with a device. Verifies that the provided user/segment exists and the provided device

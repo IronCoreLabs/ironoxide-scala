@@ -56,6 +56,15 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   val sdk = IronSdk.initialize[IO](deviceContext).unsafeRunSync
 
+  "IronSdk.tryInitialize" should {
+    "succeed for good values" in {
+      IronSdk.tryInitialize[IO](deviceContext) shouldBe 'success
+    }
+    "fail for bad values" in {
+      IronSdk.tryInitialize[IO](deviceContext.copy(devicePrivateKey = PrivateKey(ByteVector.empty))) shouldBe 'failure
+    }
+  }
+
   "DeviceCreateOpts" should {
     "create with empty DeviceName" in {
       val deviceName = ju.Optional.empty[jsdk.DeviceName]
