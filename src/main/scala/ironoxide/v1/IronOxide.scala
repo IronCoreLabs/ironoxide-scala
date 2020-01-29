@@ -1,10 +1,12 @@
 package ironoxide.v1
 
+import cats.effect.IO
 import com.ironcorelabs.{sdk => jsdk}
 import ironoxide.v1.common._
 import ironoxide.v1.document._
 import ironoxide.v1.group._
 import ironoxide.v1.user._
+import scala.util.Try
 import scodec.bits.ByteVector
 
 /**
@@ -289,6 +291,18 @@ object IronOxide {
 
   /**
    * Initialize IronOxide with a device. Verifies that the provided user/segment exists and the provided device
+   * This is identitical to [[initialize]], but instead of capturing the errors in `F`, it captures them in a `Try`.
+   *
+   * @param deviceContext device context used to initialize the IronSdk with a set of device keys
+   * @return an instance of the IronSdk
+   */
+  def tryInitialize[F[_]: Sync](deviceContext: DeviceContext): Try[IronOxide[F]] =
+    //This unsafeRunSync does not talk to the network and is safe here because we recatch the exceptions in Try.
+    //This allows for cleaner code in places that use Future as their effect type because they don't have to await the Future.
+    Try((deviceContext.toJava[IO].map(jsdk.IronSdk.initialize)).unsafeRunSync).map(IronOxideSync(_))
+
+  /**
+   * Initialize IronSdk with a device. Verifies that the provided user/segment exists and the provided device
    * keys are valid and exist for the provided account.
    *
    * @param deviceContext device context used to initialize the IronOxide with a set of device keys

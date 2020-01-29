@@ -6,6 +6,7 @@ import ironoxide.v1.document._
 import ironoxide.v1.group._
 import ironoxide.v1.user._
 import scala.concurrent.Future
+import scala.util.Try
 import scodec.bits.ByteVector
 
 case class IronOxideFuture(underlying: IronOxide[IO]) extends IronOxide[Future] {
@@ -96,6 +97,9 @@ case class IronOxideFuture(underlying: IronOxide[IO]) extends IronOxide[Future] 
 }
 
 object IronOxideFuture {
+  def tryInitialize(deviceContext: DeviceContext): Try[IronOxideFuture] =
+    IronOxide.tryInitialize[IO](deviceContext).map(IronOxideFuture(_))
+
   def initialize(deviceContext: DeviceContext): Future[IronOxide[Future]] =
     IronOxide.initialize[IO](deviceContext).map(IronOxideFuture(_)).unsafeToFuture
 
