@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.11.0
+
+- Rename `IronSdk*` to `IronOxide*`
+- Rename packages and add more structure
+
+## 0.10.1
+
+- Add `tryInitialize()` to `IronSdk` and `IronSdkFuture`
+
 ## 0.10.0
 
 - Add all functionality from ironoxide-java
