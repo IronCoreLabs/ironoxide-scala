@@ -38,7 +38,7 @@ trait IronOxideAdvanced[F[_]] {
    *
    * @param encryptedData bytes of encrypted document. Should be the same bytes returned from documentEncryptedUnmanaged
    * @param encryptedDeks encrypted document encryption keys (EDEKs). Should be the same EDEKs returned from documentEncryptUnmanaged
-   * @return a [[DocumentDecryptUnmanagedResult]] with the ID of the provided document as well as the decrypted document bytes
+   * @return a [[document.DocumentDecryptUnmanagedResult]] with the ID of the provided document as well as the decrypted document bytes
    */
   def documentDecryptUnmanaged(
     encryptedData: EncryptedData,
@@ -50,7 +50,7 @@ trait IronOxideAdvanced[F[_]] {
    *
    * @param encryptedData bytes of encrypted document. Should be the same bytes returned from documentEncryptedUnmanaged
    * @param encryptedDeks encrypted document encryption keys (EDEKs). Should be the same EDEKs returned from documentEncryptUnmanaged
-   * @return a [[DocumentDecryptUnmanagedResult]] with the ID of the provided document as well as the decrypted document bytes
+   * @return a [[document.DocumentDecryptUnmanagedResult]] with the ID of the provided document as well as the decrypted document bytes
    */
   def documentDecryptUnmanaged(
     encryptedData: Array[Byte],
