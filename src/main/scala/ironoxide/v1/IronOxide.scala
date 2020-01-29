@@ -228,7 +228,8 @@ trait IronOxide[F[_]] {
    * @param jwt valid IronCore or Auth0 JWT
    * @param password password used to encrypt and escrow the user's private master key
    * @param options user creation options. Use `UserCreateOpts.apply()` for defaults
-   * @return Newly generated [[user.UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys. The escrowed keys are unlocked by the provided password.
+   * @return Newly generated [[user.UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys.
+   *         The escrowed keys are unlocked by the provided password.
    */
   def userCreate(jwt: String, password: String, options: UserCreateOpts): F[UserCreateResult]
 
@@ -349,7 +350,8 @@ object IronOxide {
    * @param jwt Valid IronCore or Auth0 JWT
    * @param password Password used to encrypt and escrow the user's private master key
    * @param options user creation options. Use `UserCreateOpts.apply()` for defaults
-   * @return Newly generated [[user.UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys. The escrowed keys are unlocked by the provided password.
+   * @return Newly generated [[user.UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys.
+   *         The escrowed keys are unlocked by the provided password.
    */
   def userCreate[F[_]](jwt: String, password: String, options: UserCreateOpts)(
     implicit syncF: Sync[F]
