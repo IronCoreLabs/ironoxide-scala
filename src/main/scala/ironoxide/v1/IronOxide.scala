@@ -37,7 +37,7 @@ trait IronOxide[F[_]] {
    * Decrypts the provided encrypted document and returns details about the document as well as its decrypted bytes.
    *
    * @param encryptedBytes bytes of encrypted document. Should be the same bytes returned from documentEncrypt
-   * @return a [[DocumentDecryptResult]] with metadata about the provided document as well as the decrypted document bytes
+   * @return a [[document.DocumentDecryptResult]] with metadata about the provided document as well as the decrypted document bytes
    */
   def documentDecrypt(encryptedBytes: ByteVector): F[DocumentDecryptResult]
 
@@ -45,7 +45,7 @@ trait IronOxide[F[_]] {
    * Decrypts the provided encrypted document and returns details about the document as well as its decrypted bytes.
    *
    * @param encryptedBytes bytes of encrypted document. Should be the same bytes returned from documentEncrypt
-   * @return a [[DocumentDecryptResult]] with metadata about the provided document as well as the decrypted document bytes
+   * @return a [[document.DocumentDecryptResult]] with metadata about the provided document as well as the decrypted document bytes
    */
   def documentDecrypt(encryptedBytes: Array[Byte]): F[DocumentDecryptResult] =
     documentDecrypt(ByteVector.view(encryptedBytes))
@@ -53,7 +53,7 @@ trait IronOxide[F[_]] {
   /**
    * List all of the documents that the current user is able to decrypt.
    *
-   * @return a List of [[DocumentListMeta]] with metadata about each document the user can decrypt.
+   * @return a List of [[document.DocumentListMeta]] with metadata about each document the user can decrypt.
    */
   def documentList: F[List[DocumentListMeta]]
 
@@ -61,7 +61,7 @@ trait IronOxide[F[_]] {
    * Get the metadata for a specific document given its id.
    *
    * @param id unique id of the document to retrieve
-   * @return [[DocumentMetadataResult]] with details about the requested document.
+   * @return [[document.DocumentMetadataResult]] with details about the requested document.
    */
   def documentGetMetadata(id: DocumentId): F[DocumentMetadataResult]
 
@@ -86,7 +86,7 @@ trait IronOxide[F[_]] {
    * Update a document name to a new value or clear its value.
    *
    * @param id      id of the document to update
-   * @param name    new name for the document. Provide a Some([[DocumentName]]) to update to a new name or None to clear the name field.
+   * @param name    new name for the document. Provide a Some([[document.DocumentName]]) to update to a new name or None to clear the name field.
    * @return metadata about the document that was updated.
    */
   def documentUpdateName(id: DocumentId, name: Option[DocumentName]): F[DocumentMetadataResult]
@@ -147,7 +147,7 @@ trait IronOxide[F[_]] {
    * Update a group name to a new value or clear its value.
    *
    * @param id      id of the group to update
-   * @param name    new name for the group. Provide a Some([[GroupName]]) to update to a new name or None to clear the name field
+   * @param name    new name for the group. Provide a Some([[group.GroupName]]) to update to a new name or None to clear the name field
    * @return metadata about the group that was updated
    */
   def groupUpdateName(id: GroupId, name: Option[GroupName]): F[GroupMetaResult]
@@ -228,7 +228,7 @@ trait IronOxide[F[_]] {
    * @param jwt valid IronCore or Auth0 JWT
    * @param password password used to encrypt and escrow the user's private master key
    * @param options user creation options. Use `UserCreateOpts.apply()` for defaults
-   * @return Newly generated [[UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys. The escrowed keys are unlocked by the provided password.
+   * @return Newly generated [[user.UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys. The escrowed keys are unlocked by the provided password.
    */
   def userCreate(jwt: String, password: String, options: UserCreateOpts): F[UserCreateResult]
 
@@ -349,7 +349,7 @@ object IronOxide {
    * @param jwt Valid IronCore or Auth0 JWT
    * @param password Password used to encrypt and escrow the user's private master key
    * @param options user creation options. Use `UserCreateOpts.apply()` for defaults
-   * @return Newly generated [[UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys. The escrowed keys are unlocked by the provided password.
+   * @return Newly generated [[user.UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys. The escrowed keys are unlocked by the provided password.
    */
   def userCreate[F[_]](jwt: String, password: String, options: UserCreateOpts)(
     implicit syncF: Sync[F]
