@@ -5,16 +5,16 @@ import cats.effect.Sync
 import cats.implicits._
 import scala.concurrent.duration.Duration
 
+/**
+ * Top-level configuration object for IronOxide
+ *
+ * @param policyCaching policy caching configuration for IronOxide
+ * @param sdkOperationTimeout timeout for all SDK methods
+ */
 case class IronOxideConfig(
   policyCaching: PolicyCachingConfig,
   sdkOperationTimeout: Option[Duration]
 ) {
-  // def toJava(): jsdk.IronOxideConfig =
-  //   new jsdk.IronOxideConfig(policyCaching, sdkOperationTimeout)
-  // private[ironoxide] def toJava[F[_]](implicit syncF: Sync[F]): F[jsdk.IronOxideConfig] =
-  //   for {
-  //     javaPolicyCaching <- policyCaching.toJava
-  //   } syncF.delay(new jsdk.IronOxideConfig(policyCaching.toJava, sdkOperationTimeout))
   private[ironoxide] def toJava[F[_]](implicit syncF: Sync[F]): F[jsdk.IronOxideConfig] =
     for {
       javaPolicy <- policyCaching.toJava
@@ -31,11 +31,3 @@ object IronOxideConfig {
     IronOxideConfig(PolicyCachingConfig(javaPolicy), scalaTimeout)
   }
 }
-
-// object IronOxideConfig {
-//   def apply(pc: PolicyCachingConfig, timeout: Option[java.time.Duration]): IronOxideConfig =
-//     IronOxideConfig(
-//       pc,
-//       timeout.map(d => com.ironcorelabs.sdk.Duration.from_millis(d.get(java.time.temporal.ChronoUnit.MILLIS)))
-//     )
-// }
