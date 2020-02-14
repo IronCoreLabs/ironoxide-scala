@@ -5,6 +5,7 @@ import ironoxide.v1.common._
 import ironoxide.v1.document._
 import ironoxide.v1.group._
 import ironoxide.v1.user._
+import scala.concurrent.duration.Duration
 import scala.concurrent.Future
 import scala.util.Try
 import scodec.bits.ByteVector
@@ -77,11 +78,16 @@ case class IronOxideFuture(underlying: IronOxide[IO]) extends IronOxide[Future] 
 
   def advanced: IronOxideAdvanced[Future] = IronOxideAdvancedFuture(underlying.advanced)
 
-  def userCreate(jwt: String, password: String, options: UserCreateOpts): Future[UserCreateResult] =
-    underlying.userCreate(jwt, password, options).unsafeToFuture
+  def userCreate(
+    jwt: String,
+    password: String,
+    options: UserCreateOpts,
+    timeout: Option[Duration]
+  ): Future[UserCreateResult] =
+    underlying.userCreate(jwt, password, options, timeout).unsafeToFuture
 
-  def userVerify(jwt: String): Future[Option[UserResult]] =
-    underlying.userVerify(jwt).unsafeToFuture
+  def userVerify(jwt: String, timeout: Option[Duration]): Future[Option[UserResult]] =
+    underlying.userVerify(jwt, timeout).unsafeToFuture
 
   def userGetPublicKey(users: List[UserId]): Future[List[UserWithKey]] =
     underlying.userGetPublicKey(users).unsafeToFuture
@@ -97,15 +103,25 @@ case class IronOxideFuture(underlying: IronOxide[IO]) extends IronOxide[Future] 
 }
 
 object IronOxideFuture {
-  def tryInitialize(deviceContext: DeviceContext): Try[IronOxideFuture] =
-    IronOxide.tryInitialize[IO](deviceContext).map(IronOxideFuture(_))
+  def tryInitialize(deviceContext: DeviceContext, config: IronOxideConfig): Try[IronOxideFuture] =
+    IronOxide.tryInitialize[IO](deviceContext, config).map(IronOxideFuture(_))
 
-  def initialize(deviceContext: DeviceContext): Future[IronOxide[Future]] =
-    IronOxide.initialize[IO](deviceContext).map(IronOxideFuture(_)).unsafeToFuture
+  def initialize(deviceContext: DeviceContext, config: IronOxideConfig): Future[IronOxide[Future]] =
+    IronOxide.initialize[IO](deviceContext, config).map(IronOxideFuture(_)).unsafeToFuture
 
-  def initializeAndRotate(deviceContext: DeviceContext, password: String): Future[IronOxide[Future]] =
-    IronOxide.initializeAndRotate[IO](deviceContext, password).map(IronOxideFuture(_)).unsafeToFuture
+  def initializeAndRotate(
+    deviceContext: DeviceContext,
+    password: String,
+    config: IronOxideConfig,
+    timeout: Option[Duration]
+  ): Future[IronOxide[Future]] =
+    IronOxide.initializeAndRotate[IO](deviceContext, password, config, timeout).map(IronOxideFuture(_)).unsafeToFuture
 
-  def userCreate[F[_]](jwt: String, password: String, options: UserCreateOpts): Future[UserCreateResult] =
-    IronOxide.userCreate[IO](jwt, password, options).unsafeToFuture
+  def userCreate[F[_]](
+    jwt: String,
+    password: String,
+    options: UserCreateOpts,
+    timeout: Option[Duration]
+  ): Future[UserCreateResult] =
+    IronOxide.userCreate[IO](jwt, password, options, timeout).unsafeToFuture
 }

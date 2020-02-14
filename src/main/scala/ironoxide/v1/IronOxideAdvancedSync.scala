@@ -6,7 +6,8 @@ import com.ironcorelabs.{sdk => jsdk}
 import ironoxide.v1.document._
 import scodec.bits.ByteVector
 
-case class IronOxideAdvancedSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: Sync[F]) extends IronOxideAdvanced[F] {
+case class IronOxideAdvancedSync[F[_]](underlying: jsdk.IronOxide)(implicit syncF: Sync[F])
+    extends IronOxideAdvanced[F] {
 
   def documentEncryptUnmanaged(data: ByteVector, options: DocumentEncryptOpts): F[DocumentEncryptUnmanagedResult] =
     for {
@@ -19,6 +20,9 @@ case class IronOxideAdvancedSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF:
     encryptedDeks: EncryptedDeks
   ): F[DocumentDecryptUnmanagedResult] =
     syncF
-      .delay(underlying.advancedDocumentDecryptUnmanaged(encryptedData.underlyingBytes, encryptedDeks.underlyingBytes))
-      .map(DocumentDecryptUnmanagedResult(_))
+      .delay(
+        DocumentDecryptUnmanagedResult(
+          underlying.advancedDocumentDecryptUnmanaged(encryptedData.underlyingBytes, encryptedDeks.underlyingBytes)
+        )
+      )
 }

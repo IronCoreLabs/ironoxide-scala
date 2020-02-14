@@ -19,9 +19,9 @@ case class FailedResult(
 }
 
 object FailedResult {
-  def apply(sr: jsdk.FailedResult): FailedResult =
+  def apply(fr: jsdk.FailedResult): FailedResult =
     FailedResult(
-      sr.getUsers.toList.map(UserAccessErr(_)),
-      sr.getGroups.toList.map(GroupAccessErr(_))
+      fr.getUsers.toList.map(UserAccessErr(_)),
+      fr.getGroups.toList.map(GroupAccessErr(_))
     )
 }
