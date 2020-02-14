@@ -9,8 +9,8 @@ import ironoxide.v1.group._
 import ironoxide.v1.user._
 import java.{util => ju}
 import org.scalatest.{AsyncWordSpec, Matchers, OptionValues}
-import scodec.bits.ByteVector
 import scala.concurrent.duration.Duration
+import scodec.bits.ByteVector
 
 class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues with OptionValues {
   try {
