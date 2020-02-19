@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.0
+
+- Add `IronOxideConfig` to configure sdk options
+- Add `config` and `timeout` parameters to various functions
+
 ## 0.11.0
 
 - Rename `IronSdk*` to `IronOxide*`

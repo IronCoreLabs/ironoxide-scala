@@ -7,9 +7,10 @@ import ironoxide.v1.common._
 import ironoxide.v1.document._
 import ironoxide.v1.group._
 import ironoxide.v1.user._
+import scala.concurrent.duration.Duration
 import scodec.bits.ByteVector
 
-case class IronOxideSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: Sync[F]) extends IronOxide[F] {
+case class IronOxideSync[F[_]](underlying: jsdk.IronOxide)(implicit syncF: Sync[F]) extends IronOxide[F] {
 
   def groupCreate(options: GroupCreateOpts): F[GroupCreateResult] =
     for {
@@ -115,11 +116,16 @@ case class IronOxideSync[F[_]](underlying: jsdk.IronSdk)(implicit syncF: Sync[F]
       result <- syncF.delay(underlying.documentRevokeAccess(javaId, users, groups))
     } yield DocumentAccessResult(result)
 
-  def userCreate(jwt: String, password: String, options: UserCreateOpts): F[UserCreateResult] =
-    IronOxide.userCreate(jwt, password, options)
+  def userCreate(
+    jwt: String,
+    password: String,
+    options: UserCreateOpts,
+    timeout: Option[Duration]
+  ): F[UserCreateResult] =
+    IronOxide.userCreate(jwt, password, options, timeout)
 
-  def userVerify(jwt: String): F[Option[UserResult]] =
-    IronOxide.userVerify(jwt)
+  def userVerify(jwt: String, timeout: Option[Duration]): F[Option[UserResult]] =
+    IronOxide.userVerify(jwt, timeout)
 
   def userGetPublicKey(users: List[UserId]): F[List[UserWithKey]] =
     for {

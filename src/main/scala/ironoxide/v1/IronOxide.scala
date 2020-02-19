@@ -6,6 +6,7 @@ import ironoxide.v1.common._
 import ironoxide.v1.document._
 import ironoxide.v1.group._
 import ironoxide.v1.user._
+import scala.concurrent.duration.Duration
 import scala.util.Try
 import scodec.bits.ByteVector
 
@@ -228,18 +229,20 @@ trait IronOxide[F[_]] {
    * @param jwt valid IronCore or Auth0 JWT
    * @param password password used to encrypt and escrow the user's private master key
    * @param options user creation options. Use `UserCreateOpts.apply()` for defaults
+   * @param timeout timeout for this operation or None for no timeout
    * @return Newly generated [[user.UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys.
    *         The escrowed keys are unlocked by the provided password.
    */
-  def userCreate(jwt: String, password: String, options: UserCreateOpts): F[UserCreateResult]
+  def userCreate(jwt: String, password: String, options: UserCreateOpts, timeout: Option[Duration]): F[UserCreateResult]
 
   /**
    * Verify a user given a JWT for their user record.
    *
    * @param jwt valid IronCore JWT
+   * @param timeout timeout for this operation or None for no timeout
    * @return Option of whether the user's account record exists in the IronCore system or not
    */
-  def userVerify(jwt: String): F[Option[UserResult]]
+  def userVerify(jwt: String, timeout: Option[Duration]): F[Option[UserResult]]
 
   /**
    * Get a list of user public keys given their IDs. Allows discovery of which user IDs have keys in the
@@ -294,23 +297,33 @@ object IronOxide {
    * Initialize IronOxide with a device. Verifies that the provided user/segment exists and the provided device
    * This is identitical to [[initialize]], but instead of capturing the errors in `F`, it captures them in a `Try`.
    *
-   * @param deviceContext device context used to initialize the IronSdk with a set of device keys
-   * @return an instance of the IronSdk
+   * @param deviceContext device context used to initialize the IronOxide with a set of device keys
+   * @param config configuration for policy caching and SDK operation timeouts
+   * @return an instance of the IronOxide
    */
-  def tryInitialize[F[_]: Sync](deviceContext: DeviceContext): Try[IronOxide[F]] =
-    //This unsafeRunSync does not talk to the network and is safe here because we recatch the exceptions in Try.
-    //This allows for cleaner code in places that use Future as their effect type because they don't have to await the Future.
-    Try((deviceContext.toJava[IO].map(jsdk.IronSdk.initialize)).unsafeRunSync).map(IronOxideSync(_))
+  def tryInitialize[F[_]: Sync](deviceContext: DeviceContext, config: IronOxideConfig): Try[IronOxide[F]] =
+    // This unsafeRunSync is safe here because we recatch the exceptions in Try.
+    // This allows for cleaner code in places that use Future as their effect type because they don't have to await the Future.
+    Try((for {
+      javaDeviceContext <- deviceContext.toJava[IO]
+      javaConfig        <- config.toJava[IO]
+    } yield IronOxideSync(jsdk.IronOxide.initialize(javaDeviceContext, javaConfig))).unsafeRunSync)
 
   /**
-   * Initialize IronSdk with a device. Verifies that the provided user/segment exists and the provided device
+   * Initialize IronOxide with a device. Verifies that the provided user/segment exists and the provided device
    * keys are valid and exist for the provided account.
    *
    * @param deviceContext device context used to initialize the IronOxide with a set of device keys
+   * @param config configuration for policy caching and SDK operation timeouts
    * @return an instance of the IronOxide
    */
-  def initialize[F[_]](deviceContext: DeviceContext)(implicit syncF: Sync[F]): F[IronOxide[F]] =
-    deviceContext.toJava.map(jsdk.IronSdk.initialize).map(IronOxideSync(_))
+  def initialize[F[_]](deviceContext: DeviceContext, config: IronOxideConfig)(
+    implicit syncF: Sync[F]
+  ): F[IronOxide[F]] =
+    for {
+      javaDeviceContext <- deviceContext.toJava
+      javaConfig        <- config.toJava
+    } yield IronOxideSync(jsdk.IronOxide.initialize(javaDeviceContext, javaConfig))
 
   /**
    * Initialize IronOxide with a device. Verifies that the provided user/segment exists and the provided device
@@ -320,12 +333,25 @@ object IronOxide {
    *
    * @param deviceContext device context used to initialize the IronOxide with a set of device keys
    * @param password password used to encrypt and escrow the user's private master key
+   * @param config configuration for policy caching and SDK operation timeouts
+   * @param timeout timeout used only for the potential call to rotate_all. This is a separate timeout
+   *                from the SDK-wide timeout as it is expected that this operation might take significantly
+   *                longer than other operations. If None, defaults to the SDK operation timeout in `config`.
    * @return an instance of the IronOxide
    */
-  def initializeAndRotate[F[_]](deviceContext: DeviceContext, password: String)(
+  def initializeAndRotate[F[_]](
+    deviceContext: DeviceContext,
+    password: String,
+    config: IronOxideConfig,
+    timeout: Option[Duration]
+  )(
     implicit syncF: Sync[F]
   ): F[IronOxide[F]] =
-    deviceContext.toJava.map(jsdk.IronSdk.initializeAndRotate(_, password)).map(IronOxideSync(_))
+    for {
+      javaDeviceContext <- deviceContext.toJava
+      javaConfig        <- config.toJava
+      javaTimeout = timeout.map(_.toJsdkDuration).orNull
+    } yield IronOxideSync(jsdk.IronOxide.initializeAndRotate(javaDeviceContext, password, javaConfig, javaTimeout))
 
   /**
    * Generate a new device for the user specified in the signed JWT.
@@ -335,14 +361,21 @@ object IronOxide {
    * @param jwt valid IronCore JWT
    * @param password password used to encrypt and escrow the user's private key
    * @param deviceCreateOptions optional values, like device name
+   * @param timeout timeout for this operation or None for no timeout
    * @return details about the newly created device
    */
-  def generateNewDevice[F[_]](jwt: String, password: String, deviceCreateOptions: DeviceCreateOpts)(
+  def generateNewDevice[F[_]](
+    jwt: String,
+    password: String,
+    deviceCreateOptions: DeviceCreateOpts,
+    timeout: Option[Duration]
+  )(
     implicit syncF: Sync[F]
   ): F[DeviceAddResult] =
-    deviceCreateOptions.toJava.map { javaOpts =>
-      DeviceAddResult(jsdk.IronSdk.generateNewDevice(jwt, password, javaOpts))
-    }
+    for {
+      javaOpts <- deviceCreateOptions.toJava
+      javaTimeout = timeout.map(_.toJsdkDuration).orNull
+    } yield DeviceAddResult(jsdk.IronOxide.generateNewDevice(jwt, password, javaOpts, javaTimeout))
 
   /**
    * Create a new user within the IronCore system.
@@ -350,22 +383,27 @@ object IronOxide {
    * @param jwt Valid IronCore or Auth0 JWT
    * @param password Password used to encrypt and escrow the user's private master key
    * @param options user creation options. Use `UserCreateOpts.apply()` for defaults
+   * @param timeout timeout for this operation or None for no timeout
    * @return Newly generated [[user.UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys.
    *         The escrowed keys are unlocked by the provided password.
    */
-  def userCreate[F[_]](jwt: String, password: String, options: UserCreateOpts)(
+  def userCreate[F[_]](jwt: String, password: String, options: UserCreateOpts, timeout: Option[Duration])(
     implicit syncF: Sync[F]
   ): F[UserCreateResult] =
-    options.toJava.map { javaOpts =>
-      UserCreateResult(jsdk.IronSdk.userCreate(jwt, password, javaOpts))
-    }
+    for {
+      javaOpts <- options.toJava
+      javaTimeout = timeout.map(_.toJsdkDuration).orNull
+    } yield UserCreateResult(jsdk.IronOxide.userCreate(jwt, password, javaOpts, javaTimeout))
 
   /**
    * Verify a user given a JWT for their user record.
    *
    * @param jwt valid IronCore JWT
+   * @param timeout timeout for this operation or None for no timeout
    * @return option of whether the user's account record exists in the IronCore system or not
    */
-  def userVerify[F[_]](jwt: String)(implicit syncF: Sync[F]): F[Option[UserResult]] =
-    syncF.delay(UserResult(jsdk.IronSdk.userVerify(jwt)))
+  def userVerify[F[_]](jwt: String, timeout: Option[Duration])(implicit syncF: Sync[F]): F[Option[UserResult]] = {
+    val javaTimeout = timeout.map(_.toJsdkDuration).orNull
+    syncF.delay(UserResult(jsdk.IronOxide.userVerify(jwt, javaTimeout)))
+  }
 }

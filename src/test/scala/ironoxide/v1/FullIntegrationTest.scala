@@ -9,6 +9,7 @@ import ironoxide.v1.group._
 import ironoxide.v1.user._
 import java.{util => ju}
 import org.scalatest.{AsyncWordSpec, Matchers, OptionValues}
+import scala.concurrent.duration.{Duration, MILLISECONDS}
 import scodec.bits.ByteVector
 
 class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues with OptionValues {
@@ -58,14 +59,26 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       primaryTestUserSigningPrivateKeyBytes
     )
 
-  val sdk = IronOxide.initialize[IO](deviceContext).unsafeRunSync
+  val defaultConfig = IronOxideConfig()
+  val shortConfig = IronOxideConfig(PolicyCachingConfig(), Some(Duration(5, MILLISECONDS)))
 
-  "IronSdk.tryInitialize" should {
+  val sdk = IronOxide.initialize[IO](deviceContext, defaultConfig).unsafeRunSync
+  val defaultTimeout = Some(Duration(5, "seconds"))
+
+  "IronOxide.tryInitialize" should {
     "succeed for good values" in {
-      IronOxide.tryInitialize[IO](deviceContext) shouldBe 'success
+      IronOxide.tryInitialize[IO](deviceContext, defaultConfig) shouldBe 'success
     }
     "fail for bad values" in {
-      IronOxide.tryInitialize[IO](deviceContext.copy(devicePrivateKey = PrivateKey(ByteVector.empty))) shouldBe 'failure
+      IronOxide
+        .tryInitialize[IO](deviceContext.copy(devicePrivateKey = PrivateKey(ByteVector.empty)), defaultConfig) shouldBe 'failure
+    }
+  }
+
+  "IronOxide.initialize" should {
+    "fail for low timeout" in {
+      val resp = IronOxide.initialize[IO](deviceContext, shortConfig).attempt.unsafeRunSync
+      resp shouldBe 'left
     }
   }
 
@@ -78,14 +91,19 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
 
   "User Create" should {
     "fail for invalid jwt" in {
-      val resp = IronOxide.userCreate[IO](invalidJwt, "foo", UserCreateOpts(true)).attempt.unsafeRunSync
+      val resp = sdk.userCreate(invalidJwt, "foo", UserCreateOpts(true), defaultTimeout).attempt.unsafeRunSync
+      resp shouldBe 'left
+    }
+    "fail for short timeout" in {
+      val resp =
+        sdk.userCreate(invalidJwt, "foo", UserCreateOpts(true), Some(Duration(5, MILLISECONDS))).attempt.unsafeRunSync
       resp shouldBe 'left
     }
   }
 
   "User Verify" should {
     "fail for invalid jwt" in {
-      val resp = sdk.userVerify(invalidJwt).attempt.unsafeRunSync
+      val resp = sdk.userVerify(invalidJwt, defaultTimeout).attempt.unsafeRunSync
       resp shouldBe 'left
     }
   }
@@ -109,7 +127,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     "fail for invalid jwt" in {
       val resp =
         IronOxide
-          .generateNewDevice[IO](invalidJwt, "foo", DeviceCreateOpts(DeviceName("failure")))
+          .generateNewDevice[IO](invalidJwt, "foo", DeviceCreateOpts(DeviceName("failure")), defaultTimeout)
           .attempt
           .unsafeRunSync
       resp shouldBe 'left

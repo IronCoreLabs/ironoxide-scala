@@ -12,6 +12,10 @@ package object common {
         None
   }
 
+  implicit class DurationOps(d: scala.concurrent.duration.Duration) {
+    def toJsdkDuration: jsdk.Duration = jsdk.Duration.from_millis(d.toMillis)
+  }
+
   private[ironoxide] def failedResultToScala(fromJava: jsdk.FailedResult): List[GroupOrUserAccessError] =
     fromJava.getGroups.toList.map(GroupOrUserAccessError.fromGroupError) ++
       fromJava.getUsers.toList.map(GroupOrUserAccessError.fromUserError)
