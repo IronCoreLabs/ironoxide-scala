@@ -9,7 +9,7 @@ import ironoxide.v1.group._
 import ironoxide.v1.user._
 import java.{util => ju}
 import org.scalatest.{AsyncWordSpec, Matchers, OptionValues}
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration.{Duration, MILLISECONDS}
 import scodec.bits.ByteVector
 
 class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues with OptionValues {
@@ -60,7 +60,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     )
 
   val defaultConfig = IronOxideConfig()
-  val shortConfig = IronOxideConfig(PolicyCachingConfig(), Some(Duration(5, "millis")))
+  val shortConfig = IronOxideConfig(PolicyCachingConfig(), Some(Duration(5, MILLISECONDS)))
 
   val sdk = IronOxide.initialize[IO](deviceContext, defaultConfig).unsafeRunSync
   val defaultTimeout = Some(Duration(5, "seconds"))
@@ -96,7 +96,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
     "fail for short timeout" in {
       val resp =
-        sdk.userCreate(invalidJwt, "foo", UserCreateOpts(true), Some(Duration(5, "millis"))).attempt.unsafeRunSync
+        sdk.userCreate(invalidJwt, "foo", UserCreateOpts(true), Some(Duration(5, MILLISECONDS))).attempt.unsafeRunSync
       resp shouldBe 'left
     }
   }

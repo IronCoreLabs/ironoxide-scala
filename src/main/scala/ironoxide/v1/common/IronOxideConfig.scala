@@ -3,7 +3,7 @@ package ironoxide.v1.common
 import com.ironcorelabs.{sdk => jsdk}
 import cats.effect.Sync
 import cats.implicits._
-import scala.concurrent.duration.Duration
+import scala.concurrent.duration.{Duration, MILLISECONDS}
 
 /**
  * Top-level configuration object for IronOxide
@@ -27,7 +27,7 @@ object IronOxideConfig {
     val javaConfig = new jsdk.IronOxideConfig
     val javaPolicy = javaConfig.getPolicyCachingConfig
     val javaTimeout = javaConfig.getSdkOperationTimeout.toScala
-    val scalaTimeout = javaTimeout.map(d => Duration(d.getMillis, "millis"))
+    val scalaTimeout = javaTimeout.map(d => Duration(d.getMillis, MILLISECONDS))
     IronOxideConfig(PolicyCachingConfig(javaPolicy), scalaTimeout)
   }
 }
