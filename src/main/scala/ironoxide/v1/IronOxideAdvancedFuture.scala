@@ -15,5 +15,4 @@ case class IronOxideAdvancedFuture(underlying: IronOxideAdvanced[IO]) extends Ir
     encryptedDeks: EncryptedDeks
   ): Future[DocumentDecryptUnmanagedResult] =
     underlying.documentDecryptUnmanaged(encryptedData, encryptedDeks).unsafeToFuture
-
 }

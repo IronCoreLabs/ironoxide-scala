@@ -31,7 +31,7 @@ case class DocumentEncryptOpts(
       javaUsers  <- userGrants.traverse(_.toJava).map(_.toArray)
       javaGroups <- groupGrants.traverse(_.toJava).map(_.toArray)
       javaPolicy <- policy.traverse(_.toJava)
-    } yield jsdk.DocumentEncryptOpts.create(
+    } yield new jsdk.DocumentEncryptOpts(
       javaId.orNull,
       javaName.orNull,
       grantToAuthor,

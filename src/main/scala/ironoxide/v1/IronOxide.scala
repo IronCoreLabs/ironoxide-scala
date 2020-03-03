@@ -18,6 +18,13 @@ import scodec.bits.ByteVector
 trait IronOxide[F[_]] {
 
   /**
+   * Clears all entries from the policy cache.
+   *
+   * @return number of entries cleared from the cache
+   */
+  def clearPolicyCache: Long
+
+  /**
    * Encrypts the provided document bytes.
    *
    * @param data bytes of the document to encrypt

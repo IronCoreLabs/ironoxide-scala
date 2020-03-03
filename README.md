@@ -19,7 +19,10 @@ Below you'll find a link of the ironoxide-scala version with which native compon
 
 | ironoxide-scala | ironoxide-java                                                                |
 | --------------- | ----------------------------------------------------------------------------- |
-| 0.10.0          | [0.11.0](https://github.com/IronCoreLabs/ironoxide-java/releases/tag/v0.11.0) |
+| 0.12.1          | [0.12.1](https://github.com/IronCoreLabs/ironoxide-java/releases/tag/v0.12.1) |
+| 0.12.0          | [0.12.0](https://github.com/IronCoreLabs/ironoxide-java/releases/tag/v0.12.0) |
+| 0.11.0          | [0.11.0](https://github.com/IronCoreLabs/ironoxide-java/releases/tag/v0.11.0) |
+| 0.10.x          | [0.11.0](https://github.com/IronCoreLabs/ironoxide-java/releases/tag/v0.11.0) |
 | 0.9.0           | [0.11.0](https://github.com/IronCoreLabs/ironoxide-java/releases/tag/v0.11.0) |
 | 0.8.0           | [0.9.0](https://github.com/IronCoreLabs/ironoxide-java/releases/tag/v0.8.0)   |
 | 0.7.x           | [0.8.2](https://github.com/IronCoreLabs/ironoxide-java/releases/tag/v0.8.2)   |

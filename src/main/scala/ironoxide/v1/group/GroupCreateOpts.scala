@@ -34,7 +34,7 @@ case class GroupCreateOpts(
       javaOwner   <- owner.traverse(_.toJava).map(_.orNull)
       javaAdmins  <- admins.traverse(_.toJava).map(_.toArray)
       javaMembers <- members.traverse(_.toJava).map(_.toArray)
-    } yield jsdk.GroupCreateOpts.create(
+    } yield new jsdk.GroupCreateOpts(
       javaId,
       javaName,
       addAsAdmin,

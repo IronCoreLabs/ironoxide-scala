@@ -10,7 +10,7 @@ import com.ironcorelabs.{sdk => jsdk}
  */
 case class UserCreateOpts(needsRotation: Boolean) {
   private[ironoxide] def toJava[F[_]](implicit syncF: Sync[F]): F[jsdk.UserCreateOpts] =
-    syncF.delay(jsdk.UserCreateOpts.create(needsRotation))
+    syncF.delay(new jsdk.UserCreateOpts(needsRotation))
 }
 
 object UserCreateOpts {

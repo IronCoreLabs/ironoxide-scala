@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.12.1
+
+- Add `clearPolicyCache()` to `IronOxideSync` and `IronOxideFuture`
+
 ## 0.12.0
 
 - Add `IronOxideConfig` to configure sdk options
