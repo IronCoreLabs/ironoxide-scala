@@ -12,8 +12,8 @@ import scodec.bits.ByteVector
 
 case class IronOxideSync[F[_]](underlying: jsdk.IronOxide)(implicit syncF: Sync[F]) extends IronOxide[F] {
 
-  def clearPolicyCache: Long =
-    underlying.clearPolicyCache
+  def clearPolicyCache: F[Long] =
+    syncF.delay(underlying.clearPolicyCache)
 
   def groupCreate(options: GroupCreateOpts): F[GroupCreateResult] =
     for {

@@ -22,7 +22,7 @@ trait IronOxide[F[_]] {
    *
    * @return number of entries cleared from the cache
    */
-  def clearPolicyCache: Long
+  def clearPolicyCache: F[Long]
 
   /**
    * Encrypts the provided document bytes.
