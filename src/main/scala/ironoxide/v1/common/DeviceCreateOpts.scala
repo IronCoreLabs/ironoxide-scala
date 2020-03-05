@@ -11,7 +11,7 @@ case class DeviceCreateOpts(
   private[ironoxide] def toJava[F[_]](implicit syncF: Sync[F]): F[jsdk.DeviceCreateOpts] =
     for {
       javaName <- name.traverse(_.toJava).map(_.orNull)
-    } yield jsdk.DeviceCreateOpts.create(javaName)
+    } yield new jsdk.DeviceCreateOpts(javaName)
 }
 
 object DeviceCreateOpts {

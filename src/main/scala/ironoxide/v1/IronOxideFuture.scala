@@ -12,6 +12,9 @@ import scodec.bits.ByteVector
 
 case class IronOxideFuture(underlying: IronOxide[IO]) extends IronOxide[Future] {
 
+  def clearPolicyCache: Future[Long] =
+    underlying.clearPolicyCache.unsafeToFuture
+
   def groupCreate(options: GroupCreateOpts): Future[GroupCreateResult] =
     underlying.groupCreate(options).unsafeToFuture
 
