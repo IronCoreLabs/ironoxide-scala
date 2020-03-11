@@ -2,6 +2,7 @@ package ironoxide.v1
 
 import cats.effect.IO
 import com.ironcorelabs.{sdk => jsdk}
+import ironoxide.v1.beta._
 import ironoxide.v1.common._
 import ironoxide.v1.document._
 import ironoxide.v1.group._
@@ -287,6 +288,12 @@ trait IronOxide[F[_]] {
    * @return The (encrypted) updated private key and associated metadata
    */
   def userRotatePrivateKey(password: String): F[UserUpdatePrivateKeyResult]
+
+  /** Create an index and encrypt it to the provided group_id.
+   *
+   * @param groupId group to encrypt to
+   */
+  def createBlindIndex(groupId: GroupId): F[EncryptedBlindIndexSalt]
 
   /**
    * Access advanced SDK operations

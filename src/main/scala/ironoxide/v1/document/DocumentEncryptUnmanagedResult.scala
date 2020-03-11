@@ -1,8 +1,14 @@
 package ironoxide.v1.document
 
 import com.ironcorelabs.{sdk => jsdk}
-import ironoxide.v1.common.{GroupOrUserAccessError, UserOrGroupId, failedResultToScala, succeededResultToScala}
-import scodec.bits.ByteVector
+import ironoxide.v1.common.{
+  EncryptedData,
+  EncryptedDeks,
+  GroupOrUserAccessError,
+  UserOrGroupId,
+  failedResultToScala,
+  succeededResultToScala
+}
 
 // unsure about delete/finalize
 /**
@@ -31,22 +37,4 @@ object DocumentEncryptUnmanagedResult {
       succeededResultToScala(dder.getChanged),
       failedResultToScala(dder.getErrors)
     )
-}
-
-/**
- * Bytes of encrypted document content.
- */
-case class EncryptedData(bytes: ByteVector)(val underlyingBytes: Array[Byte])
-
-object EncryptedData {
-  def apply(bytes: Array[Byte]): EncryptedData = EncryptedData(ByteVector.view(bytes))(bytes)
-}
-
-/**
- * Bytes of encrypted document encryption keys (EDEKs).
- */
-case class EncryptedDeks(bytes: ByteVector)(val underlyingBytes: Array[Byte])
-
-object EncryptedDeks {
-  def apply(bytes: Array[Byte]): EncryptedDeks = EncryptedDeks(ByteVector.view(bytes))(bytes)
 }

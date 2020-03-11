@@ -3,6 +3,7 @@ package ironoxide.v1
 import cats.effect.Sync
 import cats.implicits._
 import com.ironcorelabs.{sdk => jsdk}
+import ironoxide.v1.beta._
 import ironoxide.v1.common._
 import ironoxide.v1.document._
 import ironoxide.v1.group._
@@ -147,6 +148,12 @@ case class IronOxideSync[F[_]](underlying: jsdk.IronOxide)(implicit syncF: Sync[
 
   def userRotatePrivateKey(password: String): F[UserUpdatePrivateKeyResult] =
     syncF.delay(UserUpdatePrivateKeyResult(underlying.userRotatePrivateKey(password)))
+
+  def createBlindIndex(groupId: GroupId): F[EncryptedBlindIndexSalt] =
+    for {
+      javaId <- groupId.toJava
+      result <- syncF.delay(underlying.createBlindIndex(javaId))
+    } yield EncryptedBlindIndexSalt(result, underlying)
 
   def advanced: IronOxideAdvanced[F] = IronOxideAdvancedSync(underlying)
 }

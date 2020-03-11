@@ -25,11 +25,11 @@ lazy val root = (project in file(".")).settings(
     "Typesafe repository".at("https://repo.typesafe.com/typesafe/release/")
   ),
   libraryDependencies ++= Seq(
-    "org.scodec"       %% "scodec-bits"    % "1.1.12",
-    "com.ironcorelabs" % "ironoxide-java"  % "0.12.1",
-    "org.typelevel"    %% "cats-effect"    % "2.0.0",
-    "com.ironcorelabs" %% "cats-scalatest" % "3.0.0" % Test,
-    "org.scalatest"    %% "scalatest"      % "3.0.8" % Test
+    "org.scodec"       %% "scodec-bits"    % "1.1.14",
+    "com.ironcorelabs" % "ironoxide-java"  % "0.12.3-SNAPSHOT",
+    "org.typelevel"    %% "cats-effect"    % "2.1.2",
+    "com.ironcorelabs" %% "cats-scalatest" % "3.0.5" % Test,
+    "org.scalatest"    %% "scalatest"      % "3.1.1" % Test
   )
 )
 
@@ -54,9 +54,7 @@ publishMavenStyle := true
 
 publishArtifact in Test := false
 
-pomIncludeRepository := { _ =>
-  false
-}
+pomIncludeRepository := { _ => false }
 
 useGpg := true
 

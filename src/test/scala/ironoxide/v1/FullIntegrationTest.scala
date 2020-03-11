@@ -8,7 +8,9 @@ import ironoxide.v1.document._
 import ironoxide.v1.group._
 import ironoxide.v1.user._
 import java.{util => ju}
-import org.scalatest.{AsyncWordSpec, Matchers, OptionValues}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AsyncWordSpec
 import scala.concurrent.duration.{Duration, MILLISECONDS}
 import scodec.bits.ByteVector
 
@@ -290,6 +292,19 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     "Fail for invalid group id" in {
       val maybeGroupGetResult = sdk.groupGetMetadata(GroupId("tsp")).attempt.unsafeRunSync
       maybeGroupGetResult.isLeft shouldBe true
+    }
+  }
+
+  "Encrypted search" should {
+    "tokenize a string successfully" in {
+      val encryptedBlindIndexSalt = sdk.createBlindIndex(validGroupId).unsafeRunSync
+      val blindIndexSearch = encryptedBlindIndexSalt.initializeSearch[IO].unsafeRunSync
+      val token1 = blindIndexSearch.tokenizeData("ironcore labs", None)
+      val token2 = blindIndexSearch.tokenizeData("ironcore labs", Some("red"))
+
+      token1.length shouldBe 8
+      token2.length shouldBe 8
+      token1 should not be token2
     }
   }
 

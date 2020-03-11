@@ -1,5 +1,6 @@
 package ironoxide.v1
 
+import ironoxide.v1.common.{EncryptedData, EncryptedDeks}
 import ironoxide.v1.document._
 import scodec.bits.ByteVector
 
