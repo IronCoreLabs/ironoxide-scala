@@ -289,7 +289,7 @@ trait IronOxide[F[_]] {
    */
   def userRotatePrivateKey(password: String): F[UserUpdatePrivateKeyResult]
 
-  /** Create an index and encrypt it to the provided group_id.
+  /** Create an index and encrypt it to the provided groupId.
    *
    * @param groupId group to encrypt to
    */
