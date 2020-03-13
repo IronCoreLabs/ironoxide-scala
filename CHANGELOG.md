@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.13.0
+
+- Add `createBlindIndex()` and supporting classes to support blind index search
+- Moved `EncryptedData` and `EncryptedDeks` to the `common` namespace
+
 ## 0.12.1
 
 - Add `clearPolicyCache()` to `IronOxideSync` and `IronOxideFuture`
