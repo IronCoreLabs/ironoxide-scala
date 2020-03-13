@@ -299,12 +299,15 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     "tokenize a string successfully" in {
       val encryptedBlindIndexSalt = sdk.createBlindIndex(validGroupId).unsafeRunSync
       val blindIndexSearch = encryptedBlindIndexSalt.initializeSearch[IO].unsafeRunSync
-      val token1 = blindIndexSearch.tokenizeQuery("ironcore labs", None)
-      val token2 = blindIndexSearch.tokenizeQuery("ironcore labs", Some("red"))
+      val queryResult1 = blindIndexSearch.tokenizeQuery("ironcore labs", None)
+      val dataResult = blindIndexSearch.tokenizeData("ironcore labs", None)
+      val queryResult2 = blindIndexSearch.tokenizeQuery("ironcore labs", Some("red"))
 
-      token1.length shouldBe 8
-      token2.length shouldBe 8
-      token1 should not be token2
+      (dataResult should contain).allElementsOf(queryResult1)
+      dataResult.toList.length should be > 8
+      queryResult1.toList.length shouldBe 8
+      queryResult2.toList.length shouldBe 8
+      queryResult1 should not be queryResult2
     }
   }
 
