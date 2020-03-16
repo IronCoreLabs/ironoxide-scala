@@ -1,6 +1,7 @@
 package ironoxide.v1
 
 import cats.effect.IO
+import ironoxide.v1.beta._
 import ironoxide.v1.common._
 import ironoxide.v1.document._
 import ironoxide.v1.group._
@@ -79,8 +80,6 @@ case class IronOxideFuture(underlying: IronOxide[IO]) extends IronOxide[Future] 
   def documentUpdateName(id: DocumentId, name: Option[DocumentName]): Future[DocumentMetadataResult] =
     underlying.documentUpdateName(id, name).unsafeToFuture
 
-  def advanced: IronOxideAdvanced[Future] = IronOxideAdvancedFuture(underlying.advanced)
-
   def userCreate(
     jwt: String,
     password: String,
@@ -103,6 +102,11 @@ case class IronOxideFuture(underlying: IronOxide[IO]) extends IronOxide[Future] 
 
   def userRotatePrivateKey(password: String): Future[UserUpdatePrivateKeyResult] =
     underlying.userRotatePrivateKey(password).unsafeToFuture
+
+  def advanced: IronOxideAdvanced[Future] = IronOxideAdvancedFuture(underlying.advanced)
+
+  def createBlindIndex(groupId: GroupId): Future[EncryptedBlindIndexSalt] =
+    underlying.createBlindIndex(groupId).unsafeToFuture
 }
 
 object IronOxideFuture {

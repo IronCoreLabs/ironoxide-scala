@@ -13,7 +13,7 @@ package object common {
   }
 
   implicit class DurationOps(d: scala.concurrent.duration.Duration) {
-    def toJsdkDuration: jsdk.Duration = jsdk.Duration.from_millis(d.toMillis)
+    def toJsdkDuration: jsdk.Duration = jsdk.Duration.fromMillis(d.toMillis)
   }
 
   private[ironoxide] def failedResultToScala(fromJava: jsdk.FailedResult): List[GroupOrUserAccessError] =

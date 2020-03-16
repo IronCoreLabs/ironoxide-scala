@@ -39,7 +39,7 @@ case class Sensitivity(inner: String) {
 }
 
 object Sensitivity {
-  def apply(s: jsdk.Sensitivity): Sensitivity = Sensitivity(s.value)
+  def apply(s: jsdk.Sensitivity): Sensitivity = Sensitivity(s.getValue)
 }
 
 /**
@@ -52,7 +52,7 @@ case class Category(inner: String) {
 }
 
 object Category {
-  def apply(cat: jsdk.Category): Category = Category(cat.value)
+  def apply(cat: jsdk.Category): Category = Category(cat.getValue)
 }
 
 /**
@@ -65,5 +65,5 @@ case class DataSubject(inner: String) {
 }
 
 object DataSubject {
-  def apply(ds: jsdk.DataSubject): DataSubject = DataSubject(ds.value)
+  def apply(ds: jsdk.DataSubject): DataSubject = DataSubject(ds.getValue)
 }
