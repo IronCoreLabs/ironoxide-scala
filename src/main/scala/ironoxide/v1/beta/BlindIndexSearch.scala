@@ -2,6 +2,11 @@ package ironoxide.v1.beta
 
 import com.ironcorelabs.{sdk => jsdk}
 
+/**
+ * This is a technique that allows you to hide the terms that have been indexed. This particular implementation uses tri-grams, which
+ * are salted and hashed, to produce the list of tokens.
+ * The BlindIndexSearch gives the ability to generate queries as well as create the search entries to store.
+ */
 case class BlindIndexSearch(private val javaBlindIndexSearch: jsdk.BlindIndexSearch) {
 
   /**
