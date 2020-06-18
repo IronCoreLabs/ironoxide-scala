@@ -137,7 +137,7 @@ trait IronOxide[F[_]] {
    * @param documentId     id of the document whose access is is being modified
    * @param userRevokes    list of user revokes
    * @param groupRevokes   list of group revokes
-   * @return information about which revokations succeeded/failed
+   * @return information about which revocations succeeded/failed
    */
   def documentRevokeAccess(
     documentId: DocumentId,
@@ -180,7 +180,7 @@ trait IronOxide[F[_]] {
    * Add a list of users as members of a group.
    *
    * @param id id of the group to add members to
-   * @param users the list of users thet will be added to the group as members
+   * @param users the list of users that will be added to the group as members
    * @return all the users that were added and all the users that were not added with the reason they were not
    */
   def groupAddMembers(id: GroupId, users: List[UserId]): F[GroupAccessEditResult]
@@ -241,7 +241,7 @@ trait IronOxide[F[_]] {
    * @return Newly generated [[user.UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys.
    *         The escrowed keys are unlocked by the provided password.
    */
-  def userCreate(jwt: String, password: String, options: UserCreateOpts, timeout: Option[Duration]): F[UserCreateResult]
+  def userCreate(jwt: Jwt, password: String, options: UserCreateOpts, timeout: Option[Duration]): F[UserCreateResult]
 
   /**
    * Verify a user given a JWT for their user record.
@@ -250,7 +250,7 @@ trait IronOxide[F[_]] {
    * @param timeout timeout for this operation or None for no timeout
    * @return Option of whether the user's account record exists in the IronCore system or not
    */
-  def userVerify(jwt: String, timeout: Option[Duration]): F[Option[UserResult]]
+  def userVerify(jwt: Jwt, timeout: Option[Duration]): F[Option[UserResult]]
 
   /**
    * Get a list of user public keys given their IDs. Allows discovery of which user IDs have keys in the
@@ -295,6 +295,8 @@ trait IronOxide[F[_]] {
    */
   def createBlindIndex(groupId: GroupId): F[EncryptedBlindIndexSalt]
 
+  def initializeBlindIndexSearch(encryptedSalt: EncryptedBlindIndexSalt): F[BlindIndexSearch]
+
   /**
    * Access advanced SDK operations
    *
@@ -309,7 +311,7 @@ object IronOxide {
 
   /**
    * Initialize IronOxide with a device. Verifies that the provided user/segment exists and the provided device
-   * This is identitical to [[initialize]], but instead of capturing the errors in `F`, it captures them in a `Try`.
+   * This is identical to [[initialize]], but instead of capturing the errors in `F`, it captures them in a `Try`.
    *
    * @param deviceContext device context used to initialize the IronOxide with a set of device keys
    * @param config configuration for policy caching and SDK operation timeouts
@@ -379,7 +381,7 @@ object IronOxide {
    * @return details about the newly created device
    */
   def generateNewDevice[F[_]](
-    jwt: String,
+    jwt: Jwt,
     password: String,
     deviceCreateOptions: DeviceCreateOpts,
     timeout: Option[Duration]
@@ -387,9 +389,10 @@ object IronOxide {
     implicit syncF: Sync[F]
   ): F[DeviceAddResult] =
     for {
+      javaJwt  <- jwt.toJava
       javaOpts <- deviceCreateOptions.toJava
       javaTimeout = timeout.map(_.toJsdkDuration).orNull
-    } yield DeviceAddResult(jsdk.IronOxide.generateNewDevice(jwt, password, javaOpts, javaTimeout))
+    } yield DeviceAddResult(jsdk.IronOxide.generateNewDevice(javaJwt, password, javaOpts, javaTimeout))
 
   /**
    * Create a new user within the IronCore system.
@@ -401,13 +404,14 @@ object IronOxide {
    * @return Newly generated [[user.UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys.
    *         The escrowed keys are unlocked by the provided password.
    */
-  def userCreate[F[_]](jwt: String, password: String, options: UserCreateOpts, timeout: Option[Duration])(
+  def userCreate[F[_]](jwt: Jwt, password: String, options: UserCreateOpts, timeout: Option[Duration])(
     implicit syncF: Sync[F]
   ): F[UserCreateResult] =
     for {
+      javaJwt  <- jwt.toJava
       javaOpts <- options.toJava
       javaTimeout = timeout.map(_.toJsdkDuration).orNull
-    } yield UserCreateResult(jsdk.IronOxide.userCreate(jwt, password, javaOpts, javaTimeout))
+    } yield UserCreateResult(jsdk.IronOxide.userCreate(javaJwt, password, javaOpts, javaTimeout))
 
   /**
    * Verify a user given a JWT for their user record.
@@ -416,8 +420,9 @@ object IronOxide {
    * @param timeout timeout for this operation or None for no timeout
    * @return option of whether the user's account record exists in the IronCore system or not
    */
-  def userVerify[F[_]](jwt: String, timeout: Option[Duration])(implicit syncF: Sync[F]): F[Option[UserResult]] = {
-    val javaTimeout = timeout.map(_.toJsdkDuration).orNull
-    syncF.delay(UserResult(jsdk.IronOxide.userVerify(jwt, javaTimeout)))
-  }
+  def userVerify[F[_]](jwt: Jwt, timeout: Option[Duration])(implicit syncF: Sync[F]): F[Option[UserResult]] =
+    for {
+      javaJwt <- jwt.toJava
+      javaTimeout = timeout.map(_.toJsdkDuration).orNull
+    } yield UserResult(jsdk.IronOxide.userVerify(javaJwt, javaTimeout))
 }

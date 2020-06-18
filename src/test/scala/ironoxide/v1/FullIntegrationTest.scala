@@ -30,9 +30,13 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       System.exit(1)
   }
 
-  val invalidJwt =
-    "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NTA3NzE4MjMsImlhdCI6MTU1MDc3MTcwMywia2lkIjo1NTEsInBpZCI6MTAxMiwic2lkIjoidGVzdC1zZWdtZW50Iiwic3ViIjoiYTAzYjhlNTYtMTVkMi00Y2Y3LTk0MWYtYzYwMWU1NzUxNjNiIn0.vlqt0da5ltA2dYEK9i_pfRxPd3K2uexnkbAbzmbjW65XNcWlBOIbcdmmQLnSIZkRyTORD3DLXOIPYbGlApaTCR5WbaR3oPiSsR9IqdhgMEZxCcarqGg7b_zzwTP98fDcALGZNGsJL1hIrl3EEXdPoYjsOJ5LMF1H57NZiteBDAsm1zfXgOgCtvCdt7PQFSCpM5GyE3und9VnEgjtcQ6HAZYdutqjI79vaTnjt2A1X38pbHcnfvSanzJoeU3szwtBiVlB3cfXbROvBC7Kz8KvbWJzImJcJiRT-KyI4kk3l8wAs2FUjSRco8AQ1nIX21QHlRI0vVr_vdOd_pTXOUU51g"
-
+  val jwt = Jwt
+    .validate[IO](
+      "eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJzdWIiOiJhYmNBQkMwMTJfLiQjfEAvOjs9KyctZDEyMjZkMWItNGMzOS00OWRhLTkzM2MtNjQyZTIzYWMxOTQ1IiwicGlkIjo0MzgsInNpZCI6Imlyb25veGlkZS1kZXYxIiwia2lkIjo1OTMsImlhdCI6MTU5MTkwMTc0MCwiZXhwIjoxNTkxOTAxODYwfQ.wgs_tnh89SlKnIkoQHdlC0REjkxTl1P8qtDSQwWTFKwo8KQKXUQdpp4BfwqUqLcxA0BW6_XfVRlqMX5zcvCc6w"
+    )
+    .attempt
+    .unsafeRunSync
+    .value
   // Hardcoded user info for these tests because they don't depend on the number of things created for the given user, just
   // the values created.
   val primaryTestUserId = UserId("c29c1ee7-ede9-4401-855a-3a78a34a2759")
@@ -91,21 +95,24 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     }
   }
 
-  "User Create" should {
+  "Jwt" should {
     "fail for invalid jwt" in {
-      val resp = sdk.userCreate(invalidJwt, "foo", UserCreateOpts(true), defaultTimeout).attempt.unsafeRunSync
-      resp shouldBe 'left
+      val jwt = Jwt.validate[IO]("foo").attempt.unsafeRunSync
+      jwt shouldBe 'left
     }
+  }
+
+  "User Create" should {
     "fail for short timeout" in {
       val resp =
-        sdk.userCreate(invalidJwt, "foo", UserCreateOpts(true), Some(Duration(5, MILLISECONDS))).attempt.unsafeRunSync
+        sdk.userCreate(jwt, "foo", UserCreateOpts(true), Some(Duration(5, MILLISECONDS))).attempt.unsafeRunSync
       resp shouldBe 'left
     }
   }
 
   "User Verify" should {
-    "fail for invalid jwt" in {
-      val resp = sdk.userVerify(invalidJwt, defaultTimeout).attempt.unsafeRunSync
+    "fail for incorrect jwt" in {
+      val resp = sdk.userVerify(jwt, defaultTimeout).attempt.unsafeRunSync
       resp shouldBe 'left
     }
   }
@@ -129,7 +136,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
     "fail for invalid jwt" in {
       val resp =
         IronOxide
-          .generateNewDevice[IO](invalidJwt, "foo", DeviceCreateOpts(DeviceName("failure")), defaultTimeout)
+          .generateNewDevice[IO](jwt, "foo", DeviceCreateOpts(DeviceName("failure")), defaultTimeout)
           .attempt
           .unsafeRunSync
       resp shouldBe 'left
@@ -298,7 +305,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
   "Encrypted search" should {
     "tokenize a string successfully" in {
       val encryptedBlindIndexSalt = sdk.createBlindIndex(validGroupId).unsafeRunSync
-      val blindIndexSearch = encryptedBlindIndexSalt.initializeSearch[IO].unsafeRunSync
+      val blindIndexSearch = sdk.initializeBlindIndexSearch(encryptedBlindIndexSalt).unsafeRunSync
       val queryResult1 = blindIndexSearch.tokenizeQuery("ironcore labs", None)
       val dataResult = blindIndexSearch.tokenizeData("ironcore labs", None)
       val queryResult2 = blindIndexSearch.tokenizeQuery("ironcore labs", Some("red"))

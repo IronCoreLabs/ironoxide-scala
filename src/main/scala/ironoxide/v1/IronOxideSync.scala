@@ -121,14 +121,14 @@ case class IronOxideSync[F[_]](underlying: jsdk.IronOxide)(implicit syncF: Sync[
     } yield DocumentAccessResult(result)
 
   def userCreate(
-    jwt: String,
+    jwt: Jwt,
     password: String,
     options: UserCreateOpts,
     timeout: Option[Duration]
   ): F[UserCreateResult] =
     IronOxide.userCreate(jwt, password, options, timeout)
 
-  def userVerify(jwt: String, timeout: Option[Duration]): F[Option[UserResult]] =
+  def userVerify(jwt: Jwt, timeout: Option[Duration]): F[Option[UserResult]] =
     IronOxide.userVerify(jwt, timeout)
 
   def userGetPublicKey(users: List[UserId]): F[List[UserWithKey]] =
@@ -153,7 +153,13 @@ case class IronOxideSync[F[_]](underlying: jsdk.IronOxide)(implicit syncF: Sync[
     for {
       javaId <- groupId.toJava
       result <- syncF.delay(underlying.createBlindIndex(javaId))
-    } yield EncryptedBlindIndexSalt(result, underlying)
+    } yield EncryptedBlindIndexSalt(result)
+
+  def initializeBlindIndexSearch(encryptedSalt: EncryptedBlindIndexSalt): F[BlindIndexSearch] =
+    for {
+      javaSalt <- encryptedSalt.toJava
+      result   <- syncF.delay(underlying.initializeBlindIndexSearch(javaSalt))
+    } yield BlindIndexSearch(result)
 
   def advanced: IronOxideAdvanced[F] = IronOxideAdvancedSync(underlying)
 }
