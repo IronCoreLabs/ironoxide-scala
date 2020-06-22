@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.14.0
+
+- Add `Jwt` and `JwtClaims` types
+- Use new types as parameters to `userCreate`, `userVerify`, and `generateNewDevice`
+- Remove `initializeSearch` from `EncryptedBlindIndexSalt`
+- Add `initializeBlindIndexSearch` to `IronOxide*`
+
 ## 0.13.0
 
 - Add `createBlindIndex()` and supporting classes to support blind index search
