@@ -81,14 +81,14 @@ case class IronOxideFuture(underlying: IronOxide[IO]) extends IronOxide[Future] 
     underlying.documentUpdateName(id, name).unsafeToFuture
 
   def userCreate(
-    jwt: String,
+    jwt: Jwt,
     password: String,
     options: UserCreateOpts,
     timeout: Option[Duration]
   ): Future[UserCreateResult] =
     underlying.userCreate(jwt, password, options, timeout).unsafeToFuture
 
-  def userVerify(jwt: String, timeout: Option[Duration]): Future[Option[UserResult]] =
+  def userVerify(jwt: Jwt, timeout: Option[Duration]): Future[Option[UserResult]] =
     underlying.userVerify(jwt, timeout).unsafeToFuture
 
   def userGetPublicKey(users: List[UserId]): Future[List[UserWithKey]] =
@@ -107,6 +107,10 @@ case class IronOxideFuture(underlying: IronOxide[IO]) extends IronOxide[Future] 
 
   def createBlindIndex(groupId: GroupId): Future[EncryptedBlindIndexSalt] =
     underlying.createBlindIndex(groupId).unsafeToFuture
+
+  def initializeBlindIndexSearch(encryptedSalt: EncryptedBlindIndexSalt): Future[BlindIndexSearch] =
+    underlying.initializeBlindIndexSearch(encryptedSalt).unsafeToFuture
+
 }
 
 object IronOxideFuture {
@@ -125,7 +129,7 @@ object IronOxideFuture {
     IronOxide.initializeAndRotate[IO](deviceContext, password, config, timeout).map(IronOxideFuture(_)).unsafeToFuture
 
   def userCreate[F[_]](
-    jwt: String,
+    jwt: Jwt,
     password: String,
     options: UserCreateOpts,
     timeout: Option[Duration]
