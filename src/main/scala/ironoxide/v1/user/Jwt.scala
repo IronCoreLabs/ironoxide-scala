@@ -27,8 +27,7 @@ object Jwt {
   def apply(j: jsdk.Jwt): Jwt =
     Jwt(j.getJwt, JwtClaims(j.getClaims), j.getAlgorithm)
 
-  def validate[F[_]](jwt: String)(implicit syncF: Sync[F]): F[Jwt] = {
-    val javaJwt = syncF.delay(jsdk.Jwt.validate(jwt))
-    javaJwt.map(j => Jwt(jwt, JwtClaims(j.getClaims), j.getAlgorithm))
-  }
+  def validate[F[_]](jwt: String)(implicit syncF: Sync[F]): F[Jwt] =
+    syncF.delay(jsdk.Jwt.validate(jwt)).map(javaJwt => Jwt(jwt, JwtClaims(javaJwt.getClaims), javaJwt.getAlgorithm))
+
 }
