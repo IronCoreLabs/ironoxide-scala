@@ -2,7 +2,7 @@
 
 [![scaladoc](https://javadoc-badge.appspot.com/com.ironcorelabs/ironoxide-scala_2.12.svg?label=scaladoc)](https://javadoc-badge.appspot.com/com.ironcorelabs/ironoxide-scala_2.12)
 
-SDK for using IronCore Labs from Scala server side applications. This library wraps [IronOxide-Java](https://github.com/IronCoreLabs/ironoxide-swig-bindings/tree/master/java)
+SDK for using IronCore Labs from Scala server side applications. This library wraps [IronOxide-Java](https://github.com/IronCoreLabs/ironoxide-swig-bindings/tree/main/java)
 with more Scala friendly interfaces and types. It presents two top level APIs:
 
 - [`IO`](https://typelevel.org/cats-effect/) based
@@ -12,7 +12,7 @@ with more Scala friendly interfaces and types. It presents two top level APIs:
 
 This project is published to [Maven central](https://search.maven.org/artifact/com.ironcorelabs/ironoxide-scala_2.12).
 
-You'll also need to follow the library setup instructions for [IronOxide-Java](https://github.com/IronCoreLabs/ironoxide-swig-bindings/tree/master/java#library) to ensure
+You'll also need to follow the library setup instructions for [IronOxide-Java](https://github.com/IronCoreLabs/ironoxide-swig-bindings/tree/main/java#library) to ensure
 you have the proper binary compiled and loaded.
 
 Below you'll find a link of the ironoxide-scala version with which native component you need:
@@ -39,4 +39,4 @@ child namespaces `common`, `document`, `group`, `user`, and `beta`.
 
 Further documentation is available on our [docs site](https://ironcorelabs.com/docs).
 
-Copyright (c) 2019 IronCore Labs, Inc. All rights reserved.
+Copyright (c) 2021 IronCore Labs, Inc. All rights reserved.
