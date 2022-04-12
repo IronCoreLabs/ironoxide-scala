@@ -13,6 +13,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
 import scala.concurrent.duration.{Duration, MILLISECONDS}
 import scodec.bits.ByteVector
+import cats.effect.unsafe.implicits.global
 
 class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues with OptionValues {
   try {

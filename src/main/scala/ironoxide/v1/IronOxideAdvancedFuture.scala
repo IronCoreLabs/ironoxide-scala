@@ -5,6 +5,7 @@ import ironoxide.v1.common.{EncryptedData, EncryptedDeks}
 import ironoxide.v1.document._
 import scala.concurrent.Future
 import scodec.bits.ByteVector
+import cats.effect.unsafe.implicits.global
 
 case class IronOxideAdvancedFuture(underlying: IronOxideAdvanced[IO]) extends IronOxideAdvanced[Future] {
 

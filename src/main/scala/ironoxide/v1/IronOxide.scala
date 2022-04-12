@@ -10,6 +10,7 @@ import ironoxide.v1.user._
 import scala.concurrent.duration.Duration
 import scala.util.Try
 import scodec.bits.ByteVector
+import cats.effect.unsafe.implicits.global
 
 /**
  * Ability to make authenticated requests to the IronCore API. Instantiated with the details

@@ -10,6 +10,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.Future
 import scala.util.Try
 import scodec.bits.ByteVector
+import cats.effect.unsafe.implicits.global
 
 case class IronOxideFuture(underlying: IronOxide[IO]) extends IronOxide[Future] {
 
