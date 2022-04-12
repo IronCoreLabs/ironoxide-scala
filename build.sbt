@@ -1,5 +1,5 @@
 ThisBuild / organization := "com.ironcorelabs"
-ThisBuild / scalaVersion := "2.12.13"
+ThisBuild / scalaVersion := "2.12.15"
 
 lazy val root = (project in file(".")).settings(
   name := "ironoxide-scala",
