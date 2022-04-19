@@ -10,7 +10,6 @@ import ironoxide.v1.user._
 import scala.concurrent.duration.Duration
 import scala.util.Try
 import scodec.bits.ByteVector
-import cats.effect.unsafe.implicits.global
 
 /**
  * Ability to make authenticated requests to the IronCore API. Instantiated with the details
@@ -318,13 +317,17 @@ object IronOxide {
    * @param config configuration for policy caching and SDK operation timeouts
    * @return an instance of the IronOxide
    */
-  def tryInitialize[F[_]: Sync](deviceContext: DeviceContext, config: IronOxideConfig): Try[IronOxide[F]] =
+  def tryInitialize[F[_]: Sync](deviceContext: DeviceContext, config: IronOxideConfig): Try[IronOxide[F]] = {
+    //Global runtime is needed to allow for blocking and running the IO.
+    import cats.effect.unsafe.implicits.global
     // This unsafeRunSync is safe here because we recatch the exceptions in Try.
     // This allows for cleaner code in places that use Future as their effect type because they don't have to await the Future.
     Try((for {
       javaDeviceContext <- deviceContext.toJava[IO]
       javaConfig        <- config.toJava[IO]
     } yield IronOxideSync(jsdk.IronOxide.initialize(javaDeviceContext, javaConfig))).unsafeRunSync)
+
+  }
 
   /**
    * Initialize IronOxide with a device. Verifies that the provided user/segment exists and the provided device
