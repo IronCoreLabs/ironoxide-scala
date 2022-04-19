@@ -8,3 +8,7 @@ src/test/resources/service-keys.conf
 src/test/resources/service-keys.conf.stage
 src/test/resources/service-keys.conf.local
 project/metals.sbt
+project/project
+.bsp
+.metals
+.vscode
