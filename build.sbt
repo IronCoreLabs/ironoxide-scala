@@ -1,5 +1,5 @@
 ThisBuild / organization := "com.ironcorelabs"
-ThisBuild / scalaVersion := "2.12.15"
+ThisBuild / scalaVersion := "2.12.17"
 
 lazy val root = (project in file(".")).settings(
   name := "ironoxide-scala",
@@ -19,30 +19,27 @@ lazy val root = (project in file(".")).settings(
     "-Ypartial-unification",
     "-target:jvm-1.8"
   ),
-  resolvers ++= Seq(
-    Resolver.sonatypeRepo("public"),
-    Resolver.sonatypeRepo("snapshots"),
-    "Typesafe repository".at("https://repo.typesafe.com/typesafe/release/")
-  ),
+  resolvers ++= Resolver.sonatypeOssRepos("public"),
+  resolvers ++= Resolver.sonatypeOssRepos("snapshots"),
   libraryDependencies ++= Seq(
-    "org.scodec"       %% "scodec-bits"    % "1.1.14",
-    "com.ironcorelabs" % "ironoxide-java"  % "0.14.0",
-    "org.typelevel"    %% "cats-effect"    % "3.3.11",
-    "com.ironcorelabs" %% "cats-scalatest" % "3.0.5" % Test,
-    "org.scalatest"    %% "scalatest"      % "3.1.1" % Test
+    "org.scodec"       %% "scodec-bits"    % "1.1.34",
+    "com.ironcorelabs" % "ironoxide-java"  % "0.15.0",
+    "org.typelevel"    %% "cats-effect"    % "3.4.2",
+    "com.ironcorelabs" %% "cats-scalatest" % "3.1.1" % Test,
+    "org.scalatest"    %% "scalatest"      % "3.2.14" % Test
   )
 )
 
 // HACK: without these lines, the console is basically unusable,
 // since all imports are reported as being unused (and then become
 // fatal errors).
-scalacOptions in (Compile, console) ~= {
+Compile / console / scalacOptions ~= {
   _.filterNot(_.startsWith("-Xlint")).filterNot(_.startsWith("-Ywarn"))
 }
-scalacOptions in (Test, console) := (scalacOptions in (Compile, console)).value
+Test / console / scalacOptions := (Compile / console / scalacOptions).value
 
-fork in Test := true
-envVars in Test := Map("IRONCORE_ENV" -> "stage")
+Test / fork := true
+Test / envVars := Map("IRONCORE_ENV" -> "stage")
 
 licenses := Seq("AGPL-3.0" -> url("https://www.gnu.org/licenses/agpl-3.0.txt"))
 // Add the default sonatype repository setting
@@ -52,11 +49,9 @@ homepage := Some(url("http://github.com/ironcorelabs/ironoxide-scala"))
 
 publishMavenStyle := true
 
-publishArtifact in Test := false
+Test / publishArtifact := false
 
 pomIncludeRepository := { _ => false }
-
-useGpg := true
 
 usePgpKeyHex("E84BBF42")
 

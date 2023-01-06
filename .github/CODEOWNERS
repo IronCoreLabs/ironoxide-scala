@@ -1,0 +1,3 @@
+* @IronCoreLabs/jvm-dev
+/release.sbt @IronCoreLabs/ops
+/.github/ @IronCoreLabs/ops
