@@ -15,71 +15,71 @@ import cats.effect.unsafe.implicits.global
 case class IronOxideFuture(underlying: IronOxide[IO]) extends IronOxide[Future] {
 
   def clearPolicyCache: Future[Long] =
-    underlying.clearPolicyCache.unsafeToFuture
+    underlying.clearPolicyCache.unsafeToFuture()
 
   def groupCreate(options: GroupCreateOpts): Future[GroupCreateResult] =
-    underlying.groupCreate(options).unsafeToFuture
+    underlying.groupCreate(options).unsafeToFuture()
 
   def groupUpdateName(id: GroupId, name: Option[GroupName]): Future[GroupMetaResult] =
-    underlying.groupUpdateName(id, name).unsafeToFuture
+    underlying.groupUpdateName(id, name).unsafeToFuture()
 
   def groupList: Future[List[GroupMetaResult]] =
-    underlying.groupList.unsafeToFuture
+    underlying.groupList.unsafeToFuture()
 
   def groupDelete(id: GroupId): Future[GroupId] =
-    underlying.groupDelete(id).unsafeToFuture
+    underlying.groupDelete(id).unsafeToFuture()
 
   def groupAddMembers(id: GroupId, users: List[UserId]): Future[GroupAccessEditResult] =
-    underlying.groupAddMembers(id, users).unsafeToFuture
+    underlying.groupAddMembers(id, users).unsafeToFuture()
 
   def groupRemoveMembers(id: GroupId, userRevokes: List[UserId]): Future[GroupAccessEditResult] =
-    underlying.groupRemoveMembers(id, userRevokes).unsafeToFuture
+    underlying.groupRemoveMembers(id, userRevokes).unsafeToFuture()
 
   def groupAddAdmins(id: GroupId, users: List[UserId]): Future[GroupAccessEditResult] =
-    underlying.groupAddAdmins(id, users).unsafeToFuture
+    underlying.groupAddAdmins(id, users).unsafeToFuture()
 
   def groupRemoveAdmins(id: GroupId, userRevokes: List[UserId]): Future[GroupAccessEditResult] =
-    underlying.groupRemoveAdmins(id, userRevokes).unsafeToFuture
+    underlying.groupRemoveAdmins(id, userRevokes).unsafeToFuture()
 
-  def groupGetMetadata(id: GroupId): Future[GroupGetResult] = underlying.groupGetMetadata(id).unsafeToFuture
+  def groupGetMetadata(id: GroupId): Future[GroupGetResult] = underlying.groupGetMetadata(id).unsafeToFuture()
 
   def documentGetIdFromBytes(encryptedDocument: ByteVector): Future[DocumentId] =
-    underlying.documentGetIdFromBytes(encryptedDocument).unsafeToFuture
+    underlying.documentGetIdFromBytes(encryptedDocument).unsafeToFuture()
 
   def documentUpdateBytes(id: DocumentId, newDocumentData: ByteVector): Future[DocumentEncryptResult] =
-    underlying.documentUpdateBytes(id, newDocumentData).unsafeToFuture
+    underlying.documentUpdateBytes(id, newDocumentData).unsafeToFuture()
 
   def documentGrantAccess(
     documentId: DocumentId,
     userGrants: List[UserId],
     groupGrants: List[GroupId]
   ): Future[DocumentAccessResult] =
-    underlying.documentGrantAccess(documentId, userGrants, groupGrants).unsafeToFuture
+    underlying.documentGrantAccess(documentId, userGrants, groupGrants).unsafeToFuture()
 
   def documentRevokeAccess(
     documentId: DocumentId,
     userRevokes: List[UserId],
     groupRevokes: List[GroupId]
   ): Future[DocumentAccessResult] =
-    underlying.documentRevokeAccess(documentId, userRevokes, groupRevokes).unsafeToFuture
+    underlying.documentRevokeAccess(documentId, userRevokes, groupRevokes).unsafeToFuture()
 
   def groupRotatePrivateKey(id: GroupId): Future[GroupUpdatePrivateKeyResult] =
-    underlying.groupRotatePrivateKey(id).unsafeToFuture
+    underlying.groupRotatePrivateKey(id).unsafeToFuture()
 
   def documentEncrypt(data: ByteVector, options: DocumentEncryptOpts): Future[DocumentEncryptResult] =
-    underlying.documentEncrypt(data, options).unsafeToFuture
+    underlying.documentEncrypt(data, options).unsafeToFuture()
 
   def documentDecrypt(encryptedBytes: ByteVector): Future[DocumentDecryptResult] =
-    underlying.documentDecrypt(encryptedBytes).unsafeToFuture
+    underlying.documentDecrypt(encryptedBytes).unsafeToFuture()
 
   def documentList: Future[List[DocumentListMeta]] =
-    underlying.documentList.unsafeToFuture
+    underlying.documentList.unsafeToFuture()
 
   def documentGetMetadata(id: DocumentId): Future[DocumentMetadataResult] =
-    underlying.documentGetMetadata(id).unsafeToFuture
+    underlying.documentGetMetadata(id).unsafeToFuture()
 
   def documentUpdateName(id: DocumentId, name: Option[DocumentName]): Future[DocumentMetadataResult] =
-    underlying.documentUpdateName(id, name).unsafeToFuture
+    underlying.documentUpdateName(id, name).unsafeToFuture()
 
   def userCreate(
     jwt: Jwt,
@@ -87,30 +87,30 @@ case class IronOxideFuture(underlying: IronOxide[IO]) extends IronOxide[Future] 
     options: UserCreateOpts,
     timeout: Option[Duration]
   ): Future[UserCreateResult] =
-    underlying.userCreate(jwt, password, options, timeout).unsafeToFuture
+    underlying.userCreate(jwt, password, options, timeout).unsafeToFuture()
 
   def userVerify(jwt: Jwt, timeout: Option[Duration]): Future[Option[UserResult]] =
-    underlying.userVerify(jwt, timeout).unsafeToFuture
+    underlying.userVerify(jwt, timeout).unsafeToFuture()
 
   def userGetPublicKey(users: List[UserId]): Future[List[UserWithKey]] =
-    underlying.userGetPublicKey(users).unsafeToFuture
+    underlying.userGetPublicKey(users).unsafeToFuture()
 
   def userListDevices: Future[List[UserDevice]] =
-    underlying.userListDevices.unsafeToFuture
+    underlying.userListDevices.unsafeToFuture()
 
   def userDeleteDevice(deviceId: Option[DeviceId]): Future[DeviceId] =
-    underlying.userDeleteDevice(deviceId).unsafeToFuture
+    underlying.userDeleteDevice(deviceId).unsafeToFuture()
 
   def userRotatePrivateKey(password: String): Future[UserUpdatePrivateKeyResult] =
-    underlying.userRotatePrivateKey(password).unsafeToFuture
+    underlying.userRotatePrivateKey(password).unsafeToFuture()
 
   def advanced: IronOxideAdvanced[Future] = IronOxideAdvancedFuture(underlying.advanced)
 
   def createBlindIndex(groupId: GroupId): Future[EncryptedBlindIndexSalt] =
-    underlying.createBlindIndex(groupId).unsafeToFuture
+    underlying.createBlindIndex(groupId).unsafeToFuture()
 
   def initializeBlindIndexSearch(encryptedSalt: EncryptedBlindIndexSalt): Future[BlindIndexSearch] =
-    underlying.initializeBlindIndexSearch(encryptedSalt).unsafeToFuture
+    underlying.initializeBlindIndexSearch(encryptedSalt).unsafeToFuture()
 
 }
 
@@ -119,7 +119,7 @@ object IronOxideFuture {
     IronOxide.tryInitialize[IO](deviceContext, config).map(IronOxideFuture(_))
 
   def initialize(deviceContext: DeviceContext, config: IronOxideConfig): Future[IronOxide[Future]] =
-    IronOxide.initialize[IO](deviceContext, config).map(IronOxideFuture(_)).unsafeToFuture
+    IronOxide.initialize[IO](deviceContext, config).map(IronOxideFuture(_)).unsafeToFuture()
 
   def initializeAndRotate(
     deviceContext: DeviceContext,
@@ -127,7 +127,7 @@ object IronOxideFuture {
     config: IronOxideConfig,
     timeout: Option[Duration]
   ): Future[IronOxide[Future]] =
-    IronOxide.initializeAndRotate[IO](deviceContext, password, config, timeout).map(IronOxideFuture(_)).unsafeToFuture
+    IronOxide.initializeAndRotate[IO](deviceContext, password, config, timeout).map(IronOxideFuture(_)).unsafeToFuture()
 
   def userCreate[F[_]](
     jwt: Jwt,
@@ -135,5 +135,5 @@ object IronOxideFuture {
     options: UserCreateOpts,
     timeout: Option[Duration]
   ): Future[UserCreateResult] =
-    IronOxide.userCreate[IO](jwt, password, options, timeout).unsafeToFuture
+    IronOxide.userCreate[IO](jwt, password, options, timeout).unsafeToFuture()
 }

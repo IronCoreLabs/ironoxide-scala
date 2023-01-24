@@ -325,7 +325,7 @@ object IronOxide {
     Try((for {
       javaDeviceContext <- deviceContext.toJava[IO]
       javaConfig        <- config.toJava[IO]
-    } yield IronOxideSync(jsdk.IronOxide.initialize(javaDeviceContext, javaConfig))).unsafeRunSync)
+    } yield IronOxideSync(jsdk.IronOxide.initialize(javaDeviceContext, javaConfig))).unsafeRunSync())
 
   }
 
