@@ -17,20 +17,12 @@ you have the proper binary compiled and loaded.
 
 Below you'll find a link of the ironoxide-scala version with which native component you need:
 
-| ironoxide-scala | ironoxide-java                                                                         | Notes           |
-| --------------- | -------------------------------------------------------------------------------------- | --------------- |
-| 0.16.0          | [0.15.0](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.15.0) |
-| 0.15.0          | [0.14.2](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.14.2) | Cats Effect 3.x |
-| 0.14.0          | [0.14.2](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.14.2) |
-| 0.13.0          | [0.13.2](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.13.0) |
-| 0.12.1          | [0.12.1](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.12.1) |
-| 0.12.0          | [0.12.0](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.12.0) |
-| 0.11.0          | [0.11.0](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.11.0) |
-| 0.10.x          | [0.11.0](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.11.0) |
-| 0.9.0           | [0.11.0](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.11.0) |
-| 0.8.0           | [0.9.0](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.8.0)   |
-| 0.7.x           | [0.8.2](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.8.2)   |
-| 0.6.0           | [0.7.2](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.7.2)   |
+| ironoxide-scala | ironoxide-java                                                                         | Scala Version | Notes
+| --------------- | -------------------------------------------------------------------------------------- | ------------- |
+| 0.17.0          | [0.15.0](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.15.0) | 2.13.x
+| 0.16.0          | [0.15.0](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.15.0) | 2.12.x
+| 0.15.0          | [0.14.2](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.14.2) | 2.12.x        | Cats Effect 3.x
+| 0.14.0          | [0.14.2](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.14.2) | 2.12.x
 
 ## Usage
 

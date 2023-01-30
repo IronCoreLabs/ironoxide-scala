@@ -1,5 +1,5 @@
 ThisBuild / organization := "com.ironcorelabs"
-ThisBuild / scalaVersion := "2.12.17"
+ThisBuild / scalaVersion := "2.13.10"
 
 lazy val root = (project in file(".")).settings(
   name := "ironoxide-scala",
@@ -10,14 +10,11 @@ lazy val root = (project in file(".")).settings(
     "-feature",
     "-unchecked",
     "-Xfatal-warnings",
-    "-Yno-adapted-args",
     "-Ywarn-unused",
     "-Ywarn-numeric-widen",
     "-Ywarn-value-discard",
-    "-Xfuture",
     "-language:higherKinds",
-    "-Ypartial-unification",
-    "-target:jvm-1.8"
+    "-release:8"
   ),
   resolvers ++= Resolver.sonatypeOssRepos("public"),
   resolvers ++= Resolver.sonatypeOssRepos("snapshots"),
