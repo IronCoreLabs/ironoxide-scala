@@ -7,9 +7,6 @@ on:
   pull_request:
   workflow_dispatch:
 
-env:
-  LD_LIBRARY_PATH: "./"
-
 jobs:
   invoke:
     name: Scala CI
