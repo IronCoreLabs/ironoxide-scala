@@ -16,5 +16,5 @@ jobs:
     uses: IronCoreLabs/workflows/.github/workflows/scala-ci.yaml@scala-ci
     with:
       download_release_binary_repo: IronCoreLabs/ironoxide-swig-bindings
-      download_release_binary_name: libironoxide.so
+      download_release_binary_name: libironoxide_java.so
     secrets: inherit
