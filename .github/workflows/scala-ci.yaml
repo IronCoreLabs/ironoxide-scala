@@ -12,7 +12,7 @@ on:
 jobs:
   invoke:
     name: Scala CI
-    uses: IronCoreLabs/workflows/.github/workflows/scala-ci.yaml@scala-ci
+    uses: IronCoreLabs/workflows/.github/workflows/scala-ci.yaml@scala-ci-v0
     with:
       download_release_binary_repo: IronCoreLabs/ironoxide-swig-bindings
       download_release_binary_name: libironoxide_java.so
