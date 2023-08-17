@@ -17,5 +17,5 @@ jobs:
     with:
       download_release_binary_repo: IronCoreLabs/ironoxide-swig-bindings
       download_release_binary_name: libironoxide_java.so
-      run_coverage: false
+      coverage: false
     secrets: inherit
