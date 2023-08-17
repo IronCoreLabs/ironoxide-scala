@@ -23,7 +23,7 @@ jobs:
       uses: coursier/cache-action@v6
     - uses: coursier/setup-action@v1
       with:
-        jvm: eclipse-temurin:17-jdk
+        jvm: adoptium:1.17
         apps: sbt
     - name: Download ironoxide-java release
       uses: robinraju/release-downloader@v1.6
