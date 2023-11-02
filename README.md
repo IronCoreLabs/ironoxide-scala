@@ -17,12 +17,13 @@ you have the proper binary compiled and loaded.
 
 Below you'll find a link of the ironoxide-scala version with which native component you need:
 
-| ironoxide-scala | ironoxide-java                                                                         | Scala Version | Notes
-| --------------- | -------------------------------------------------------------------------------------- | ------------- |
-| 0.17.0          | [0.15.0](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.15.0) | 2.13.x
-| 0.16.0          | [0.15.0](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.15.0) | 2.12.x
-| 0.15.0          | [0.14.2](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.14.2) | 2.12.x        | Cats Effect 3.x
-| 0.14.0          | [0.14.2](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.14.2) | 2.12.x
+| ironoxide-scala | ironoxide-java                                                                         | Scala Version | Notes           |
+| --------------- | -------------------------------------------------------------------------------------- | ------------- | --------------- |
+| 0.18.0          | [0.16.0](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.16.0) | 2.13.x        |                 |
+| 0.17.0          | [0.15.0](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.15.0) | 2.13.x        |                 |
+| 0.16.0          | [0.15.0](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.15.0) | 2.12.x        |                 |
+| 0.15.0          | [0.14.2](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.14.2) | 2.12.x        | Cats Effect 3.x |
+| 0.14.0          | [0.14.2](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.14.2) | 2.12.x        |                 |
 
 ## Usage
 
