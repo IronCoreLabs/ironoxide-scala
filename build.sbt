@@ -50,7 +50,7 @@ Test / publishArtifact := false
 
 pomIncludeRepository := { _ => false }
 
-usePgpKeyHex("E84BBF42")
+usePgpKeyHex("C7A5C3A6")
 
 pomExtra := (
   <scm>
