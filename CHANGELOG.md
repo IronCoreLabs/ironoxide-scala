@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.18.0
+
+- Unmanaged encryption now supports policy caching.
+
+## 0.17.0
+
+- Upgrade to Scala 2.13.x
+
+## 0.15.0
+
+- Upgrade to Cats Effect 3.x
+
 ## 0.14.0
 
 - Add `Jwt` and `JwtClaims` types

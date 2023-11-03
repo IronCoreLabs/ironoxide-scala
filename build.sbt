@@ -20,7 +20,7 @@ lazy val root = (project in file(".")).settings(
   resolvers ++= Resolver.sonatypeOssRepos("snapshots"),
   libraryDependencies ++= Seq(
     "org.scodec"       %% "scodec-bits"    % "1.1.34",
-    "com.ironcorelabs" % "ironoxide-java"  % "0.15.0",
+    "com.ironcorelabs" % "ironoxide-java"  % "0.16.0",
     "org.typelevel"    %% "cats-effect"    % "3.4.2",
     "com.ironcorelabs" %% "cats-scalatest" % "3.1.1" % Test,
     "org.scalatest"    %% "scalatest"      % "3.2.14" % Test
