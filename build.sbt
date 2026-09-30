@@ -22,8 +22,6 @@ lazy val root = (project in file(".")).settings(
     "-language:higherKinds",
     "-release:8"
   ),
-  resolvers ++= Resolver.sonatypeOssRepos("public"),
-  resolvers ++= Resolver.sonatypeOssRepos("snapshots"),
   libraryDependencies ++= Seq(
     "org.scodec"       %% "scodec-bits"    % "1.1.34",
     "com.ironcorelabs"  % "ironoxide-java" % "2.2.1",
@@ -45,8 +43,8 @@ Test / fork := true
 Test / envVars := Map("IRONCORE_ENV" -> "stage")
 
 licenses := Seq("AGPL-3.0" -> url("https://www.gnu.org/licenses/agpl-3.0.txt"))
-// Add the default sonatype repository setting
-publishTo := sonatypePublishTo.value
+sonatypeCredentialHost := xerial.sbt.Sonatype.sonatypeCentralHost
+publishTo := sonatypePublishToBundle.value
 
 homepage := Some(url("http://github.com/ironcorelabs/ironoxide-scala"))
 
@@ -55,8 +53,6 @@ publishMavenStyle := true
 Test / publishArtifact := false
 
 pomIncludeRepository := { _ => false }
-
-usePgpKeyHex("C7A5C3A6")
 
 pomExtra := (
   <scm>
@@ -80,23 +76,6 @@ pomExtra := (
     }
   }
     </developers>
-)
-
-import ReleaseTransformations._
-
-releaseProcess := Seq[ReleaseStep](
-  checkSnapshotDependencies,
-  inquireVersions,
-  runClean,
-  runTest,
-  setReleaseVersion,
-  commitReleaseVersion,
-  tagRelease,
-  ReleaseStep(action = Command.process("publishSigned", _), enableCrossBuild = true),
-  setNextVersion,
-  commitNextVersion,
-  ReleaseStep(action = Command.process("sonatypeReleaseAll", _), enableCrossBuild = true),
-  pushChanges
 )
 
 addCommandAlias("prePR", "; test; scalafixAll --check; scalafmtCheckAll")

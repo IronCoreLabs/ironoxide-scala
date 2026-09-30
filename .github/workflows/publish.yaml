@@ -1,0 +1,31 @@
+name: Publish
+
+on:
+  # The Bump Version workflow makes a GitHub release for non-prerelease versions.
+  release:
+    types:
+      - created
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: coursier/cache-action@v8
+      - uses: coursier/setup-action@v3
+        with:
+          jvm: 21
+          apps: sbt
+      - name: Decrypt signing key
+        uses: IronCoreLabs/ironhide-actions/decrypt@v3
+        with:
+          keys: ${{ secrets.IRONHIDE_KEYS }}
+          input: .github/9FA43559.asc.iron
+      - name: Import signing key
+        run: gpg --batch --import .github/9FA43559.asc
+      - name: Publish to Maven Central
+        env:
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        run: sbt publishSigned sonatypeBundleRelease
