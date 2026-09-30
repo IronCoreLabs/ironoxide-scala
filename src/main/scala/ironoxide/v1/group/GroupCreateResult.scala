@@ -2,6 +2,7 @@ package ironoxide.v1.group
 
 import com.ironcorelabs.{sdk => jsdk}
 import ironoxide.v1.common.{GroupId, OptionalOps, PublicKey, UserId}
+
 import java.{util => ju}
 
 /**

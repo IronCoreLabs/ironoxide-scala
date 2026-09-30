@@ -2,6 +2,7 @@ package ironoxide.v1.common
 
 import cats.effect.Sync
 import com.ironcorelabs.{sdk => jsdk}
+
 import java.{util => ju}
 
 /** Device name type. Validates that the provided name isn't an empty string */

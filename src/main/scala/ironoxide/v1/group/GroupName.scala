@@ -3,6 +3,7 @@ package ironoxide.v1.group
 import cats.effect.Sync
 import com.ironcorelabs.{sdk => jsdk}
 import ironoxide.v1.common.OptionalOps
+
 import java.{util => ju}
 
 /** Group's user-assigned name (non-unique). */

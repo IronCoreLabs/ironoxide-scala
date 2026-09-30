@@ -8,8 +8,9 @@ import ironoxide.v1.common._
 import ironoxide.v1.document._
 import ironoxide.v1.group._
 import ironoxide.v1.user._
-import scala.concurrent.duration.Duration
 import scodec.bits.ByteVector
+
+import scala.concurrent.duration.Duration
 
 case class IronOxideSync[F[_]](underlying: jsdk.IronOxide)(implicit syncF: Sync[F]) extends IronOxide[F] {
 

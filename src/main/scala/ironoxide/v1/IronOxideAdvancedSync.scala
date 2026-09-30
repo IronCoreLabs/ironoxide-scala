@@ -13,7 +13,7 @@ case class IronOxideAdvancedSync[F[_]](underlying: jsdk.IronOxide)(implicit sync
   def documentEncryptUnmanaged(data: ByteVector, options: DocumentEncryptOpts): F[DocumentEncryptUnmanagedResult] =
     for {
       javaOpts <- options.toJava
-      result   <- syncF.delay(underlying.advancedDocumentEncryptUnmanaged(data.toArray, javaOpts))
+      result   <- syncF.delay(underlying.documentEncryptUnmanaged(data.toArray, javaOpts))
     } yield DocumentEncryptUnmanagedResult(result)
 
   def documentDecryptUnmanaged(
@@ -23,7 +23,7 @@ case class IronOxideAdvancedSync[F[_]](underlying: jsdk.IronOxide)(implicit sync
     syncF
       .delay(
         DocumentDecryptUnmanagedResult(
-          underlying.advancedDocumentDecryptUnmanaged(encryptedData.underlyingBytes, encryptedDeks.underlyingBytes)
+          underlying.documentDecryptUnmanaged(encryptedData.underlyingBytes, encryptedDeks.underlyingBytes)
         )
       )
 }

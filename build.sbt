@@ -1,5 +1,11 @@
 ThisBuild / organization := "com.ironcorelabs"
-ThisBuild / scalaVersion := "2.13.10"
+ThisBuild / scalaVersion := "2.13.18"
+inThisBuild(
+  List(
+    semanticdbEnabled := true,
+    semanticdbVersion := scalafixSemanticdb.revision
+  )
+)
 
 lazy val root = (project in file(".")).settings(
   name := "ironoxide-scala",
@@ -20,9 +26,9 @@ lazy val root = (project in file(".")).settings(
   resolvers ++= Resolver.sonatypeOssRepos("snapshots"),
   libraryDependencies ++= Seq(
     "org.scodec"       %% "scodec-bits"    % "1.1.34",
-    "com.ironcorelabs" % "ironoxide-java"  % "0.16.0",
+    "com.ironcorelabs"  % "ironoxide-java" % "2.2.1",
     "org.typelevel"    %% "cats-effect"    % "3.4.2",
-    "com.ironcorelabs" %% "cats-scalatest" % "3.1.1" % Test,
+    "com.ironcorelabs" %% "cats-scalatest" % "3.1.1"  % Test,
     "org.scalatest"    %% "scalatest"      % "3.2.14" % Test
   )
 )
@@ -65,9 +71,8 @@ pomExtra := (
       ("skeet70", "Murph Murphy"),
       ("ernieturner", "Ernie Turner"),
       ("bobwall23", "Bob Wall")
-    ).map {
-      case (id, name) =>
-        <developer>
+    ).map { case (id, name) =>
+      <developer>
             <id>{id}</id>
             <name>{name}</name>
             <url>http://github.com/{id}</url>
@@ -93,3 +98,5 @@ releaseProcess := Seq[ReleaseStep](
   ReleaseStep(action = Command.process("sonatypeReleaseAll", _), enableCrossBuild = true),
   pushChanges
 )
+
+addCommandAlias("prePR", "; test; scalafixAll --check; scalafmtCheckAll")

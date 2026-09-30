@@ -1,6 +1,7 @@
 package ironoxide.v1
 
 import com.ironcorelabs.{sdk => jsdk}
+
 import java.{util => ju}
 
 package object common {
