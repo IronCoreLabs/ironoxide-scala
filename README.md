@@ -19,6 +19,7 @@ Below you'll find a link of the ironoxide-scala version with which native compon
 
 | ironoxide-scala | ironoxide-java                                                                         | Scala Version | Notes           |
 | --------------- | -------------------------------------------------------------------------------------- | ------------- | --------------- |
+| 0.19.0          | [2.2.1](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v2.2.1)   | 2.13.x        | Java 21         |
 | 0.18.0          | [0.16.0](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.16.0) | 2.13.x        |                 |
 | 0.17.0          | [0.15.0](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.15.0) | 2.13.x        |                 |
 | 0.16.0          | [0.15.0](https://github.com/IronCoreLabs/ironoxide-swig-bindings/releases/tag/v0.15.0) | 2.12.x        |                 |
