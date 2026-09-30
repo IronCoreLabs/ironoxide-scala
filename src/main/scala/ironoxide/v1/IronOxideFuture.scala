@@ -1,16 +1,17 @@
 package ironoxide.v1
 
 import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 import ironoxide.v1.beta._
 import ironoxide.v1.common._
 import ironoxide.v1.document._
 import ironoxide.v1.group._
 import ironoxide.v1.user._
-import scala.concurrent.duration.Duration
-import scala.concurrent.Future
-import scala.util.Try
 import scodec.bits.ByteVector
-import cats.effect.unsafe.implicits.global
+
+import scala.concurrent.Future
+import scala.concurrent.duration.Duration
+import scala.util.Try
 
 case class IronOxideFuture(underlying: IronOxide[IO]) extends IronOxide[Future] {
 

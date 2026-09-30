@@ -1,8 +1,9 @@
 package ironoxide.v1.document
 
 import com.ironcorelabs.{sdk => jsdk}
-import java.{util => ju}
 import scodec.bits.ByteVector
+
+import java.{util => ju}
 
 /**
  * Result of decrypting a document. Includes minimal metadata as well as the decrypted bytes.

@@ -1,7 +1,7 @@
 package ironoxide.v1.common
 
-import com.ironcorelabs.{sdk => jsdk}
 import cats.effect.Sync
+import com.ironcorelabs.{sdk => jsdk}
 
 /**
  * Policy evaluation caching config

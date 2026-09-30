@@ -1,11 +1,12 @@
 package ironoxide.v1
 
 import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 import ironoxide.v1.common.{EncryptedData, EncryptedDeks}
 import ironoxide.v1.document._
-import scala.concurrent.Future
 import scodec.bits.ByteVector
-import cats.effect.unsafe.implicits.global
+
+import scala.concurrent.Future
 
 case class IronOxideAdvancedFuture(underlying: IronOxideAdvanced[IO]) extends IronOxideAdvanced[Future] {
 

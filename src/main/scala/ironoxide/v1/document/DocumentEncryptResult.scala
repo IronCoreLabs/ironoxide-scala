@@ -2,8 +2,9 @@ package ironoxide.v1.document
 
 import com.ironcorelabs.{sdk => jsdk}
 import ironoxide.v1.common.{GroupOrUserAccessError, UserOrGroupId, failedResultToScala, succeededResultToScala}
-import java.{util => ju}
 import scodec.bits.ByteVector
+
+import java.{util => ju}
 
 /**
  * Result for encrypt operations.

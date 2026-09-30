@@ -1,8 +1,8 @@
 package ironoxide.v1.user
 
-import com.ironcorelabs.{sdk => jsdk}
 import cats.effect.Sync
 import cats.implicits._
+import com.ironcorelabs.{sdk => jsdk}
 
 /**
  * IronCore JWT

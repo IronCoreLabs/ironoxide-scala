@@ -7,9 +7,10 @@ import ironoxide.v1.common._
 import ironoxide.v1.document._
 import ironoxide.v1.group._
 import ironoxide.v1.user._
+import scodec.bits.ByteVector
+
 import scala.concurrent.duration.Duration
 import scala.util.Try
-import scodec.bits.ByteVector
 
 /**
  * Ability to make authenticated requests to the IronCore API. Instantiated with the details
@@ -289,7 +290,8 @@ trait IronOxide[F[_]] {
    */
   def userRotatePrivateKey(password: String): F[UserUpdatePrivateKeyResult]
 
-  /** Create an index and encrypt it to the provided groupId.
+  /**
+   * Create an index and encrypt it to the provided groupId.
    *
    * @param groupId group to encrypt to
    */
@@ -337,8 +339,8 @@ object IronOxide {
    * @param config configuration for policy caching and SDK operation timeouts
    * @return an instance of the IronOxide
    */
-  def initialize[F[_]](deviceContext: DeviceContext, config: IronOxideConfig)(
-    implicit syncF: Sync[F]
+  def initialize[F[_]](deviceContext: DeviceContext, config: IronOxideConfig)(implicit
+    syncF: Sync[F]
   ): F[IronOxide[F]] =
     for {
       javaDeviceContext <- deviceContext.toJava
@@ -364,8 +366,8 @@ object IronOxide {
     password: String,
     config: IronOxideConfig,
     timeout: Option[Duration]
-  )(
-    implicit syncF: Sync[F]
+  )(implicit
+    syncF: Sync[F]
   ): F[IronOxide[F]] =
     for {
       javaDeviceContext <- deviceContext.toJava
@@ -389,8 +391,8 @@ object IronOxide {
     password: String,
     deviceCreateOptions: DeviceCreateOpts,
     timeout: Option[Duration]
-  )(
-    implicit syncF: Sync[F]
+  )(implicit
+    syncF: Sync[F]
   ): F[DeviceAddResult] =
     for {
       javaJwt  <- jwt.toJava
@@ -408,8 +410,8 @@ object IronOxide {
    * @return Newly generated [[user.UserCreateResult]]. For most use cases, the public key can be discarded as IronCore escrows your user's keys.
    *         The escrowed keys are unlocked by the provided password.
    */
-  def userCreate[F[_]](jwt: Jwt, password: String, options: UserCreateOpts, timeout: Option[Duration])(
-    implicit syncF: Sync[F]
+  def userCreate[F[_]](jwt: Jwt, password: String, options: UserCreateOpts, timeout: Option[Duration])(implicit
+    syncF: Sync[F]
   ): F[UserCreateResult] =
     for {
       javaJwt  <- jwt.toJava

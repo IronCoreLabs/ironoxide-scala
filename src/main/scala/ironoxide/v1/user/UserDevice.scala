@@ -2,6 +2,7 @@ package ironoxide.v1.user
 
 import com.ironcorelabs.{sdk => jsdk}
 import ironoxide.v1.common.{DeviceId, DeviceName}
+
 import java.{util => ju}
 
 /**

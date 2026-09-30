@@ -1,32 +1,34 @@
 package ironoxide.v1
 
 import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 import cats.scalatest.EitherValues
 import com.ironcorelabs.{sdk => jsdk}
 import ironoxide.v1.common._
 import ironoxide.v1.document._
 import ironoxide.v1.group._
 import ironoxide.v1.user._
-import java.{util => ju}
 import org.scalatest.OptionValues
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AsyncWordSpec
-import scala.concurrent.duration.{Duration, MILLISECONDS}
 import scodec.bits.ByteVector
-import cats.effect.unsafe.implicits.global
+
+import java.{util => ju}
+import scala.concurrent.duration.{Duration, MILLISECONDS}
 
 class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues with OptionValues {
-  try {
-    java.lang.System.loadLibrary("ironoxide_java")
-  } catch {
+  try java.lang.System.loadLibrary("ironoxide_java")
+  catch {
     case _: UnsatisfiedLinkError =>
+      // scalafix:off DisableSyntax.noPrintln
       println("Failed to load ironoxide_java")
       println(
         s"""The value was not found in java.library.path. Path was '${System
-             .getProperty("java.library.path")}'.
+          .getProperty("java.library.path")}'.
            |Note that the path should be to the directory where ironoxide_java is, not the actual path. If you build ironoxide_java with
            |`cargo build` then there should be libironoxide_java.* in ../target/debug.""".stripMargin
       )
+      // scalafix:on DisableSyntax.noPrintln
       //There is no way we can actually continue, so I'm going to do the dirty thing to prevent misleading errors from spewing.
       System.exit(1)
   }
@@ -51,12 +53,11 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
   )
   val validGroupId = GroupId(ju.UUID.randomUUID.toString)
   val validDocumentId = DocumentId(ju.UUID.randomUUID.toString)
-  var documentBytes: ByteVector = null
+  var documentBytes: ByteVector = null // scalafix:ok
 
   def clearBytes(a: Array[Byte]) =
-    for (i <- 0.until(a.length)) {
+    for (i <- 0.until(a.length))
       a(i) = 0.toByte
-    }
 
   val deviceContext =
     DeviceContext(
@@ -169,7 +170,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       groupCreateResult.owner shouldBe primaryTestUserId
       groupCreateResult.adminList shouldBe List(primaryTestUserId)
       groupCreateResult.memberList shouldBe List(primaryTestUserId)
-      groupCreateResult.created should not be null
+      groupCreateResult.created should not be null // scalafix:ok
       groupCreateResult.lastUpdated shouldBe groupCreateResult.created
       groupCreateResult.needsRotation.value shouldBe true
     }
@@ -294,7 +295,7 @@ class FullIntegrationTest extends AsyncWordSpec with Matchers with EitherValues 
       groupGetResult.isMember shouldBe true
       groupGetResult.adminList.value shouldBe List(primaryTestUserId)
       groupGetResult.memberList.value shouldBe List(primaryTestUserId)
-      groupGetResult.created should not be null
+      groupGetResult.created should not be null // scalafix:ok
       groupGetResult.lastUpdated should be > groupGetResult.created
       groupGetResult.needsRotation.value shouldBe false
     }

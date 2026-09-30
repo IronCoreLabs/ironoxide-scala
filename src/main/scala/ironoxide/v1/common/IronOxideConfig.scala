@@ -1,8 +1,9 @@
 package ironoxide.v1.common
 
-import com.ironcorelabs.{sdk => jsdk}
 import cats.effect.Sync
 import cats.implicits._
+import com.ironcorelabs.{sdk => jsdk}
+
 import scala.concurrent.duration.{Duration, MILLISECONDS}
 
 /**
