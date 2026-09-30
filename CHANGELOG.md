@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.19.0
+
+- Upgrade to `ironoxide-java` 2.2.1, which requires Java 21 and `libironoxide_java` 2.2.1.
+
 ## 0.18.0
 
 - Unmanaged encryption now supports policy caching.
