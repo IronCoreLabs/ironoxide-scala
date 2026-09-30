@@ -54,8 +54,6 @@ Test / publishArtifact := false
 
 pomIncludeRepository := { _ => false }
 
-usePgpKeyHex("62F57B1B87928CAC")
-
 pomExtra := (
   <scm>
       <url>git@github.com:IronCoreLabs/ironoxide-scala.git</url>
@@ -78,23 +76,6 @@ pomExtra := (
     }
   }
     </developers>
-)
-
-import ReleaseTransformations._
-
-releaseProcess := Seq[ReleaseStep](
-  checkSnapshotDependencies,
-  inquireVersions,
-  runClean,
-  runTest,
-  setReleaseVersion,
-  commitReleaseVersion,
-  tagRelease,
-  releaseStepCommand("publishSigned"),
-  releaseStepCommand("sonatypeBundleRelease"),
-  setNextVersion,
-  commitNextVersion,
-  pushChanges
 )
 
 addCommandAlias("prePR", "; test; scalafixAll --check; scalafmtCheckAll")
