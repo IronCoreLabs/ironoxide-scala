@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.19.1
+
+- Upgrade to `ironoxide-java` 2.2.2, which distrusts the compromised eMudhra (emSign) intermediate CAs. See https://emudhra.we-have-a-problem.com/.
+
 ## 0.19.0
 
 - Upgrade to `ironoxide-java` 2.2.1, which requires Java 21 and `libironoxide_java` 2.2.1.
